@@ -14,7 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // 5. 初始化好禮兌換動態展開切換
   initRewardToggle();
 
-  // 6. 表單提交處理
+  // 6. 初始化學習吃力「其他」輸入框動態切換
+  initStruggleOtherToggle();
+
+  // 7. 表單提交處理
   initFormSubmit();
 });
 
@@ -123,6 +126,7 @@ async function loadClassConfig() {
           <span>其他</span>
         `;
         struggleContainer.appendChild(otherLbl);
+        initStruggleOtherToggle();
       }
     }
   } catch (e) {
@@ -249,8 +253,6 @@ function initRewardToggle() {
   const requiredFields = [
     'input[name="student_name"]',
     'input[name="phone"]',
-    'input[name="line_id"]',
-    'input[name="email"]',
     'input[name="privacy_agree"]'
   ];
 
@@ -287,7 +289,7 @@ function initRewardToggle() {
         noLabel.style.borderColor = 'rgba(255, 255, 255, 0.12)';
         noLabel.style.background = 'rgba(255, 255, 255, 0.03)';
       }
-      // 恢復必填限制
+      // 恢復必填限制 (姓名、電話、個資同意；LINE 與 Email 保持選填)
       requiredFields.forEach(sel => {
         const el = rewardSection.querySelector(sel);
         if (el) el.setAttribute('required', 'required');
@@ -305,6 +307,33 @@ function initRewardToggle() {
     r.addEventListener('change', updateVisibility);
   });
   updateVisibility();
+}
+
+// 初始化學習吃力/卡關「其他」自訂輸入框切換
+function initStruggleOtherToggle() {
+  const container = document.getElementById('strugglePointContainer');
+  const otherWrap = document.getElementById('struggleOtherWrap');
+  const otherInput = document.getElementById('struggleOtherText');
+  if (!container || !otherWrap) return;
+
+  const radios = container.querySelectorAll('input[name="struggle_point"]');
+  radios.forEach(r => {
+    r.addEventListener('change', () => {
+      if (r.checked && r.value === '其他') {
+        otherWrap.style.display = 'block';
+        if (otherInput) otherInput.focus();
+      } else if (r.checked) {
+        otherWrap.style.display = 'none';
+      }
+    });
+  });
+
+  const checkedRadio = container.querySelector('input[name="struggle_point"]:checked');
+  if (checkedRadio && checkedRadio.value === '其他') {
+    otherWrap.style.display = 'block';
+  } else {
+    otherWrap.style.display = 'none';
+  }
 }
 
 // 表單提交與好禮彈窗處理
@@ -334,6 +363,14 @@ function initFormSubmit() {
     // 收集表單資料
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
+
+    // 處理 Q3 「其他」卡關說明
+    if (data.struggle_point === '其他') {
+      const otherDetail = document.getElementById('struggleOtherText')?.value.trim();
+      if (otherDetail) {
+        data.struggle_point = `其他：${otherDetail}`;
+      }
+    }
 
     const wantsReward = data.wants_reward !== 'no';
     if (!wantsReward) {

@@ -120,6 +120,10 @@
               <span>其他</span>
             </label>
           </div>
+          <!-- 勾選「其他」時動態顯示之輸入欄位 -->
+          <div id="struggleOtherWrap" style="display: none; margin-top: 10px;">
+            <input type="text" id="struggleOtherText" class="text-input" placeholder="請簡述您的卡關原因或學習狀況..." style="font-size: 0.88rem; padding: 10px 14px; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(99, 102, 241, 0.45); border-radius: 8px; width: 100%; color: #fff;">
+          </div>
         </div>
       </section>
 
@@ -334,7 +338,7 @@
         </div>
 
         <div class="gift-reminder" style="margin-top: 18px;">
-          📞 <strong>專員聯繫通知資訊</strong>：請務必填寫正確的手機號碼與 LINE ID，以便行政專員聯繫您通知兌換與開通課程。
+          📞 <strong>開通通知聯絡資訊</strong>：請填寫正確的手機號碼，以便聯繫您通知兌換與開通線上單元課（LINE ID 與 Email 為選填）。
         </div>
 
         <div class="input-grid">
@@ -343,16 +347,16 @@
             <input type="text" name="student_name" class="text-input" placeholder="例如：陳小艾、Tom" required>
           </div>
           <div class="question-group">
-            <label class="question-label">手機號碼 (專員電話/簡訊聯繫) <span class="req">*</span></label>
+            <label class="question-label">手機號碼 (電話/簡訊通知) <span class="req">*</span></label>
             <input type="tel" name="phone" class="text-input" placeholder="例如：0912-345-678" required>
           </div>
           <div class="question-group">
-            <label class="question-label">LINE ID (方便專員私訊聯繫) <span class="req">*</span></label>
-            <input type="text" name="line_id" class="text-input" placeholder="例如：line_user123" required>
+            <label class="question-label">LINE ID (選填，方便私訊聯繫)</label>
+            <input type="text" name="line_id" class="text-input" placeholder="例如：line_user123">
           </div>
           <div class="question-group">
-            <label class="question-label">Email 電子信箱 (寄送開通信件) <span class="req">*</span></label>
-            <input type="email" name="email" class="text-input" placeholder="例如：name@example.com" required>
+            <label class="question-label">Email 電子信箱 (選填，寄送開通信件)</label>
+            <input type="email" name="email" class="text-input" placeholder="例如：name@example.com">
           </div>
         </div>
 
