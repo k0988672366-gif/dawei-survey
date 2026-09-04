@@ -373,7 +373,7 @@
         </div>
       </div>
       <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-        <span style="font-size: 0.82rem; color: #cbd5e1;">學員 LINE 填答網址：</span>
+        <span style="font-size: 0.82rem; color: #cbd5e1;">學員 LINE 填答網址 (雲端公開)：</span>
         <code id="activeClassUrlDisplay" style="background: rgba(0,0,0,0.4); padding: 5px 12px; border-radius: 6px; color: #38bdf8; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(56, 189, 248, 0.2);">載入中...</code>
         <button id="bannerCopyLinkBtn" class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.82rem; border-color: #38bdf8; color: #38bdf8;">📋 點此複製</button>
         <a id="bannerOpenLinkBtn" href="/" target="_blank" class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.82rem;">📱 開啟填答端</a>
@@ -802,9 +802,19 @@
       }
     }
 
+    const CLOUD_PUBLIC_ORIGIN = 'https://dawei-survey.onrender.com';
+
+    function getPublicBaseUrl() {
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return CLOUD_PUBLIC_ORIGIN;
+      }
+      return window.location.origin;
+    }
+
     function copyClassLink(classId, courseName) {
-      const fullUrl = `${window.location.origin}/?class=${classId}`;
-      copyTextToClipboard(fullUrl, `🎉 已成功複製【${courseName}】學員問卷連結！`);
+      const publicBase = getPublicBaseUrl();
+      const fullUrl = `${publicBase}/?class=${classId}`;
+      copyTextToClipboard(fullUrl, `🎉 已成功複製【${courseName}】學員問卷公開連結！\n\n(此為正式雲端網址，傳入 LINE 群組後任何人手機皆可秒開！)`);
     }
 
     async function switchToClass(classId, autoSwitchTab = false) {
@@ -820,14 +830,15 @@
       const teacherDisp = document.getElementById('activeClassTeacherDisplay');
       if (teacherDisp) teacherDisp.textContent = `(授課講師: ${teacherName})`;
 
-      // 2. 更新學員問卷網址
-      const fullSurveyUrl = `${window.location.origin}/?class=${classId}`;
+      // 2. 更新學員問卷網址 (優先顯示可發送給任何人的正式雲端公開網址)
+      const publicBase = getPublicBaseUrl();
+      const fullSurveyUrl = `${publicBase}/?class=${classId}`;
       const urlDisp = document.getElementById('activeClassUrlDisplay');
       if (urlDisp) urlDisp.textContent = fullSurveyUrl;
       const surveyLink = document.getElementById('studentSurveyLink');
       if (surveyLink) surveyLink.href = `/?class=${classId}`;
       const bannerOpenBtn = document.getElementById('bannerOpenLinkBtn');
-      if (bannerOpenBtn) bannerOpenBtn.href = `/?class=${classId}`;
+      if (bannerOpenBtn) bannerOpenBtn.href = fullSurveyUrl;
 
       // 3. 更新下拉選單選中狀態
       const selector = document.getElementById('classSelector');
@@ -862,9 +873,10 @@
         return;
       }
 
+      const publicBase = getPublicBaseUrl();
       entries.forEach(([cid, c]) => {
         const isActive = cid === activeId;
-        const url = `${window.location.origin}/?class=${cid}`;
+        const url = `${publicBase}/?class=${cid}`;
         const card = document.createElement('div');
         card.style.cssText = `
           background: ${isActive ? 'rgba(99, 102, 241, 0.15)' : 'rgba(255, 255, 255, 0.03)'};
@@ -1555,8 +1567,9 @@
       const copyAiLinkBtn = document.getElementById('copyAiSurveyLinkBtn');
       if (copyAiLinkBtn) {
         copyAiLinkBtn.addEventListener('click', () => {
-          const targetHref = document.getElementById('testSurveyLink')?.href || (`${window.location.origin}/?class=${currentClassId}`);
-          copyTextToClipboard(targetHref, '🎉 已成功複製學員填答問卷連結！');
+          const publicBase = getPublicBaseUrl();
+          const targetHref = `${publicBase}/?class=${currentClassId}`;
+          copyTextToClipboard(targetHref, '🎉 已成功複製學員填答問卷公開連結！\n\n(此為正式雲端網址，發送給任何人皆可開啟！)');
         });
       }
     }

@@ -21,13 +21,16 @@ document.addEventListener('DOMContentLoaded', () => {
 // 動態載入班級設定
 async function loadClassConfig() {
   const urlParams = new URLSearchParams(window.location.search);
-  const classId = urlParams.get('class') || 'dawei_studio_01';
-  document.getElementById('classIdInput').value = classId;
+  const classId = urlParams.get('class');
 
   try {
-    const res = await fetch(`/api/class-info?class_id=${classId}`);
+    const reqUrl = classId ? `/api/class-info?class_id=${classId}` : '/api/class-info';
+    const res = await fetch(reqUrl);
     if (!res.ok) return;
     const data = await res.json();
+    if (document.getElementById('classIdInput')) {
+      document.getElementById('classIdInput').value = data.class_id || classId || 'default';
+    }
 
     // 更新頂部卡片所有文案
     if (data.badge_text && document.getElementById('badgeText')) {
