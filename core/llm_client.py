@@ -38,14 +38,25 @@ class LLMClient:
                     import requests
                     url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent?key={self.api_key}"
                     payload = {
-                        "contents": [{"parts": [{"text": prompt}]}]
+                        "contents": [{"parts": [{"text": prompt}]}],
+                        "generationConfig": {
+                            "thinkingConfig": {
+                                "thinkingLevel": "low"
+                            }
+                        }
                     }
                     if system_instruction:
                         payload["system_instruction"] = {"parts": [{"text": system_instruction}]}
-                    res = requests.post(url, json=payload, timeout=30)
+                    res = requests.post(url, json=payload, timeout=45)
                     if res.status_code == 200:
                         data = res.json()
-                        return data["candidates"][0]["content"]["parts"][0]["text"]
+                        candidates = data.get("candidates", [])
+                        if candidates and "content" in candidates[0]:
+                            parts = candidates[0]["content"].get("parts", [])
+                            if parts:
+                                return parts[0].get("text", "").strip()
+                    else:
+                        print(f"[LLMClient Error] Gemini API returned status {res.status_code}: {res.text[:200]}")
             except Exception as e:
                 print(f"[LLMClient Warning] Gemini API 調用失敗，自動切換為本機啟發式引擎: {e}")
 

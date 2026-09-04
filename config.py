@@ -77,8 +77,16 @@ STREAMLIT_PORT = int(os.getenv("STREAMLIT_PORT", 8501))
 
 # 後台安全密碼 (保護學員電話、LINE ID 不外洩)
 ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin")
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "art888")  # 可隨時自訂修改
-
 # Gemini AI 配置
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-DEFAULT_GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+_env_path = BASE_DIR / ".env"
+if not GEMINI_API_KEY and _env_path.exists():
+    try:
+        for line in _env_path.read_text(encoding="utf-8").splitlines():
+            if line.startswith("GEMINI_API_KEY="):
+                GEMINI_API_KEY = line.split("=", 1)[1].strip().strip('"').strip("'")
+                break
+    except Exception:
+        pass
+
+DEFAULT_GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
