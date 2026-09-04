@@ -75,6 +75,10 @@ SAMPLE_CSV_PATH = DATA_DIR / "sample_survey_responses.csv"
 SURVEY_SERVER_PORT = int(os.getenv("PORT", os.getenv("SURVEY_SERVER_PORT", 8080)))
 STREAMLIT_PORT = int(os.getenv("STREAMLIT_PORT", 8501))
 
+# 後台安全密碼 (保護學員電話、LINE ID 不外洩)
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "art888")  # 可隨時自訂修改
+
 # Gemini AI 配置
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 DEFAULT_GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")

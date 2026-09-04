@@ -325,6 +325,20 @@
             <input type="email" name="email" class="text-input" placeholder="例如：name@example.com" required>
           </div>
         </div>
+
+        <!-- 個資法法定告知事項與同意規範 -->
+        <div class="privacy-notice-box" style="margin-top: 20px; padding: 14px; background: rgba(255, 255, 255, 0.03); border: 1px dashed rgba(255, 255, 255, 0.15); border-radius: var(--radius-sm);">
+          <div style="font-size: 0.82rem; font-weight: 600; color: #a5b4fc; margin-bottom: 6px;">
+            🛡️ 個人資料蒐集與隱私保護告知（符合個人資料保護法規定）
+          </div>
+          <p style="font-size: 0.78rem; color: #94a3b8; line-height: 1.5; margin-bottom: 8px;">
+            依據《個人資料保護法》第八條規定，本問卷所蒐集之個人資料（姓名、電話、LINE ID、Email），僅供主辦單位進行本次教學滿意度分析、以及後台專員聯繫開通您所勾選之免費線上單元課使用。本單位嚴格遵循資訊安全與隱私規範，絕不向第三方洩漏或移作未授權之推銷用途，請安心填寫。
+          </p>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: #f1f5f9; cursor: pointer;">
+            <input type="checkbox" name="privacy_agree" id="privacyAgreeCheckbox" checked required style="accent-color: var(--primary); width: 16px; height: 16px;">
+            <span>我已詳細閱讀並同意上述個人資料蒐集與單元課兌換聯繫條款 <span class="req">*</span></span>
+          </label>
+        </div>
       </section>
 
       <!-- 提交按鈕 -->

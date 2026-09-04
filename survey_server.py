@@ -27,32 +27,63 @@ if config.RESPONSES_CSV_PATH.exists():
     except Exception as e:
         print(f"[Init Warning] 初次載入資料異常: {e}", flush=True)
 
+import base64
+
 class SurveyHandler(BaseHTTPRequestHandler):
+    def check_auth(self) -> bool:
+        """檢查是否具備管理員權限"""
+        auth_header = self.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Basic "):
+            self.send_response(401)
+            self.send_header("WWW-Authenticate", 'Basic realm="Admin Access Required"')
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(b"<h1>401 Unauthorized: \xe8\xab\x8b\xe8\xbc\x98\xe5\x85\xa5\xe7\xae\xa1\xe7\x90\x86\xe5\x93\xa1\xe5\xb8\xb3\xe8\x99\x9f\xe8\x88\x87\xe5\xaf\x86\xe7\xa2\xbc</h1>")
+            return False
+
+        try:
+            encoded_credentials = auth_header.split(" ", 1)[1]
+            decoded_credentials = base64.b64decode(encoded_credentials).decode("utf-8")
+            username, password = decoded_credentials.split(":", 1)
+            if username == config.ADMIN_USERNAME and password == config.ADMIN_PASSWORD:
+                return True
+        except Exception:
+            pass
+
+        self.send_response(401)
+        self.send_header("WWW-Authenticate", 'Basic realm="Admin Access Required"')
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.end_headers()
+        self.wfile.write(b"<h1>401 Unauthorized: \xe5\xb8\xb3\xe8\x99\x9f\xe6\x88\x96\xe5\xaf\x86\xe7\xa2\xbc\xe9\x8c\xaf\xe8\xaa\xa4</h1>")
+        return False
+
     def do_GET(self):
         parsed = urlparse(self.path)
         path = parsed.path
         query_params = parse_qs(parsed.query)
 
-        # 1. 根目錄：學員手機端問卷
+        # 1. 根目錄：學員手機端問卷 (公開，免密碼)
         if path in ("/", "/index.html"):
             index_path = config.STATIC_DIR / "index.html"
             self.serve_file(index_path, "text/html; charset=utf-8")
             return
 
-        # 2. 管理後台：視覺化多代理人儀表板 (/admin 或 /dashboard)
+        # 2. 管理後台：視覺化多代理人儀表板 (需要管理員密碼保護！)
         if path in ("/admin", "/dashboard", "/dashboard.html"):
+            if not self.check_auth():
+                return
             dashboard_path = config.STATIC_DIR / "dashboard.html"
             self.serve_file(dashboard_path, "text/html; charset=utf-8")
             return
 
-        # 3. 班級設定 API (/api/class-info?class_id=...)
+        # 3. 班級設定 API (/api/class-info?class_id=...) (公開)
         if path == "/api/class-info":
             cid = query_params.get("class_id", ["dawei_studio_01"])[0]
             class_info = config.get_class_info(cid)
             self.send_json(200, class_info)
             return
 
-        # 4. 靜態檔案 (/static/...)
+        # 4. 靜態檔案 (/static/...) (公開)
         if path.startswith("/static/"):
             rel_path = path[len("/static/"):]
             file_path = config.STATIC_DIR / rel_path
@@ -67,8 +98,10 @@ class SurveyHandler(BaseHTTPRequestHandler):
             self.serve_file(file_path, mime_type)
             return
 
-        # 5. 報告預覽與列印 (/report/html)
+        # 5. 報告預覽與列印 (/report/html) (需要管理員密碼保護！)
         if path == "/report/html":
+            if not self.check_auth():
+                return
             global current_state
             if not current_state.final_report_md:
                 current_state = orchestrator.run_pipeline(current_state)
@@ -83,8 +116,10 @@ class SurveyHandler(BaseHTTPRequestHandler):
             self.wfile.write(html_content.encode("utf-8"))
             return
 
-        # 6. 報告 Markdown 下載 (/report/markdown)
+        # 6. 報告 Markdown 下載 (/report/markdown) (需要管理員密碼保護！)
         if path == "/report/markdown":
+            if not self.check_auth():
+                return
             if not current_state.final_report_md:
                 current_state = orchestrator.run_pipeline(current_state)
             md_bytes = current_state.final_report_md.encode("utf-8")
@@ -96,18 +131,19 @@ class SurveyHandler(BaseHTTPRequestHandler):
             self.wfile.write(md_bytes)
             return
 
-        # 7. API: 統計資訊 (/api/stats)
+        # 7. API: 統計資訊 (/api/stats) (公開)
         if path == "/api/stats":
             stats = self.get_survey_stats()
             self.send_json(200, stats)
             return
 
-        # 8. API: 所有回應資料 (/api/responses)
+        # 8. API: 所有回應資料與名冊 (/api/responses) (嚴格保護：必須驗證管理員密碼！)
         if path == "/api/responses":
+            if not self.check_auth():
+                return
             responses = self.get_all_responses()
             self.send_json(200, {"count": len(responses), "data": responses})
             return
-
         self.send_error(404, "Not Found")
 
     def do_POST(self):
@@ -139,8 +175,10 @@ class SurveyHandler(BaseHTTPRequestHandler):
             })
             return
 
-        # 更新班級與問卷文案設定 (/api/update-class)
+        # 更新班級與問卷文案設定 (/api/update-class) (需要管理員密碼保護！)
         if parsed.path == "/api/update-class":
+            if not self.check_auth():
+                return
             content_length = int(self.headers.get("Content-Length", 0))
             body = self.rfile.read(content_length).decode("utf-8")
             try:
@@ -160,8 +198,10 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 self.send_json(400, {"status": "error", "message": str(e)})
             return
 
-        # 觸發多代理協同分析 (/api/analyze)
+        # 觸發多代理協同分析 (/api/analyze) (需要管理員密碼保護！)
         if parsed.path == "/api/analyze":
+            if not self.check_auth():
+                return
             if config.RESPONSES_CSV_PATH.exists():
                 current_state.df = pd.read_csv(config.RESPONSES_CSV_PATH)
             current_state = orchestrator.run_pipeline(current_state)

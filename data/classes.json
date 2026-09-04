@@ -3,23 +3,17 @@
   "classes": {
     "dawei_studio_01": {
       "class_id": "dawei_studio_01",
-      "course_name": "劉大維畫室直播課程",
-      "course_subtitle": "結業滿意度回饋 ＆ 線上單元課免費兌換",
       "badge_text": "🎁 結業回饋 ✕ 限時完課好禮",
+      "course_name": "直播課程",
+      "course_subtitle": "結業滿意度回饋 ＆ 線上單元課免費兌換",
       "gift_banner_title": "完課專屬好禮：任選一門線上單元課！",
-      "gift_banner_desc": "感謝您的認真學習，填寫完畢即可於文末免費勾選一門線上單元課，由後台統計專員專人聯繫為您開通！",
-      "pill_1": "⏱ 只需 90 秒",
-      "pill_2": "📱 手機極速點選",
-      "pill_3": "🎁 完填即贈單元課",
+      "gift_banner_desc": "感謝您的認真學習，填寫完畢即可於文末免費勾選一門線上單元課，將由客服聯繫為您開通！",
       "teacher_name": "劉大維",
       "organizer": "赫綵設計學院",
       "platform_name": "OKBOM直播平台",
-      "syllabus_topics": [
-        "單元 1：Procreate 核心介面與筆刷調配邏輯",
-        "單元 2：線稿構圖技巧與空間比例拆解",
-        "單元 3：光影明暗分階與正片疊底色彩邏輯",
-        "單元 4：質感紋理融合與風格化完稿實戰"
-      ],
+      "pill_1": "⏱ 只需 90 秒",
+      "pill_2": "📱 手機極速點選",
+      "pill_3": "🎁 完填即贈單元課",
       "reward_courses": [
         "單元課 A：【筆刷神技】Procreate 10大必學手勢與效率自訂筆刷 (市價 $1,200)",
         "單元課 B：【光影魔法】商業插畫光影氛圍感進階實戰 (市價 $1,500)",
