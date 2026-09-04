@@ -356,6 +356,8 @@
             🔗 複製本班問卷連結
           </button>
         </div>
+        <button id="syncCloudBtn" class="btn btn-secondary" style="border-color: #38bdf8; color: #38bdf8;" title="從 Render 雲端同步學員最新填答資料">☁️ 同步雲端填答</button>
+        <a id="cloudAdminLink" href="https://dawei-survey.onrender.com/admin" target="_blank" class="btn btn-secondary" style="border-color: #a855f7; color: #c084fc;">🌐 雲端正式後台</a>
         <a id="studentSurveyLink" href="/?class=dawei_studio_01" target="_blank" class="btn btn-secondary">📱 開啟學員問卷</a>
         <button id="runAnalysisBtn" class="btn btn-primary">🤖 執行多代理分析</button>
         <a href="/report/html" target="_blank" class="btn btn-secondary">📑 匯出診斷報告</a>
@@ -1242,6 +1244,33 @@
         bannerCopyBtn.addEventListener('click', () => {
           const classInfo = allClassesData[currentClassId] || {};
           copyClassLink(currentClassId, classInfo.course_name || '當前班級');
+        });
+      }
+
+      // 雲端同步按鈕 (僅在本機 localhost 顯示，雲端環境自動隱藏)
+      const syncBtn = document.getElementById('syncCloudBtn');
+      if (syncBtn) {
+        if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+          syncBtn.style.display = 'none';
+        }
+        syncBtn.addEventListener('click', async () => {
+          syncBtn.disabled = true;
+          syncBtn.textContent = '☁️ 同步中...';
+          try {
+            const res = await fetch('/api/sync-cloud', { method: 'POST' });
+            const data = await res.json();
+            if (data.status === 'success') {
+              alert(data.message);
+              await switchToClass(currentClassId, false);
+            } else {
+              alert('同步失敗：' + data.message);
+            }
+          } catch (e) {
+            alert('連線失敗，請檢查網路！');
+          } finally {
+            syncBtn.disabled = false;
+            syncBtn.textContent = '☁️ 同步雲端填答';
+          }
         });
       }
 

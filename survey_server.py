@@ -224,6 +224,41 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 self.send_json(400, {"status": "error", "message": str(e)})
             return
 
+        # 同步雲端回饋資料到本機 (/api/sync-cloud) (需要管理員密碼保護！)
+        if parsed.path == "/api/sync-cloud":
+            if not self.check_auth():
+                return
+            try:
+                import urllib.request, ssl, base64
+                ctx = ssl._create_unverified_context()
+                cloud_url = "https://dawei-survey.onrender.com/api/responses"
+                req = urllib.request.Request(cloud_url)
+                auth = base64.b64encode(f"{config.ADMIN_USERNAME}:{config.ADMIN_PASSWORD}".encode()).decode("ascii")
+                req.add_header("Authorization", f"Basic {auth}")
+                with urllib.request.urlopen(req, context=ctx, timeout=10) as resp:
+                    resp_data = json.loads(resp.read().decode("utf-8"))
+                    rows = resp_data.get("data", [])
+
+                fieldnames = [
+                    "timestamp", "class_id", "student_name", "phone", "line_id", "email",
+                    "prior_experience", "key_progress", "struggle_point", "instructor_rating",
+                    "instructor_comment", "course_rating", "ta_rating", "ta_comment",
+                    "platform_experience", "nps_score", "selected_reward_course", "wants_reward"
+                ]
+                with open(config.RESPONSES_CSV_PATH, "w", newline="", encoding="utf-8-sig") as f:
+                    writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
+                    writer.writeheader()
+                    for r in rows:
+                        writer.writerow(r)
+
+                if config.RESPONSES_CSV_PATH.exists():
+                    current_state.df = pd.read_csv(config.RESPONSES_CSV_PATH)
+
+                self.send_json(200, {"status": "success", "message": f"🎉 成功從雲端同步 {len(rows)} 筆最新填答！", "count": len(rows)})
+            except Exception as e:
+                self.send_json(500, {"status": "error", "message": f"同步失敗: {str(e)}"})
+            return
+
         # 觸發多代理協同分析 (/api/analyze) (需要管理員密碼保護！)
         if parsed.path == "/api/analyze":
             if not self.check_auth():
