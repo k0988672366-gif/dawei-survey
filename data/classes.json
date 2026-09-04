@@ -1,0 +1,56 @@
+{
+  "active_class_id": "dawei_studio_01",
+  "classes": {
+    "dawei_studio_01": {
+      "class_id": "dawei_studio_01",
+      "course_name": "劉大維畫室直播課程",
+      "course_subtitle": "結業滿意度回饋 ＆ 線上單元課免費兌換",
+      "badge_text": "🎁 結業回饋 ✕ 限時完課好禮",
+      "gift_banner_title": "完課專屬好禮：任選一門線上單元課！",
+      "gift_banner_desc": "感謝您的認真學習，填寫完畢即可於文末免費勾選一門線上單元課，由後台統計專員專人聯繫為您開通！",
+      "pill_1": "⏱ 只需 90 秒",
+      "pill_2": "📱 手機極速點選",
+      "pill_3": "🎁 完填即贈單元課",
+      "teacher_name": "劉大維",
+      "organizer": "赫綵設計學院",
+      "platform_name": "OKBOM直播平台",
+      "syllabus_topics": [
+        "單元 1：Procreate 核心介面與筆刷調配邏輯",
+        "單元 2：線稿構圖技巧與空間比例拆解",
+        "單元 3：光影明暗分階與正片疊底色彩邏輯",
+        "單元 4：質感紋理融合與風格化完稿實戰"
+      ],
+      "reward_courses": [
+        "單元課 A：【筆刷神技】Procreate 10大必學手勢與效率自訂筆刷 (市價 $1,200)",
+        "單元課 B：【光影魔法】商業插畫光影氛圍感進階實戰 (市價 $1,500)",
+        "單元課 C：【調色秘笈】色彩心理學與私房調色盤全解析 (市價 $1,200)",
+        "單元課 D：【動態人體】角色五官比例與肢體骨架速繪 (市價 $1,600)"
+      ]
+    },
+    "python_ai_01": {
+      "class_id": "python_ai_01",
+      "course_name": "Python 數據分析與 AI 實戰班",
+      "course_subtitle": "結業滿意度回饋 ＆ 免費單元課兌換領取",
+      "badge_text": "🚀 完課認證 ✕ 限時專屬好禮",
+      "gift_banner_title": "結業專屬：任選一門實戰單元課免費開通！",
+      "gift_banner_desc": "恭喜結業！請勾選想兌換之進階單元課，專員將於 24 小時內聯繫通知開通。",
+      "pill_1": "⏱ 快速評鑑",
+      "pill_2": "💻 實戰導向",
+      "pill_3": "🎁 完填送好禮",
+      "teacher_name": "Alex",
+      "organizer": "赫綵設計學院",
+      "platform_name": "OKBOM直播平台",
+      "syllabus_topics": [
+        "單元 1：Python 基礎語法與資料結構",
+        "單元 2：Pandas 數據清洗與統計分析",
+        "單元 3：數據視覺化與儀表板實戰",
+        "單元 4：AI 機器學習模型入門"
+      ],
+      "reward_courses": [
+        "單元課 A：【自動化】Python 辦公室 Excel 自動化實務 (市價 $1,200)",
+        "單元課 B：【爬蟲】網路爬蟲與輿情分析快打術 (市價 $1,500)",
+        "單元課 C：【AI 工具】Prompt 工程師效率倍增指南 (市價 $1,200)"
+      ]
+    }
+  }
+}

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>結業滿意度回饋 ＆ 線上單元課兌換領取</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="background-decor">
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+  </div>
+
+  <main class="container">
+    <!-- 頂部主視覺卡片 -->
+    <header class="header-card">
+      <div class="badge" id="badgeText">🎁 結業回饋 ✕ 限時完課好禮</div>
+      <h1 id="courseTitle">劉大維畫室 直播課程</h1>
+      <p class="subtitle" id="courseSubtitle">結業滿意度回饋 ＆ 線上單元課免費兌換</p>
+      
+      <div class="gift-banner">
+        <div class="gift-icon">🎓</div>
+        <div class="gift-info">
+          <strong id="giftBannerTitle">完課專屬好禮：任選一門線上單元課！</strong>
+          <span id="giftBannerDesc">感謝您的認真學習，填寫完畢即可於文末<strong>免費勾選一門線上單元課</strong>，由後台統計專員專人聯繫為您開通！</span>
+        </div>
+      </div>
+
+      <div class="meta-pills">
+        <span class="pill" id="pill1">⏱ 只需 90 秒</span>
+        <span class="pill" id="pill2">📱 手機極速點選</span>
+        <span class="pill" id="pill3">🎁 完填即贈單元課</span>
+      </div>
+    </header>
+
+    <!-- 問卷表單主體 -->
+    <form id="surveyForm">
+      <input type="hidden" name="class_id" id="classIdInput" value="dawei_studio_01">
+      
+      <!-- 區塊 1: 學習背景與收穫 -->
+      <section class="form-section">
+        <div class="section-title">
+          <span class="step-num">01</span>
+          <h3>學員起點與學習成效</h3>
+        </div>
+
+        <div class="question-group">
+          <label class="question-label">
+            1. 在上這門課前，您的先備基礎是？ <span class="req">*</span>
+          </label>
+          <div class="radio-cards" data-name="prior_experience">
+            <label class="radio-card">
+              <input type="radio" name="prior_experience" value="零基礎小白" required>
+              <div class="card-body">
+                <span class="emoji">🌱</span>
+                <strong>零基礎小白</strong>
+                <small>第一次接觸此領域，從零開始</small>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="prior_experience" value="偶爾自學新手">
+              <div class="card-body">
+                <span class="emoji">🎨</span>
+                <strong>偶爾自學新手</strong>
+                <small>懂基本操作，想建立系統化觀念</small>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="prior_experience" value="有一定基礎經驗">
+              <div class="card-body">
+                <span class="emoji">🚀</span>
+                <strong>有一定基礎經驗</strong>
+                <small>想強化進階技法與實戰應用</small>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="question-group">
+          <label class="question-label">
+            2. 結業後，您覺得自己最大的進步在哪些方面？（可複選，最多 2 項） <span class="req">*</span>
+          </label>
+          <div class="tag-selector" id="progressTags">
+            <button type="button" class="tag-btn" data-value="核心基礎邏輯更有信心">核心基礎邏輯更有信心 ✏️</button>
+            <button type="button" class="tag-btn" data-value="掌握核心實戰技巧">掌握核心實戰技巧 💡</button>
+            <button type="button" class="tag-btn" data-value="熟練工具與流程運用">熟練工具與流程運用 🎨</button>
+            <button type="button" class="tag-btn" data-value="順利完成獨立完整作品">順利完成獨立完整作品 🖼️</button>
+            <button type="button" class="tag-btn" data-value="建立持續深入學習熱情">建立持續深入學習熱情 ❤️</button>
+          </div>
+          <input type="hidden" name="key_progress" id="key_progress_input" required>
+        </div>
+
+        <div class="question-group">
+          <label class="question-label">
+            3. 整個學習過程中，您覺得哪部分最容易吃力或卡關？ <span class="req">*</span>
+          </label>
+          <div class="radio-list">
+            <label class="radio-item">
+              <input type="radio" name="struggle_point" value="課堂示範節奏偏快，來不及跟隨實作" required>
+              <span>課堂示範節奏偏快，來不及邊聽邊實作</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="struggle_point" value="進階觀念與原理較抽象，需要更多拆解說明">
+              <span>進階觀念與原理較抽象，需要更多拆解說明</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="struggle_point" value="作業實作時缺乏個別化延伸引導">
+              <span>作業實作時缺乏個別化延伸引導</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="struggle_point" value="進度與難度剛剛好，學習非常順暢！">
+              <span>進度與難度剛剛好，學習非常順暢！</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="struggle_point" value="其他">
+              <span>其他</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- 區塊 2: 講師教學回饋 -->
+      <section class="form-section">
+        <div class="section-title">
+          <span class="step-num">02</span>
+          <h3>授課講師評價</h3>
+        </div>
+
+        <div class="question-group">
+          <label class="question-label">
+            4. <span class="teacher-name-span">授課老師</span>的教學與實務示範滿意度 <span class="req">*</span>
+            <small class="hint">（包含觀念講授、實戰拆解、課堂答疑）</small>
+          </label>
+          <div class="star-rating" data-name="instructor_rating">
+            <button type="button" class="star-btn" data-val="1">★</button>
+            <button type="button" class="star-btn" data-val="2">★</button>
+            <button type="button" class="star-btn" data-val="3">★</button>
+            <button type="button" class="star-btn" data-val="4">★</button>
+            <button type="button" class="star-btn active" data-val="5">★</button>
+          </div>
+          <input type="hidden" name="instructor_rating" id="instructor_rating_input" value="5" required>
+          <div class="rating-text" id="instructor_rating_text">非常滿意 (5.0)</div>
+        </div>
+
+        <div class="question-group">
+          <label class="question-label">
+            5. 想對<span class="teacher-name-span">老師</span>說的話？（鼓勵、感謝或任何優化建議都可以）
+          </label>
+          <textarea name="instructor_comment" rows="3" placeholder="例如：最喜歡哪一堂課？哪一招技巧讓您收穫最多？或是希望老師在哪些章節再講細一點..."></textarea>
+        </div>
+      </section>
+
+      <!-- 區塊 3: 課綱、助教與平台體驗 -->
+      <section class="form-section">
+        <div class="section-title">
+          <span class="step-num">03</span>
+          <h3>課綱講義、助教與觀看體驗</h3>
+        </div>
+
+        <div class="question-group">
+          <label class="question-label">
+            6. 課程規劃課綱、教材講義與節奏滿意度 <span class="req">*</span>
+          </label>
+          <div class="star-rating" data-name="course_rating">
+            <button type="button" class="star-btn" data-val="1">★</button>
+            <button type="button" class="star-btn" data-val="2">★</button>
+            <button type="button" class="star-btn" data-val="3">★</button>
+            <button type="button" class="star-btn" data-val="4">★</button>
+            <button type="button" class="star-btn active" data-val="5">★</button>
+          </div>
+          <input type="hidden" name="course_rating" id="course_rating_input" value="5" required>
+          <div class="rating-text" id="course_rating_text">非常滿意 (5.0)</div>
+        </div>
+
+        <div class="question-group">
+          <label class="question-label">
+            7. 助教在課堂解答與課後陪伴的滿意度 <span class="req">*</span>
+            <small class="hint">（助教的即時回饋是否讓您更加安心學習？）</small>
+          </label>
+          <div class="star-rating" data-name="ta_rating">
+            <button type="button" class="star-btn" data-val="1">★</button>
+            <button type="button" class="star-btn" data-val="2">★</button>
+            <button type="button" class="star-btn" data-val="3">★</button>
+            <button type="button" class="star-btn" data-val="4">★</button>
+            <button type="button" class="star-btn active" data-val="5">★</button>
+          </div>
+          <input type="hidden" name="ta_rating" id="ta_rating_input" value="5" required>
+          <div class="rating-text" id="ta_rating_text">非常滿意 (5.0)</div>
+        </div>
+
+        <div class="question-group">
+          <label class="question-label">
+            8. 想對辛苦解惑的助教說些什麼話？
+          </label>
+          <textarea name="ta_comment" rows="2" placeholder="謝謝助教的耐心引導與批改，或是給助教的鼓勵..."></textarea>
+        </div>
+
+        <div class="question-group">
+          <label class="question-label">
+            9. 直播平台觀看與互動順暢度 <span class="req">*</span>
+          </label>
+          <div class="radio-cards horizontal" data-name="platform_experience">
+            <label class="radio-card compact">
+              <input type="radio" name="platform_experience" value="非常順暢清晰" required>
+              <div class="card-body">
+                <span class="emoji">🚀</span>
+                <strong>非常順暢清晰</strong>
+              </div>
+            </label>
+            <label class="radio-card compact">
+              <input type="radio" name="platform_experience" value="偶有小延遲但不影響">
+              <div class="card-body">
+                <span class="emoji">👌</span>
+                <strong>偶有延遲但可接受</strong>
+              </div>
+            </label>
+            <label class="radio-card compact">
+              <input type="radio" name="platform_experience" value="經常卡頓影響觀看">
+              <div class="card-body">
+                <span class="emoji">⚠️</span>
+                <strong>經常卡頓延遲</strong>
+              </div>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- 區塊 4: NPS 推薦意願 -->
+      <section class="form-section">
+        <div class="section-title">
+          <span class="step-num">04</span>
+          <h3>推薦意願評價 (NPS)</h3>
+        </div>
+
+        <div class="question-group">
+          <label class="question-label">
+            10. 您有多大意願向對此領域有興趣的朋友推薦這門課程？ <span class="req">*</span>
+            <small class="hint">（0 分為完全不推薦，10 分為強烈推薦）</small>
+          </label>
+          <div class="nps-scale" id="npsScale"></div>
+          <input type="hidden" name="nps_score" id="nps_score_input" value="10" required>
+          <div class="nps-label-row">
+            <span>0 完全不推薦</span>
+            <span class="nps-val-highlight" id="npsValDisplay">10 分 (強烈推薦 🔥)</span>
+            <span>10 強烈推薦</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 區塊 5: 【全新亮點】免費線上單元課兌換 (勾選) -->
+      <section class="form-section highlight-section">
+        <div class="section-title">
+          <span class="step-num" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">05</span>
+          <h3 style="color: #fbbf24;">🎁 完課專屬好禮：任選一門線上單元課兌換</h3>
+        </div>
+
+        <p class="reward-instruction">
+          恭喜完成本次培訓！請在下方<strong>勾選您想要兌換的線上單元課（任選 1 門）</strong>，送出問卷後，後台專員將依您留下的電話或 LINE 聯繫您發送兌換通知與開通上課權限！
+        </p>
+
+        <div class="question-group">
+          <label class="question-label" style="color: #fef08a;">
+            請勾選您欲免費兌換的線上單元課 <span class="req">*</span>
+          </label>
+          <div class="reward-course-list" id="rewardCourseList">
+            <!-- 由 JS 動態依班級設定載入，亦具備安全預設 -->
+            <label class="reward-card">
+              <input type="radio" name="selected_reward_course" value="單元課 A：【筆刷神技】Procreate 10大必學手勢與效率自訂筆刷" required checked>
+              <div class="reward-card-body">
+                <span class="badge-free">免費兌換</span>
+                <strong>單元課 A：【筆刷神技】Procreate 10大必學手勢與效率自訂筆刷</strong>
+                <small>市價 $1,200 ｜ 適合想倍增繪畫手速與自訂質感的學員</small>
+              </div>
+            </label>
+            <label class="reward-card">
+              <input type="radio" name="selected_reward_course" value="單元課 B：【光影魔法】商業插畫光影氛圍感進階實戰">
+              <div class="reward-card-body">
+                <span class="badge-free">免費兌換</span>
+                <strong>單元課 B：【光影魔法】商業插畫光影氛圍感進階實戰</strong>
+                <small>市價 $1,500 ｜ 適合想深化立體光影、晨昏夜景氛圍的學員</small>
+              </div>
+            </label>
+            <label class="reward-card">
+              <input type="radio" name="selected_reward_course" value="單元課 C：【調色秘笈】色彩心理學與私房調色盤全解析">
+              <div class="reward-card-body">
+                <span class="badge-free">免費兌換</span>
+                <strong>單元課 C：【調色秘笈】色彩心理學與私房調色盤全解析</strong>
+                <small>市價 $1,200 ｜ 適合想告別髒濁色調、掌握高級感配色的學員</small>
+              </div>
+            </label>
+            <label class="reward-card">
+              <input type="radio" name="selected_reward_course" value="單元課 D：【動態人體】角色五官比例與肢體骨架速繪">
+              <div class="reward-card-body">
+                <span class="badge-free">免費兌換</span>
+                <strong>單元課 D：【動態人體】角色五官比例與肢體骨架速繪</strong>
+                <small>市價 $1,600 ｜ 適合想突破人物生硬肢體、掌握生動態勢的學員</small>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="gift-reminder" style="margin-top: 18px;">
+          📞 <strong>專員聯繫通知資訊</strong>：請務必填寫正確的手機號碼與 LINE ID，以便行政專員聯繫您通知兌換與開通課程。
+        </div>
+
+        <div class="input-grid">
+          <div class="question-group">
+            <label class="question-label">您的稱呼／姓名 <span class="req">*</span></label>
+            <input type="text" name="student_name" class="text-input" placeholder="例如：陳小艾、Tom" required>
+          </div>
+          <div class="question-group">
+            <label class="question-label">手機號碼 (專員電話/簡訊聯繫) <span class="req">*</span></label>
+            <input type="tel" name="phone" class="text-input" placeholder="例如：0912-345-678" required>
+          </div>
+          <div class="question-group">
+            <label class="question-label">LINE ID (方便專員私訊聯繫) <span class="req">*</span></label>
+            <input type="text" name="line_id" class="text-input" placeholder="例如：line_user123" required>
+          </div>
+          <div class="question-group">
+            <label class="question-label">Email 電子信箱 (寄送開通信件) <span class="req">*</span></label>
+            <input type="email" name="email" class="text-input" placeholder="例如：name@example.com" required>
+          </div>
+        </div>
+      </section>
+
+      <!-- 提交按鈕 -->
+      <div class="submit-wrap">
+        <button type="submit" id="submitBtn" class="primary-btn">
+          <span>送出問卷 ＆ 申請線上單元課兌換 🎁</span>
+        </button>
+        <p class="security-note">🔒 我們嚴格保護您的個資，資訊僅用於教學檢討與本次單元課兌換聯繫</p>
+      </div>
+    </form>
+  </main>
+
+  <!-- 提交成功 ＆ 單元課兌換確認彈窗 -->
+  <div class="modal-backdrop" id="successModal">
+    <div class="modal-card">
+      <div class="confetti-icon">🎉</div>
+      <h2>問卷回饋與兌換申請已受理！</h2>
+      <p class="modal-sub">感謝您的認真填寫，您的寶貴意見將幫助教學團隊持續打磨更好的學習體驗 ✨</p>
+
+      <div class="gift-download-box">
+        <div class="gift-box-header">
+          <span class="badge-gold">已為您登記兌換</span>
+          <h4 id="modalRewardCourseName">單元課兌換登記完成</h4>
+        </div>
+        <p class="gift-desc">
+          後台統計專員將於 <strong>1~2 個工作天內</strong>，透過您留下的 <strong>手機或 LINE</strong> 與您聯繫確認，並開通線上單元課觀看權限！
+        </p>
+        <div style="background: rgba(255,255,255,0.08); padding: 10px; border-radius: 8px; font-size: 0.82rem; color: #a5b4fc;">
+          🔔 請留意近期來自學院助教專員的 LINE 或電話通知唷！
+        </div>
+      </div>
+
+      <button type="button" class="close-modal-btn" id="closeModalBtn">我知道了，關閉頁面</button>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
