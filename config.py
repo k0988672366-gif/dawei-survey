@@ -77,6 +77,8 @@ STREAMLIT_PORT = int(os.getenv("STREAMLIT_PORT", 8501))
 
 # 後台安全密碼 (保護學員電話、LINE ID 不外洩)
 ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "art888")
+
 # Gemini AI 配置
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 _env_path = BASE_DIR / ".env"
