@@ -730,6 +730,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       initCharts();
+      loadStats();
       loadResponsesData();
       initEvents();
     });
@@ -741,13 +742,35 @@
       event.target.classList.add('active');
     }
 
-    async function loadResponsesData() {
+    async function loadStats(classId) {
       try {
-        const res = await fetch('/api/responses');
+        const url = classId ? `/api/stats?class_id=${classId}` : '/api/stats';
+        const res = await fetch(url);
+        const stats = await res.json();
+        if (stats) {
+          document.getElementById('kpiCount').textContent = stats.total_count || 0;
+          document.getElementById('kpiNps').textContent = (stats.nps >= 0 ? '+' : '') + (stats.nps || 0);
+          document.getElementById('kpiInst').textContent = (stats.avg_instructor || 0) + ' ★';
+        }
+      } catch (e) {
+        console.error('Failed to load stats:', e);
+      }
+    }
+
+    async function loadResponsesData(classId) {
+      try {
+        const url = classId ? `/api/responses?class_id=${classId}` : '/api/responses';
+        const res = await fetch(url);
         const json = await res.json();
         allResponsesData = json.data || [];
         renderRedemptionTable(allResponsesData);
-        updateRewardChart(allResponsesData);
+        
+        // 更新有效兌換登記數 KPI
+        const rewardCount = allResponsesData.filter(r => r.selected_reward_course && r.selected_reward_course !== '無需兌換好禮').length;
+        document.getElementById('kpiRewards').textContent = `${rewardCount} 門`;
+
+        // 即時動態繪製所有圖表
+        updateAllCharts(allResponsesData);
       } catch (e) {
         console.error('Failed to load responses:', e);
       }
@@ -757,45 +780,119 @@
       const tbody = document.getElementById('redemptionTbody');
       tbody.innerHTML = '';
       if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#94a3b8;">目前尚無兌換資料</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#94a3b8; padding: 24px;">目前尚無填答或兌換資料，等待學員填寫中</td></tr>';
         return;
       }
 
       data.forEach((row, i) => {
         const tr = document.createElement('tr');
-        const course = row.selected_reward_course || '單元課 B：商業插畫光影氛圍實戰';
-        const phone = row.phone || '0912-345-67' + (i % 10);
-        const line = row.line_id || (row.student_name ? row.student_name.toLowerCase() + '_art' : 'line_user');
+        const wants = row.wants_reward !== 'no';
+        const course = wants ? (row.selected_reward_course || '單元課') : '無需兌換 (純回饋)';
+        const phone = wants ? (row.phone || '-') : '-';
+        const line = wants ? (row.line_id || '-') : '-';
+        const name = row.student_name || (wants ? '學員' : '匿名學員');
+        const statusBadge = wants 
+          ? '<span class="status-badge">待通知開通</span>' 
+          : '<span class="status-badge" style="background:rgba(148,163,184,0.2); color:#94a3b8; border-color:rgba(148,163,184,0.3);">純意見回饋</span>';
         
         tr.innerHTML = `
           <td style="color:#94a3b8; font-size:0.8rem;">${row.timestamp || '2026-09-04 12:00'}</td>
-          <td style="font-weight:600; color:#fff;">${row.student_name || '學員'}</td>
+          <td style="font-weight:600; color:#fff;">${name}</td>
           <td style="color:#38bdf8;">${phone}</td>
           <td style="color:#a5b4fc;">${line}</td>
           <td style="color:#94a3b8;">${row.email || '-'}</td>
-          <td><span class="badge-course">${course}</span></td>
-          <td><span class="status-badge">待通知開通</span></td>
+          <td><span class="badge-course" style="${!wants ? 'background:rgba(148,163,184,0.1); color:#94a3b8;' : ''}">${course}</span></td>
+          <td>${statusBadge}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    function updateRewardChart(data) {
-      const counts = {};
-      data.forEach(r => {
-        const c = r.selected_reward_course || '單元課 B：光影氛圍實戰';
-        counts[c] = (counts[c] || 0) + 1;
-      });
+    function updateAllCharts(data) {
+      if (!radarChart || !rewardChart || !expChart || !struggleChart) return;
 
-      const labels = Object.keys(counts).length > 0 ? Object.keys(counts) : [
-        '單元課 B：光影氛圍實戰', '單元課 A：筆刷神技手勢', '單元課 C：色彩心理學', '單元課 D：動態人體肢體'
-      ];
-      const values = Object.keys(counts).length > 0 ? Object.values(counts) : [18, 14, 8, 5];
+      if (!data || data.length === 0) {
+        radarChart.data.datasets[0].data = [0, 0, 0, 0, 0];
+        radarChart.update();
 
-      if (rewardChart) {
-        rewardChart.data.labels = labels.map(l => l.length > 15 ? l.substring(0, 14) + '...' : l);
-        rewardChart.data.datasets[0].data = values;
+        rewardChart.data.labels = ['尚無兌換'];
+        rewardChart.data.datasets[0].data = [0];
         rewardChart.update();
+
+        expChart.data.labels = ['暫無資料'];
+        expChart.data.datasets[0].data = [1];
+        expChart.data.datasets[0].backgroundColor = ['rgba(255,255,255,0.06)'];
+        expChart.update();
+
+        struggleChart.data.labels = ['暫無資料'];
+        struggleChart.data.datasets[0].data = [0];
+        struggleChart.update();
+        return;
+      }
+
+      // 1. 雷達圖
+      let instSum = 0, courseSum = 0, taSum = 0, platSum = 0, npsSum = 0;
+      data.forEach(r => {
+        instSum += parseFloat(r.instructor_rating || 5);
+        courseSum += parseFloat(r.course_rating || 5);
+        taSum += parseFloat(r.ta_rating || 5);
+        platSum += (r.platform_experience === '非常順暢清晰' ? 5 : (r.platform_experience === '偶有延遲但可接受' ? 4 : 3));
+        npsSum += (parseFloat(r.nps_score || 10) / 2);
+      });
+      const len = data.length;
+      radarChart.data.datasets[0].data = [
+        (instSum / len).toFixed(2),
+        (courseSum / len).toFixed(2),
+        (taSum / len).toFixed(2),
+        (platSum / len).toFixed(2),
+        (npsSum / len).toFixed(2)
+      ];
+      radarChart.update();
+
+      // 2. 單元課兌換需求
+      const rewardCounts = {};
+      data.forEach(r => {
+        if (r.selected_reward_course && r.selected_reward_course !== '無需兌換好禮') {
+          rewardCounts[r.selected_reward_course] = (rewardCounts[r.selected_reward_course] || 0) + 1;
+        }
+      });
+      const rLabels = Object.keys(rewardCounts);
+      const rVals = Object.values(rewardCounts);
+      if (rLabels.length > 0) {
+        rewardChart.data.labels = rLabels.map(l => l.length > 15 ? l.substring(0, 14) + '...' : l);
+        rewardChart.data.datasets[0].data = rVals;
+        rewardChart.update();
+      } else {
+        rewardChart.data.labels = ['尚無兌換'];
+        rewardChart.data.datasets[0].data = [0];
+        rewardChart.update();
+      }
+
+      // 3. 先備經驗圓餅圖
+      const expCounts = {};
+      data.forEach(r => {
+        if (r.prior_experience) {
+          expCounts[r.prior_experience] = (expCounts[r.prior_experience] || 0) + 1;
+        }
+      });
+      if (Object.keys(expCounts).length > 0) {
+        expChart.data.labels = Object.keys(expCounts);
+        expChart.data.datasets[0].data = Object.values(expCounts);
+        expChart.data.datasets[0].backgroundColor = ['#6366f1', '#ec4899', '#f59e0b', '#10b981'];
+        expChart.update();
+      }
+
+      // 4. 卡關點長條圖
+      const struggleCounts = {};
+      data.forEach(r => {
+        if (r.struggle_point) {
+          struggleCounts[r.struggle_point] = (struggleCounts[r.struggle_point] || 0) + 1;
+        }
+      });
+      if (Object.keys(struggleCounts).length > 0) {
+        struggleChart.data.labels = Object.keys(struggleCounts).map(s => s.length > 12 ? s.substring(0, 11) + '...' : s);
+        struggleChart.data.datasets[0].data = Object.values(struggleCounts);
+        struggleChart.update();
       }
     }
 
@@ -926,7 +1023,8 @@
         const cid = e.target.value;
         document.getElementById('studentSurveyLink').href = `/?class=${cid}`;
         loadClassConfigToEditor(cid);
-        alert(`已切換至【${e.target.options[e.target.selectedIndex].text}】！文案編輯器與問卷已同步更新。`);
+        loadResponsesData(cid);
+        loadStats(cid);
       });
 
       // 儲存文案設定

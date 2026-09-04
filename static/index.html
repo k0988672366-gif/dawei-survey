@@ -253,10 +253,36 @@
             <span>10 強烈推薦</span>
           </div>
         </div>
+
+        <!-- 結業好禮兌換意願 -->
+        <div class="question-group" style="margin-top: 24px; padding-top: 20px; border-top: 1px dashed rgba(255, 255, 255, 0.1);">
+          <label class="question-label">
+            11. 您是否想要免費兌換一門「線上單元課」結業好禮？ <span class="req">*</span>
+            <small class="hint">（勾選「想兌換」再填寫專員開通聯繫資訊即可）</small>
+          </label>
+          <div class="radio-cards horizontal" data-name="wants_reward" id="wantsRewardGroup">
+            <label class="radio-card compact active-reward" id="wantsYesLabel" style="border: 1px solid rgba(245, 158, 11, 0.5); background: rgba(245, 158, 11, 0.08);">
+              <input type="radio" name="wants_reward" value="yes" checked required>
+              <div class="card-body">
+                <span class="emoji">🎁</span>
+                <strong>我想免費兌換好禮</strong>
+                <small style="color: #fbbf24;">自由任選一門單元課</small>
+              </div>
+            </label>
+            <label class="radio-card compact" id="wantsNoLabel">
+              <input type="radio" name="wants_reward" value="no">
+              <div class="card-body">
+                <span class="emoji">🚀</span>
+                <strong>無需兌換，直接送出</strong>
+                <small>免填個人聯絡資料</small>
+              </div>
+            </label>
+          </div>
+        </div>
       </section>
 
       <!-- 區塊 5: 【全新亮點】免費線上單元課兌換 (勾選) -->
-      <section class="form-section highlight-section">
+      <section class="form-section highlight-section" id="rewardRedemptionSection">
         <div class="section-title">
           <span class="step-num" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">05</span>
           <h3 style="color: #fbbf24;">🎁 完課專屬好禮：任選一門線上單元課兌換</h3>
@@ -359,10 +385,10 @@
   <div class="modal-backdrop" id="successModal">
     <div class="modal-card">
       <div class="confetti-icon">🎉</div>
-      <h2>問卷回饋與兌換申請已受理！</h2>
-      <p class="modal-sub">感謝您的認真填寫，您的寶貴意見將幫助教學團隊持續打磨更好的學習體驗 ✨</p>
+      <h2 id="modalTitle">問卷回饋與兌換申請已受理！</h2>
+      <p class="modal-sub" id="modalSub">感謝您的認真填寫，您的寶貴意見將幫助教學團隊持續打磨更好的學習體驗 ✨</p>
 
-      <div class="gift-download-box">
+      <div class="gift-download-box" id="modalGiftBox">
         <div class="gift-box-header">
           <span class="badge-gold">已為您登記兌換</span>
           <h4 id="modalRewardCourseName">單元課兌換登記完成</h4>

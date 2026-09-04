@@ -144,17 +144,23 @@ class SurveyHandler(BaseHTTPRequestHandler):
             self.wfile.write(md_bytes)
             return
 
-        # 7. API: 統計資訊 (/api/stats) (公開)
+        # 7. API: 統計資訊 (/api/stats?class_id=...) (公開)
         if path == "/api/stats":
-            stats = self.get_survey_stats()
+            cid = query_params.get("class_id", [None])[0]
+            if cid == "":
+                cid = None
+            stats = self.get_survey_stats(class_id=cid)
             self.send_json(200, stats)
             return
 
-        # 8. API: 所有回應資料與名冊 (/api/responses) (嚴格保護：必須驗證管理員密碼！)
+        # 8. API: 所有回應資料與名冊 (/api/responses?class_id=...) (嚴格保護：必須驗證管理員密碼！)
         if path == "/api/responses":
             if not self.check_auth():
                 return
-            responses = self.get_all_responses()
+            cid = query_params.get("class_id", [None])[0]
+            if cid == "":
+                cid = None
+            responses = self.get_all_responses(class_id=cid)
             self.send_json(200, {"count": len(responses), "data": responses})
             return
         self.send_error(404, "Not Found")
@@ -174,6 +180,13 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 return
 
             data["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            if data.get("wants_reward") == "no":
+                data["student_name"] = data.get("student_name") or "匿名學員"
+                data["selected_reward_course"] = "無需兌換 (純回饋)"
+                data["phone"] = ""
+                data["line_id"] = ""
+                data["email"] = ""
+
             self.append_to_csv(data)
 
             try:
@@ -344,7 +357,7 @@ class SurveyHandler(BaseHTTPRequestHandler):
             "timestamp", "class_id", "student_name", "phone", "line_id", "email",
             "prior_experience", "key_progress", "struggle_point", "instructor_rating", 
             "instructor_comment", "course_rating", "ta_rating", "ta_comment", 
-            "platform_experience", "nps_score", "selected_reward_course"
+            "platform_experience", "nps_score", "selected_reward_course", "wants_reward"
         ]
         file_exists = file_path.exists()
         
@@ -354,7 +367,7 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 writer.writeheader()
             writer.writerow(row_dict)
 
-    def get_all_responses(self):
+    def get_all_responses(self, class_id=None):
         file_path = config.RESPONSES_CSV_PATH
         if not file_path.exists():
             return []
@@ -362,11 +375,13 @@ class SurveyHandler(BaseHTTPRequestHandler):
         with open(file_path, mode="r", encoding="utf-8-sig") as f:
             reader = csv.DictReader(f)
             for r in reader:
+                if class_id and r.get("class_id") and r.get("class_id") != class_id:
+                    continue
                 rows.append(r)
         return rows
 
-    def get_survey_stats(self):
-        responses = self.get_all_responses()
+    def get_survey_stats(self, class_id=None):
+        responses = self.get_all_responses(class_id=class_id)
         count = len(responses)
         if count == 0:
             return {"total_count": 0, "nps": 0, "avg_instructor": 0, "avg_course": 0, "avg_ta": 0}

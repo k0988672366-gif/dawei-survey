@@ -11,7 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // 4. 初始化標籤選擇器 (Progress tags)
   initTagSelectors();
 
-  // 5. 表單提交處理
+  // 5. 初始化好禮兌換動態展開切換
+  initRewardToggle();
+
+  // 6. 表單提交處理
   initFormSubmit();
 });
 
@@ -230,12 +233,86 @@ function initTagSelectors() {
   }
 }
 
+// 初始化是否兌換好禮之動態展開/折疊
+function initRewardToggle() {
+  const wantsRadios = document.querySelectorAll('input[name="wants_reward"]');
+  const rewardSection = document.getElementById('rewardRedemptionSection');
+  const submitBtn = document.getElementById('submitBtn');
+  const yesLabel = document.getElementById('wantsYesLabel');
+  const noLabel = document.getElementById('wantsNoLabel');
+  
+  if (!wantsRadios.length || !rewardSection) return;
+
+  const requiredFields = [
+    'input[name="student_name"]',
+    'input[name="phone"]',
+    'input[name="line_id"]',
+    'input[name="email"]',
+    'input[name="privacy_agree"]'
+  ];
+
+  function updateVisibility() {
+    const selectedVal = document.querySelector('input[name="wants_reward"]:checked')?.value || 'yes';
+    if (selectedVal === 'no') {
+      rewardSection.style.display = 'none';
+      if (yesLabel) {
+        yesLabel.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+        yesLabel.style.background = 'rgba(255, 255, 255, 0.03)';
+      }
+      if (noLabel) {
+        noLabel.style.borderColor = 'rgba(99, 102, 241, 0.6)';
+        noLabel.style.background = 'rgba(99, 102, 241, 0.15)';
+      }
+      // 移除必填限制
+      requiredFields.forEach(sel => {
+        const el = rewardSection.querySelector(sel);
+        if (el) el.removeAttribute('required');
+      });
+      const courseRadios = rewardSection.querySelectorAll('input[name="selected_reward_course"]');
+      courseRadios.forEach(r => r.removeAttribute('required'));
+
+      if (submitBtn) {
+        submitBtn.innerHTML = '<span>🚀 送出結業回饋問卷</span>';
+      }
+    } else {
+      rewardSection.style.display = 'block';
+      if (yesLabel) {
+        yesLabel.style.borderColor = 'rgba(245, 158, 11, 0.5)';
+        yesLabel.style.background = 'rgba(245, 158, 11, 0.08)';
+      }
+      if (noLabel) {
+        noLabel.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+        noLabel.style.background = 'rgba(255, 255, 255, 0.03)';
+      }
+      // 恢復必填限制
+      requiredFields.forEach(sel => {
+        const el = rewardSection.querySelector(sel);
+        if (el) el.setAttribute('required', 'required');
+      });
+      const courseRadios = rewardSection.querySelectorAll('input[name="selected_reward_course"]');
+      courseRadios.forEach(r => r.setAttribute('required', 'required'));
+
+      if (submitBtn) {
+        submitBtn.innerHTML = '<span>🎁 登記兌換 ＆ 送出結業問卷</span>';
+      }
+    }
+  }
+
+  wantsRadios.forEach(r => {
+    r.addEventListener('change', updateVisibility);
+  });
+  updateVisibility();
+}
+
 // 表單提交與好禮彈窗處理
 function initFormSubmit() {
   const form = document.getElementById('surveyForm');
   const submitBtn = document.getElementById('submitBtn');
   const modal = document.getElementById('successModal');
   const closeModalBtn = document.getElementById('closeModalBtn');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalSub = document.getElementById('modalSub');
+  const modalGiftBox = document.getElementById('modalGiftBox');
   const modalRewardCourseName = document.getElementById('modalRewardCourseName');
 
   if (!form) return;
@@ -255,8 +332,19 @@ function initFormSubmit() {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
+    const wantsReward = data.wants_reward !== 'no';
+    if (!wantsReward) {
+      data.student_name = data.student_name || '匿名學員';
+      data.selected_reward_course = '無需兌換好禮';
+      data.phone = '';
+      data.line_id = '';
+      data.email = '';
+    }
+
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span>🚀 兌換申請送出中...</span>';
+    submitBtn.innerHTML = wantsReward 
+      ? '<span>🚀 兌換申請送出中...</span>' 
+      : '<span>🚀 問卷送出中...</span>';
 
     try {
       const response = await fetch('/api/submit', {
@@ -268,15 +356,25 @@ function initFormSubmit() {
       const result = await response.json();
 
       if (response.ok && result.status === 'success') {
-        // 設定彈窗中的兌換單元課名稱
-        if (modalRewardCourseName && data.selected_reward_course) {
-          modalRewardCourseName.textContent = data.selected_reward_course;
+        if (!wantsReward) {
+          if (modalTitle) modalTitle.textContent = '🎉 問卷回饋已成功送出！';
+          if (modalSub) modalSub.textContent = '非常感謝您撥冗填寫寶貴意見，您的回饋將幫助教學團隊持續打磨更好的學習體驗 ✨';
+          if (modalGiftBox) modalGiftBox.style.display = 'none';
+        } else {
+          if (modalTitle) modalTitle.textContent = '🎉 問卷回饋與兌換申請已受理！';
+          if (modalSub) modalSub.textContent = '感謝您的認真填寫，您的寶貴意見將幫助教學團隊持續打磨更好的學習體驗 ✨';
+          if (modalGiftBox) modalGiftBox.style.display = 'block';
+          if (modalRewardCourseName && data.selected_reward_course) {
+            modalRewardCourseName.textContent = data.selected_reward_course;
+          }
         }
         modal.classList.add('show');
       } else {
         alert(result.message || '提交時遇到問題，請再試一次！');
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span>送出問卷 ＆ 申請線上單元課兌換 🎁</span>';
+        submitBtn.innerHTML = wantsReward 
+          ? '<span>🎁 登記兌換 ＆ 送出結業問卷</span>'
+          : '<span>🚀 送出結業回饋問卷</span>';
       }
     } catch (err) {
       console.error('Submit error:', err);
