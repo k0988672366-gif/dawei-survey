@@ -11,6 +11,7 @@ import pandas as pd
 import config
 from core.state import SurveyAnalysisState
 from core.orchestrator import SurveyOrchestrator
+from core.agents.syllabus_agent import SyllabusSurveyAgent
 from utils.exporter import export_html
 
 # 全域共用分析狀態實例
@@ -19,6 +20,7 @@ current_state = SurveyAnalysisState(
     organizer=config.ORGANIZER
 )
 orchestrator = SurveyOrchestrator()
+syllabus_agent = SyllabusSurveyAgent()
 
 if config.RESPONSES_CSV_PATH.exists():
     try:
@@ -78,9 +80,20 @@ class SurveyHandler(BaseHTTPRequestHandler):
 
         # 3. 班級設定 API (/api/class-info?class_id=...) (公開)
         if path == "/api/class-info":
-            cid = query_params.get("class_id", ["dawei_studio_01"])[0]
+            cid = query_params.get("class_id", [None])[0]
+            if cid == "":
+                cid = None
             class_info = config.get_class_info(cid)
             self.send_json(200, class_info)
+            return
+
+        # 3.1 班級清單 API (/api/classes-list)
+        if path == "/api/classes-list":
+            cfg = config.load_classes_config()
+            self.send_json(200, {
+                "active_class_id": cfg.get("active_class_id", "dawei_studio_01"),
+                "classes": cfg.get("classes", {})
+            })
             return
 
         # 4. 靜態檔案 (/static/...) (公開)
@@ -227,6 +240,76 @@ class SurveyHandler(BaseHTTPRequestHandler):
 
             answer = orchestrator.ask_advisor(question, current_state)
             self.send_json(200, {"status": "success", "answer": answer})
+            return
+
+        # AI 課綱解析與問卷生成 (/api/generate-from-syllabus) (需要管理員密碼保護！)
+        if parsed.path == "/api/generate-from-syllabus":
+            if not self.check_auth():
+                return
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length).decode("utf-8")
+            try:
+                payload = json.loads(body)
+                pdf_base64 = payload.get("pdf_base64", "")
+                syllabus_text = payload.get("syllabus_text", "")
+                hints = {
+                    "course_name": payload.get("course_name", ""),
+                    "teacher_name": payload.get("teacher_name", ""),
+                    "organizer": payload.get("organizer", "")
+                }
+
+                if pdf_base64:
+                    raw_pdf_bytes = base64.b64decode(pdf_base64)
+                    extracted = syllabus_agent.extract_text_from_pdf(raw_pdf_bytes)
+                    if extracted:
+                        syllabus_text = extracted + ("\n\n" + syllabus_text if syllabus_text else "")
+
+                if not syllabus_text.strip():
+                    self.send_json(400, {"status": "error", "message": "未能由上傳檔案或輸入中讀取到課綱文字，請確認 PDF 是否含文字或直接貼上大綱"})
+                    return
+
+                generated_config = syllabus_agent.generate_survey_config(syllabus_text, hints)
+                self.send_json(200, {
+                    "status": "success",
+                    "preview": generated_config,
+                    "extracted_text_preview": syllabus_text[:300] + ("..." if len(syllabus_text) > 300 else "")
+                })
+            except Exception as e:
+                self.send_json(500, {"status": "error", "message": f"AI 課綱分析處理異常: {str(e)}"})
+            return
+
+        # 套用課綱生成問卷 (/api/apply-syllabus-survey) (需要管理員密碼保護！)
+        if parsed.path == "/api/apply-syllabus-survey":
+            if not self.check_auth():
+                return
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length).decode("utf-8")
+            try:
+                new_class_data = json.loads(body)
+                cid = new_class_data.get("class_id") or f"class_{int(datetime.now().timestamp())}"
+                new_class_data["class_id"] = cid
+
+                cfg = config.load_classes_config()
+                if "classes" not in cfg:
+                    cfg["classes"] = {}
+                cfg["classes"][cid] = new_class_data
+                cfg["active_class_id"] = cid
+
+                with open(config.CLASSES_JSON_PATH, "w", encoding="utf-8") as f:
+                    json.dump(cfg, f, ensure_ascii=False, indent=2)
+
+                # 更新全域狀態之課程與機構名稱
+                current_state.course_name = new_class_data.get("course_name", current_state.course_name)
+                current_state.organizer = new_class_data.get("organizer", current_state.organizer)
+
+                self.send_json(200, {
+                    "status": "success",
+                    "message": f"🎉 課綱問卷「{new_class_data.get('course_name')}」已成功發布！",
+                    "class_id": cid,
+                    "survey_url": f"/?class={cid}"
+                })
+            except Exception as e:
+                self.send_json(400, {"status": "error", "message": str(e)})
             return
 
         self.send_error(404, "Endpoint Not Found")

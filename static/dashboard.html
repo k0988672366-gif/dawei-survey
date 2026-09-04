@@ -278,6 +278,65 @@
       display: none;
       white-space: pre-wrap;
     }
+
+    /* 課綱上傳與 AI 生成區塊 */
+    .dropzone-box {
+      border: 2px dashed rgba(99, 102, 241, 0.4);
+      border-radius: var(--radius);
+      padding: 36px 20px;
+      text-align: center;
+      background: rgba(99, 102, 241, 0.04);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      margin-bottom: 20px;
+    }
+    .dropzone-box:hover, .dropzone-box.dragover {
+      border-color: var(--primary-light);
+      background: rgba(99, 102, 241, 0.1);
+      transform: scale(1.005);
+    }
+    .dropzone-icon { font-size: 2.8rem; margin-bottom: 8px; }
+    .dropzone-text { font-size: 1.05rem; font-weight: 600; color: #fff; margin-bottom: 4px; }
+    .dropzone-sub { font-size: 0.85rem; color: var(--text-muted); }
+    
+    .ai-steps-box {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .ai-step-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      font-size: 0.92rem;
+      color: #94a3b8;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .ai-step-item:last-child { border-bottom: none; }
+    .ai-step-item.active { color: #818cf8; font-weight: 600; }
+    .ai-step-item.done { color: #10b981; }
+    .step-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .ai-step-item.active .step-dot {
+      background: #818cf8;
+      box-shadow: 0 0 10px #818cf8;
+      animation: pulseDot 1s infinite alternate;
+    }
+    .ai-step-item.done .step-dot { background: #10b981; }
+    @keyframes pulseDot {
+      from { transform: scale(0.8); opacity: 0.6; }
+      to { transform: scale(1.3); opacity: 1; }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
@@ -327,6 +386,7 @@
     <div class="nav-tabs">
       <button class="tab-btn active" onclick="switchTab('analyticsTab')">📊 多代理數據診斷與圖表</button>
       <button class="tab-btn" onclick="switchTab('redemptionTab')">🎁 單元課兌換專員聯繫名單 (待處理)</button>
+      <button class="tab-btn" onclick="switchTab('syllabusAiTab')" style="background: rgba(99, 102, 241, 0.16); border: 1px solid rgba(99, 102, 241, 0.45); color: #a5b4fc;">📄 課綱 AI 一鍵生成問卷</button>
       <button class="tab-btn" onclick="switchTab('editClassTab')">⚙️ 班級與問卷文案自訂編輯</button>
       <button class="tab-btn" onclick="switchTab('advisorTab')">💡 AI 問卷即席諮詢顧問</button>
     </div>
@@ -515,6 +575,136 @@
 單元課 D：【動態人體】角色五官比例與肢體骨架速繪 (市價 $1,600)</textarea>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- TAB: 課綱 AI 一鍵生成問卷 -->
+    <div id="syllabusAiTab" class="tab-content">
+      <div class="table-card">
+        <div style="margin-bottom: 20px;">
+          <h2 style="font-size: 1.2rem; color: #fff; display: flex; align-items: center; gap: 8px;">
+            <span>📄</span> 課綱 PDF 智慧研讀 ✕ AI 多代理問卷自動生成
+            <span class="badge-qw" style="background: rgba(99, 102, 241, 0.2); color: #818cf8;">Agent 8: 教學問卷規劃師</span>
+          </h2>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 6px;">
+            直接上傳任何班級或新課程的<strong>課綱 PDF</strong>（或貼上大綱文字），AI 會自動研讀單元架構，為該課程量身規劃高完填率的結業問卷、單元痛點檢測題組、以及最具吸引力的「完課免費兌換線上單元課」！
+          </p>
+        </div>
+
+        <!-- 檔案拖曳區 -->
+        <div class="dropzone-box" id="pdfDropzone">
+          <input type="file" id="syllabusPdfInput" accept=".pdf" style="display: none;">
+          <div class="dropzone-icon">📥</div>
+          <div class="dropzone-text" id="dropzoneText">點擊此處選擇課綱 PDF，或直接將檔案拖曳至此處</div>
+          <div class="dropzone-sub" id="dropzoneSub">支援標準 .pdf 課綱檔案格式（自動解析文字與章節架構）</div>
+          <div id="selectedPdfBadge" style="display: none; margin-top: 12px; align-items: center; justify-content: center; gap: 8px;">
+            <span style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; padding: 6px 14px; border-radius: 20px; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 6px;">
+              <span>📄</span> <strong id="selectedPdfName">course_syllabus.pdf</strong>
+              <button type="button" id="clearPdfBtn" style="background:none; border:none; color:#f87171; cursor:pointer; font-weight:bold; margin-left:6px;">✕ 移除</button>
+            </span>
+          </div>
+        </div>
+
+        <!-- 輔助資訊欄位 -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 16px;">
+          <div>
+            <label style="font-size: 0.85rem; color: #94a3b8; display: block; margin-bottom: 4px;">課程名稱（選填，留空由 AI 自動從課綱擷取）</label>
+            <input type="text" id="aiCourseName" class="chat-input" placeholder="例如：劉大維商業插畫實戰直播班">
+          </div>
+          <div>
+            <label style="font-size: 0.85rem; color: #94a3b8; display: block; margin-bottom: 4px;">授課講師姓名（選填，留空由 AI 自動識別）</label>
+            <input type="text" id="aiTeacherName" class="chat-input" placeholder="例如：劉大維">
+          </div>
+          <div>
+            <label style="font-size: 0.85rem; color: #94a3b8; display: block; margin-bottom: 4px;">主辦機構</label>
+            <input type="text" id="aiOrganizer" class="chat-input" value="赫綵設計學院">
+          </div>
+        </div>
+
+        <!-- 貼上文字備用區 -->
+        <details style="margin-bottom: 20px; background: rgba(0,0,0,0.2); border: 1px solid var(--card-border); border-radius: 8px; padding: 10px 14px;">
+          <summary style="font-size: 0.85rem; color: #a5b4fc; cursor: pointer; font-weight: 500;">
+            ✏️ 若手邊暫無 PDF 檔案，也可點此展開直接貼上課綱大綱文字
+          </summary>
+          <div style="margin-top: 10px;">
+            <textarea id="aiSyllabusText" rows="4" class="chat-input" style="height: auto; width: 100%;" placeholder="可貼上每週章節、教學單元、核心示範目標..."></textarea>
+          </div>
+        </details>
+
+        <!-- 啟動按鈕 -->
+        <div style="text-align: right;">
+          <button id="startAiGenBtn" class="btn btn-primary" style="padding: 12px 28px; font-size: 1rem;">
+            🚀 啟動 AI 課綱分析與問卷生成
+          </button>
+        </div>
+
+        <!-- AI 進度步驟模擬動畫 -->
+        <div class="ai-steps-box" id="aiGenProgress" style="display: none;">
+          <div style="font-size: 0.95rem; font-weight: 600; color: #fff; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+            <span style="display:inline-block; width:14px; height:14px; border:2px solid #818cf8; border-top-color:transparent; border-radius:50%; animation: spin 0.8s linear infinite;"></span>
+            <span>AI 課綱問卷規劃師正在研讀教學架構...</span>
+          </div>
+          <div class="ai-step-item active" id="step1"><div class="step-dot"></div><span>1. 解析課綱檔案頁面與段落文字結構...</span></div>
+          <div class="ai-step-item" id="step2"><div class="step-dot"></div><span>2. 識別章節單元順序、教學目標與關鍵實作技能...</span></div>
+          <div class="ai-step-item" id="step3"><div class="step-dot"></div><span>3. 規劃單元吸收檢測題與高信度卡關痛點選項...</span></div>
+          <div class="ai-step-item" id="step4"><div class="step-dot"></div><span>4. 推導最具吸引力之「完課免費兌換線上單元課」選單...</span></div>
+        </div>
+
+        <!-- 成果預覽與微調區 -->
+        <div id="aiSurveyPreview" style="display: none; margin-top: 24px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(99, 102, 241, 0.4); border-radius: var(--radius); padding: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--card-border); padding-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <h3 style="color: #38bdf8; font-size: 1.15rem; display: flex; align-items: center; gap: 8px;">
+                <span>✨</span> AI 生成之問卷規劃成果（可直接微調）
+              </h3>
+              <p style="font-size: 0.82rem; color: #94a3b8;">檢查滿意後，點擊右方「一鍵套用」即可立即更新學員填答端！</p>
+            </div>
+            <button id="applyAiSurveyBtn" class="btn btn-primary" style="background: linear-gradient(135deg, #10b981, #059669); font-size: 0.95rem; padding: 10px 20px;">
+              ✅ 一鍵套用至本班問卷
+            </button>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div>
+              <label style="font-size: 0.82rem; color: #94a3b8; display: block; margin-bottom: 4px;">課程正式名稱</label>
+              <input type="text" id="prevCourseName" class="chat-input">
+            </div>
+            <div>
+              <label style="font-size: 0.82rem; color: #94a3b8; display: block; margin-bottom: 4px;">授課講師</label>
+              <input type="text" id="prevTeacherName" class="chat-input">
+            </div>
+            <div style="grid-column: span 2;">
+              <label style="font-size: 0.82rem; color: #94a3b8; display: block; margin-bottom: 4px;">問卷副標題</label>
+              <input type="text" id="prevSubtitle" class="chat-input">
+            </div>
+            <div style="grid-column: span 2;">
+              <label style="font-size: 0.82rem; color: #818cf8; display: block; margin-bottom: 4px; font-weight: 600;">
+                📋 核心單元清單（每行一個單元，將呈現於學員問卷課綱重點晶片中）
+              </label>
+              <textarea id="prevTopics" rows="4" class="chat-input" style="height: auto; font-family: monospace;"></textarea>
+            </div>
+            <div style="grid-column: span 2;">
+              <label style="font-size: 0.82rem; color: #f87171; display: block; margin-bottom: 4px; font-weight: 600;">
+                ⚠️ 學習痛點與卡關選項（依課綱難點量身生成，每行一個選項）
+              </label>
+              <textarea id="prevStruggles" rows="4" class="chat-input" style="height: auto; font-family: monospace;"></textarea>
+            </div>
+            <div style="grid-column: span 2;">
+              <label style="font-size: 0.82rem; color: #fbbf24; display: block; margin-bottom: 4px; font-weight: 600;">
+                🎁 完課免費兌換線上單元課清單（每行一門課）
+              </label>
+              <textarea id="prevRewards" rows="4" class="chat-input" style="height: auto; font-family: monospace;"></textarea>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; align-items: center; flex-wrap: wrap;">
+            <a id="testSurveyLink" href="/" target="_blank" class="btn btn-secondary">📱 開啟學員問卷預覽</a>
+            <button id="copyAiSurveyLinkBtn" class="btn btn-secondary">🔗 複製學員填答連結</button>
+            <button id="applyAiSurveyBtnBottom" class="btn btn-primary" style="background: linear-gradient(135deg, #10b981, #059669); font-size: 1rem; padding: 12px 24px;">
+              ✅ 一鍵套用至本班問卷
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -841,6 +1031,259 @@
           askBtn.textContent = '向顧問提問';
         }
       });
+
+      // ==========================================
+      // 課綱 PDF 智慧研讀與問卷 AI 自動生成模組
+      // ==========================================
+      let selectedPdfBase64 = '';
+      let generatedSurveyPreview = null;
+
+      const dropzone = document.getElementById('pdfDropzone');
+      const pdfInput = document.getElementById('syllabusPdfInput');
+      const dropzoneText = document.getElementById('dropzoneText');
+      const dropzoneSub = document.getElementById('dropzoneSub');
+      const selectedPdfBadge = document.getElementById('selectedPdfBadge');
+      const selectedPdfName = document.getElementById('selectedPdfName');
+      const clearPdfBtn = document.getElementById('clearPdfBtn');
+
+      if (dropzone && pdfInput) {
+        dropzone.addEventListener('click', (e) => {
+          if (e.target !== clearPdfBtn) {
+            pdfInput.click();
+          }
+        });
+
+        dropzone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          dropzone.classList.add('dragover');
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+          dropzone.classList.remove('dragover');
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropzone.classList.remove('dragover');
+          if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            handlePdfFile(e.dataTransfer.files[0]);
+          }
+        });
+
+        pdfInput.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files.length > 0) {
+            handlePdfFile(e.target.files[0]);
+          }
+        });
+
+        clearPdfBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          pdfInput.value = '';
+          selectedPdfBase64 = '';
+          selectedPdfBadge.style.display = 'none';
+          dropzoneText.textContent = '點擊此處選擇課綱 PDF，或直接將檔案拖曳至此處';
+          dropzoneSub.textContent = '支援標準 .pdf 課綱檔案格式（自動解析文字與章節架構）';
+        });
+      }
+
+      function handlePdfFile(file) {
+        if (!file.name.toLowerCase().endsWith('.pdf')) {
+          alert('請上傳 .pdf 格式的課綱檔案！');
+          return;
+        }
+        selectedPdfName.textContent = `${file.name} (${Math.round(file.size / 1024)} KB)`;
+        selectedPdfBadge.style.display = 'inline-flex';
+        dropzoneText.textContent = `已載入課綱 PDF：${file.name}`;
+        dropzoneSub.textContent = '檔案已就緒，可點擊下方按鈕啟動 AI 多代理分析！';
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const res = e.target.result;
+          selectedPdfBase64 = res.split(',')[1] || '';
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // 啟動 AI 生成
+      const startAiBtn = document.getElementById('startAiGenBtn');
+      const progressBox = document.getElementById('aiGenProgress');
+      const previewBox = document.getElementById('aiSurveyPreview');
+
+      if (startAiBtn) {
+        startAiBtn.addEventListener('click', async () => {
+          const syllabusText = document.getElementById('aiSyllabusText').value.trim();
+          if (!selectedPdfBase64 && !syllabusText) {
+            alert('請先上傳課綱 PDF 檔案，或是點開下方文字方塊貼上課綱內容！');
+            return;
+          }
+
+          startAiBtn.disabled = true;
+          startAiBtn.textContent = '🤖 AI 正在研讀課綱與規劃問卷中...';
+          progressBox.style.display = 'block';
+          previewBox.style.display = 'none';
+
+          // 視覺化步驟進度模擬
+          const steps = [
+            document.getElementById('step1'),
+            document.getElementById('step2'),
+            document.getElementById('step3'),
+            document.getElementById('step4')
+          ];
+          steps.forEach(s => s.className = 'ai-step-item');
+          steps[0].classList.add('active');
+
+          const stepTimer1 = setTimeout(() => {
+            steps[0].className = 'ai-step-item done';
+            steps[1].className = 'ai-step-item active';
+          }, 800);
+
+          const stepTimer2 = setTimeout(() => {
+            steps[1].className = 'ai-step-item done';
+            steps[2].className = 'ai-step-item active';
+          }, 1800);
+
+          const stepTimer3 = setTimeout(() => {
+            steps[2].className = 'ai-step-item done';
+            steps[3].className = 'ai-step-item active';
+          }, 2800);
+
+          try {
+            const res = await fetch('/api/generate-from-syllabus', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                pdf_base64: selectedPdfBase64,
+                syllabus_text: syllabusText,
+                course_name: document.getElementById('aiCourseName').value.trim(),
+                teacher_name: document.getElementById('aiTeacherName').value.trim(),
+                organizer: document.getElementById('aiOrganizer').value.trim()
+              })
+            });
+
+            clearTimeout(stepTimer1);
+            clearTimeout(stepTimer2);
+            clearTimeout(stepTimer3);
+
+            const json = await res.json();
+            if (json.status !== 'success') {
+              alert('生成失敗：' + (json.message || '未知錯誤'));
+              return;
+            }
+
+            steps.forEach(s => s.className = 'ai-step-item done');
+
+            const p = json.preview || {};
+            generatedSurveyPreview = p;
+
+            // 填入預覽欄位
+            document.getElementById('prevCourseName').value = p.course_name || '';
+            document.getElementById('prevTeacherName').value = p.teacher_name || '';
+            document.getElementById('prevSubtitle').value = p.course_subtitle || '';
+            document.getElementById('prevTopics').value = (p.syllabus_topics || []).join('\n');
+            document.getElementById('prevStruggles').value = (p.struggle_options || []).join('\n');
+            document.getElementById('prevRewards').value = (p.reward_courses || []).join('\n');
+
+            previewBox.style.display = 'block';
+            previewBox.scrollIntoView({ behavior: 'smooth' });
+
+          } catch (err) {
+            alert('AI 課綱分析處理失敗，請檢查網路連線或稍後再試！');
+          } finally {
+            startAiBtn.disabled = false;
+            startAiBtn.textContent = '🚀 啟動 AI 課綱分析與問卷生成';
+          }
+        });
+      }
+
+      // 一鍵套用問卷
+      async function applyGeneratedSurvey() {
+        if (!generatedSurveyPreview) return;
+
+        const applyBtns = [
+          document.getElementById('applyAiSurveyBtn'),
+          document.getElementById('applyAiSurveyBtnBottom')
+        ];
+        applyBtns.forEach(b => { if (b) { b.disabled = true; b.textContent = '💾 套用儲存中...'; } });
+
+        const topics = document.getElementById('prevTopics').value.split('\n').map(s => s.trim()).filter(Boolean);
+        const struggles = document.getElementById('prevStruggles').value.split('\n').map(s => s.trim()).filter(Boolean);
+        const rewards = document.getElementById('prevRewards').value.split('\n').map(s => s.trim()).filter(Boolean);
+
+        const payload = {
+          ...generatedSurveyPreview,
+          course_name: document.getElementById('prevCourseName').value.trim(),
+          teacher_name: document.getElementById('prevTeacherName').value.trim(),
+          course_subtitle: document.getElementById('prevSubtitle').value.trim(),
+          organizer: document.getElementById('aiOrganizer').value.trim() || '赫綵設計學院',
+          syllabus_topics: topics,
+          struggle_options: struggles,
+          reward_courses: rewards
+        };
+
+        try {
+          const res = await fetch('/api/apply-syllabus-survey', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const json = await res.json();
+          if (json.status === 'success') {
+            alert(`🎉 恭喜！【${payload.course_name}】課綱專屬問卷已成功發布！\n學員端問卷已即時切換生效！`);
+            document.getElementById('topTitle').textContent = `🎨 ${payload.course_name} ✕ 多代理協同 AI 結業分析師`;
+            document.getElementById('testSurveyLink').href = json.survey_url || '/';
+            document.getElementById('studentSurveyLink').href = json.survey_url || '/';
+            loadClassesDropdown(json.class_id);
+          } else {
+            alert('套用失敗：' + (json.message || '未知錯誤'));
+          }
+        } catch (e) {
+          alert('連線失敗，請重試！');
+        } finally {
+          applyBtns.forEach(b => { if (b) { b.disabled = false; b.textContent = '✅ 一鍵套用至本班問卷'; } });
+        }
+      }
+
+      const applyAiSurveyBtn = document.getElementById('applyAiSurveyBtn');
+      const applyAiSurveyBtnBottom = document.getElementById('applyAiSurveyBtnBottom');
+      if (applyAiSurveyBtn) applyAiSurveyBtn.addEventListener('click', applyGeneratedSurvey);
+      if (applyAiSurveyBtnBottom) applyAiSurveyBtnBottom.addEventListener('click', applyGeneratedSurvey);
+
+      // 複製問卷連結
+      const copyAiLinkBtn = document.getElementById('copyAiSurveyLinkBtn');
+      if (copyAiLinkBtn) {
+        copyAiLinkBtn.addEventListener('click', () => {
+          const fullUrl = window.location.origin + '/';
+          navigator.clipboard.writeText(fullUrl).then(() => {
+            alert(`已成功複製學員問卷網址：\n${fullUrl}\n可以直接貼進同學的 LINE 群組發放！`);
+          }).catch(() => {
+            prompt('請複製以下問卷網址貼給同學：', fullUrl);
+          });
+        });
+      }
+
+      // 動態載入班級選單
+      async function loadClassesDropdown(selectedId) {
+        try {
+          const res = await fetch('/api/classes-list');
+          if (!res.ok) return;
+          const json = await res.json();
+          const selector = document.getElementById('classSelector');
+          if (selector && json.classes) {
+            selector.innerHTML = '';
+            const activeId = selectedId || json.active_class_id;
+            for (const [cid, cdata] of Object.entries(json.classes)) {
+              const opt = document.createElement('option');
+              opt.value = cid;
+              opt.textContent = `班級：${cdata.course_name || cid}`;
+              if (cid === activeId) opt.selected = true;
+              selector.appendChild(opt);
+            }
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      loadClassesDropdown();
     }
 
     // 匯出專員聯繫名單 CSV

@@ -61,20 +61,63 @@ async function loadClassConfig() {
     // 動態載入單元課清單
     if (data.reward_courses && data.reward_courses.length > 0) {
       const container = document.getElementById('rewardCourseList');
-      container.innerHTML = '';
-      data.reward_courses.forEach((c, idx) => {
-        const label = document.createElement('label');
-        label.className = 'reward-card';
-        label.innerHTML = `
-          <input type="radio" name="selected_reward_course" value="${c}" required ${idx === 0 ? 'checked' : ''}>
-          <div class="reward-card-body">
-            <span class="badge-free">免費兌換</span>
-            <strong>${c}</strong>
-            <small>由後台專員核對資料後，於 1~2 工作天內主動聯繫開通</small>
-          </div>
+      if (container) {
+        container.innerHTML = '';
+        data.reward_courses.forEach((c, idx) => {
+          const label = document.createElement('label');
+          label.className = 'reward-card';
+          label.innerHTML = `
+            <input type="radio" name="selected_reward_course" value="${c}" required ${idx === 0 ? 'checked' : ''}>
+            <div class="reward-card-body">
+              <span class="badge-free">免費兌換</span>
+              <strong>${c}</strong>
+              <small>由後台專員核對資料後，於 1~2 工作天內主動聯繫開通</small>
+            </div>
+          `;
+          container.appendChild(label);
+        });
+      }
+    }
+
+    // 動態載入課綱重點晶片
+    if (data.syllabus_topics && data.syllabus_topics.length > 0) {
+      const topicChips = document.getElementById('syllabusTopicChips');
+      const topicList = document.getElementById('syllabusTopicList');
+      if (topicChips && topicList) {
+        topicList.innerHTML = '';
+        data.syllabus_topics.forEach(t => {
+          const chip = document.createElement('span');
+          chip.style.cssText = 'background: rgba(99, 102, 241, 0.12); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 6px; padding: 3px 8px; font-size: 0.78rem;';
+          chip.textContent = t;
+          topicList.appendChild(chip);
+        });
+        topicChips.style.display = 'block';
+      }
+    }
+
+    // 動態載入學習痛點選項 (若課綱有生成專屬選項)
+    if (data.struggle_options && data.struggle_options.length > 0) {
+      const struggleContainer = document.getElementById('strugglePointContainer');
+      if (struggleContainer) {
+        struggleContainer.innerHTML = '';
+        data.struggle_options.forEach((opt, idx) => {
+          const label = document.createElement('label');
+          label.className = 'radio-item';
+          label.innerHTML = `
+            <input type="radio" name="struggle_point" value="${opt}" required ${idx === 0 ? 'checked' : ''}>
+            <span>${opt}</span>
+          `;
+          struggleContainer.appendChild(label);
+        });
+        // 加入其他選項
+        const otherLbl = document.createElement('label');
+        otherLbl.className = 'radio-item';
+        otherLbl.innerHTML = `
+          <input type="radio" name="struggle_point" value="其他">
+          <span>其他</span>
         `;
-        container.appendChild(label);
-      });
+        struggleContainer.appendChild(otherLbl);
+      }
     }
   } catch (e) {
     console.log('Using default class configuration');

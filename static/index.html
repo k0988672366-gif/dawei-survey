@@ -98,7 +98,7 @@
           <label class="question-label">
             3. 整個學習過程中，您覺得哪部分最容易吃力或卡關？ <span class="req">*</span>
           </label>
-          <div class="radio-list">
+          <div class="radio-list" id="strugglePointContainer">
             <label class="radio-item">
               <input type="radio" name="struggle_point" value="課堂示範節奏偏快，來不及跟隨實作" required>
               <span>課堂示範節奏偏快，來不及邊聽邊實作</span>
@@ -164,6 +164,10 @@
         <div class="question-group">
           <label class="question-label">
             6. 課程規劃課綱、教材講義與節奏滿意度 <span class="req">*</span>
+            <div id="syllabusTopicChips" style="display:none; margin-top: 8px; font-size: 0.82rem; color: #94a3b8;">
+              <span style="font-weight: 600; color: #cbd5e1;">📋 本班課綱重點：</span>
+              <div id="syllabusTopicList" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;"></div>
+            </div>
           </label>
           <div class="star-rating" data-name="course_rating">
             <button type="button" class="star-btn" data-val="1">★</button>
