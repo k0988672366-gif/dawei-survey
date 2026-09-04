@@ -7,6 +7,9 @@ class SurveyAnalysisState:
     """多代理人協同分析共享狀態上下文"""
     course_name: str = "劉大維畫室直播課程"
     organizer: str = "赫綵設計學院"
+    class_id: str = ""
+    teacher_name: str = "授課講師"
+    syllabus_topics: List[str] = field(default_factory=list)
     raw_responses: List[Dict[str, Any]] = field(default_factory=list)
     df: Optional[pd.DataFrame] = None
     

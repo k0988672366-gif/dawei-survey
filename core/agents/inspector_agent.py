@@ -16,7 +16,19 @@ class InspectorAgent:
         elif state.df is not None:
             df = state.df
         else:
-            state.log(self.name, "error", "無任何可用的問卷資料！", status="error")
+            df = pd.DataFrame()
+
+        if len(df) == 0:
+            state.df = df
+            state.inspection_summary = {
+                "total_responses": 0,
+                "valid_responses": 0,
+                "data_health_score": 100.0,
+                "experience_distribution": {},
+                "anomalies_detected": 0,
+                "missing_comment_count": 0
+            }
+            state.log(self.name, "done", "資料檢驗完成：目前此班級尚無填答資料，等待學員填寫。")
             return state
 
         # 欄位別名相容映射

@@ -249,6 +249,7 @@
     }
     .badge-qw { background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 2px 6px; border-radius: 4px; font-size: 0.72rem; font-weight: 600; }
     .badge-nc { background: rgba(99, 102, 241, 0.2); color: #818cf8; padding: 2px 6px; border-radius: 4px; font-size: 0.72rem; font-weight: 600; }
+    .badge-ca { background: rgba(245, 158, 11, 0.2); color: #fbbf24; padding: 2px 6px; border-radius: 4px; font-size: 0.72rem; font-weight: 600; }
 
     /* AI 即席顧問 */
     .chat-card {
@@ -366,7 +367,7 @@
         <a id="cloudAdminLink" href="https://dawei-survey.onrender.com/admin" target="_blank" class="btn btn-secondary" style="border-color: #a855f7; color: #c084fc;">🌐 雲端正式後台</a>
         <a id="studentSurveyLink" href="/?class=dawei_studio_01" target="_blank" class="btn btn-secondary">📱 開啟學員問卷</a>
         <button id="runAnalysisBtn" class="btn btn-primary">🤖 執行多代理分析</button>
-        <a href="/report/html" target="_blank" class="btn btn-secondary">📑 匯出診斷報告</a>
+        <a id="exportReportBtn" href="/report/html" target="_blank" class="btn btn-secondary" title="依當前選中班級匯出高階結業診斷報告">📑 匯出診斷報告</a>
       </div>
     </header>
 
@@ -462,37 +463,22 @@
       <!-- 金句牆 與 行動矩陣 -->
       <div class="details-grid">
         <div class="detail-card">
-          <h3>🎨 學員原聲金句牆 (口碑精選)</h3>
-          <div class="quote-item">
-            <p>「大維老師講解太清晰了！原本完全不懂圖層正片疊底，這堂課終於打通任督二脈！」</p>
-            <div class="quote-author">—— 小艾 (零基礎小白, 5★)</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <h3 style="margin: 0; font-size: 1.1rem; color: #fff;">🎨 學員原聲金句牆 (口碑精選)</h3>
+            <span id="quoteWallCountBadge" style="font-size: 0.75rem; background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.3); padding: 2px 10px; border-radius: 12px;">載入中...</span>
           </div>
-          <div class="quote-item">
-            <p>「超愛老師示範筆刷調色的過程，看老師畫畫真的像魔法一樣療癒！」</p>
-            <div class="quote-author">—— Vivian (偶爾塗鴉新手, 5★)</div>
-          </div>
-          <div class="quote-item quote-alert">
-            <p>「老師教得很好，但第三週講光影過渡時節奏稍微有點快，如果能再多停頓 30 秒等大家會更好！」</p>
-            <div class="quote-author">—— 廷廷 (零基礎小白, 4★)</div>
+          <div id="quoteWallContainer">
+            <!-- 由 JS 依當前選中班級真實填答動態渲染 -->
           </div>
         </div>
 
         <div class="detail-card">
-          <h3>🎯 教學覆盤與行動矩陣</h3>
-          <div class="action-item">
-            <span class="badge-qw">即刻速贏 (Quick Win)</span>
-            <div style="font-size: 0.9rem; font-weight: 600; color: #fff; margin-top: 4px;">示範時口述操作參數並停留 5 秒</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted);">切換正片疊底或調色時口述數值，讓初學者有充足秒數同步操作。</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <h3 style="margin: 0; font-size: 1.1rem; color: #fff;">🎯 教學覆盤與行動矩陣</h3>
+            <span id="actionMatrixBadge" style="font-size: 0.75rem; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 2px 10px; border-radius: 12px;">動態生成</span>
           </div>
-          <div class="action-item">
-            <span class="badge-qw">即刻速贏 (Quick Win)</span>
-            <div style="font-size: 0.9rem; font-weight: 600; color: #fff; margin-top: 4px;">課前 24 小時在 LINE 群提供預習底稿包</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted);">初學者直接專注於調色與筆觸，避免起稿慢造成追趕焦慮。</div>
-          </div>
-          <div class="action-item">
-            <span class="badge-nc">次期優化 (Next Cohort)</span>
-            <div style="font-size: 0.9rem; font-weight: 600; color: #fff; margin-top: 4px;">錄製 10 分鐘新手導航手勢影片</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted);">開課前消化常見手勢與圖層鎖定問題，建立新手安全感。</div>
+          <div id="actionMatrixContainer">
+            <!-- 由 JS 依當前班級真實卡關點與評價動態渲染 -->
           </div>
         </div>
       </div>
@@ -883,6 +869,12 @@
       const bannerOpenBtn = document.getElementById('bannerOpenLinkBtn');
       if (bannerOpenBtn) bannerOpenBtn.href = fullSurveyUrl;
 
+      // 更新匯出診斷報告按鈕連結 (依當前班級 class_id)
+      const exportBtn = document.getElementById('exportReportBtn');
+      if (exportBtn) {
+        exportBtn.href = `/report/html?class_id=${classId}`;
+      }
+
       // 3. 更新下拉選單選中狀態
       const selector = document.getElementById('classSelector');
       if (selector && selector.value !== classId) {
@@ -1015,9 +1007,189 @@
 
         // 即時動態繪製所有圖表
         updateAllCharts(allResponsesData);
+
+        // 即時動態渲染學員原聲金句牆與教學行動矩陣
+        renderQuoteWall(allResponsesData);
+        renderActionMatrix(allResponsesData, allClassesData[classId] || {});
       } catch (e) {
         console.error('Failed to load responses:', e);
       }
+    }
+
+    function renderQuoteWall(data) {
+      const container = document.getElementById('quoteWallContainer');
+      const badge = document.getElementById('quoteWallCountBadge');
+      if (!container) return;
+
+      container.innerHTML = '';
+
+      if (!data || data.length === 0) {
+        if (badge) badge.textContent = '0 則回饋';
+        container.innerHTML = `
+          <div style="text-align: center; padding: 36px 16px; color: var(--text-muted);">
+            <div style="font-size: 2rem; margin-bottom: 8px; opacity: 0.7;">💬</div>
+            <div style="font-weight: 600; color: #cbd5e1; font-size: 0.95rem;">目前此班級尚無學員回饋</div>
+            <div style="font-size: 0.8rem; margin-top: 4px; color: #64748b;">學員填寫問卷後，系統將自動篩選口碑金句與關鍵建議即時呈現於此。</div>
+          </div>
+        `;
+        return;
+      }
+
+      const alertKeywords = ["快", "抽象", "跟不上", "暫停", "重看", "停頓", "卡", "問題", "難", "不懂", "吃力", "？", "?", "延遲", "建議", "希望", "改善"];
+      const quotes = [];
+
+      data.forEach(r => {
+        const comm = (r.instructor_comment || '').trim();
+        if (comm && !['無', 'none', 'nan', '沒有', '-', '還好'].includes(comm.toLowerCase())) {
+          const score = parseFloat(r.instructor_rating || 5);
+          const isAlert = alertKeywords.some(k => comm.includes(k)) || score <= 3.5;
+          quotes.push({
+            name: r.student_name || '學員',
+            exp: r.prior_experience || '學員',
+            score: score,
+            quote: comm,
+            isAlert: isAlert
+          });
+        }
+
+        const taComm = (r.ta_comment || '').trim();
+        if (taComm && !['無', 'none', 'nan', '沒有', '-'].includes(taComm.toLowerCase()) && taComm.length >= 2) {
+          quotes.push({
+            name: r.student_name || '學員',
+            exp: r.prior_experience || '學員',
+            score: parseFloat(r.ta_rating || 5),
+            quote: `[助教反饋] ${taComm}`,
+            isAlert: false
+          });
+        }
+      });
+
+      if (badge) badge.textContent = `${quotes.length} 則精選`;
+
+      if (quotes.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 36px 16px; color: var(--text-muted);">
+            <div style="font-size: 2rem; margin-bottom: 8px; opacity: 0.7;">💬</div>
+            <div style="font-weight: 600; color: #cbd5e1; font-size: 0.95rem;">學員已完成量化評分，尚無文字留言</div>
+            <div style="font-size: 0.8rem; margin-top: 4px; color: #64748b;">已累計 ${data.length} 份評鑑數據，學員留下文字評語後將自動萃取。</div>
+          </div>
+        `;
+        return;
+      }
+
+      quotes.forEach(q => {
+        const item = document.createElement('div');
+        item.className = q.isAlert ? 'quote-item quote-alert' : 'quote-item';
+        const tagHtml = q.isAlert 
+          ? '<span style="display:inline-block; font-size:0.75rem; background:rgba(239,68,68,0.2); color:#f87171; border:1px solid rgba(239,68,68,0.3); padding:1px 6px; border-radius:4px; margin-bottom:6px;">⚠️ 節奏/建言</span>' 
+          : '<span style="display:inline-block; font-size:0.75rem; background:rgba(16,185,129,0.2); color:#34d399; border:1px solid rgba(16,185,129,0.3); padding:1px 6px; border-radius:4px; margin-bottom:6px;">✨ 口碑肯定</span>';
+
+        item.innerHTML = `
+          ${tagHtml}
+          <p style="margin: 4px 0 6px 0; font-size: 0.92rem; line-height: 1.5;">「${q.quote.replace(/</g, '&lt;').replace(/>/g, '&gt;')}」</p>
+          <div class="quote-author">—— ${q.name} (${q.exp}, 評分 ${q.score}★)</div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function renderActionMatrix(data, classInfo) {
+      const container = document.getElementById('actionMatrixContainer');
+      const badge = document.getElementById('actionMatrixBadge');
+      if (!container) return;
+
+      container.innerHTML = '';
+      const teacher = (classInfo && classInfo.teacher_name) ? classInfo.teacher_name : '講師';
+      const course = (classInfo && classInfo.course_name) ? classInfo.course_name : '專業培訓班';
+
+      if (!data || data.length === 0) {
+        if (badge) badge.textContent = '等待資料';
+        container.innerHTML = `
+          <div style="text-align: center; padding: 36px 16px; color: var(--text-muted);">
+            <div style="font-size: 2rem; margin-bottom: 8px; opacity: 0.7;">🎯</div>
+            <div style="font-weight: 600; color: #cbd5e1; font-size: 0.95rem;">等待學員填答以推導專屬行動矩陣</div>
+            <div style="font-size: 0.8rem; margin-top: 4px; color: #64748b;">系統將依據該班學員的卡關點、平台順暢度與評價，自動生成客製化覆盤建議。</div>
+          </div>
+        `;
+        return;
+      }
+
+      const struggles = data.map(r => r.struggle_point || '').filter(Boolean);
+      const platforms = data.map(r => r.platform_experience || '').filter(Boolean);
+      const actions = [];
+
+      // 1. 偵測節奏
+      const hasPacing = struggles.some(s => ['快', '偏快', '跟不上', '暫停'].some(k => s.includes(k)));
+      if (hasPacing) {
+        actions.push({
+          badgeClass: 'badge-qw',
+          badgeText: '即刻速贏 (Quick Win)',
+          title: '示範關鍵步驟口述口訣並停留 5~10 秒',
+          detail: `${teacher} 在切換關鍵工具與設定參數時口述具體數值，讓初學者有充裕秒數同步跟隨操作。`
+        });
+      }
+
+      // 2. 偵測平台卡頓
+      const hasLag = platforms.some(p => ['卡頓', '延遲', '影響'].some(k => p.includes(k)));
+      if (hasLag) {
+        actions.push({
+          badgeClass: 'badge-qw',
+          badgeText: '即刻速贏 (Quick Win)',
+          title: '推流頻寬檢測與 24 小時內即時回放釋出',
+          detail: '檢查直播推流碼率與伺服器穩定度，課後 24 小時內提供高清錄影回放方便學員複習。'
+        });
+      }
+
+      // 3. 偵測自訂卡關點
+      const customStruggles = struggles.filter(s => s.includes('其他') || s.includes('：'));
+      if (customStruggles.length > 0) {
+        const cleanCust = customStruggles[0].replace('其他：', '').replace('其他:', '').trim();
+        actions.push({
+          badgeClass: 'badge-qw',
+          badgeText: '即刻速贏 (Quick Win)',
+          title: `針對個別回饋『${cleanCust}』定向答疑`,
+          detail: `學員提出具體反饋，建議講師或助教在班級群組或次回直播開頭給予專題指引。`
+        });
+      }
+
+      // 補足預設速贏
+      if (actions.length === 0) {
+        actions.push({
+          badgeClass: 'badge-qw',
+          badgeText: '即刻速贏 (Quick Win)',
+          title: `課前 24 小時提供【${course}】精選預習檔`,
+          detail: `在班群發布預習指引，讓初學者課堂上直接聚焦於 ${teacher} 的核心方法與示範。`
+        });
+      }
+
+      // 次期優化
+      actions.push({
+        badgeClass: 'badge-nc',
+        badgeText: '次期優化 (Next Cohort)',
+        title: `錄製 10 分鐘【${course}】前導微影片`,
+        detail: `開課前提供預習資源，專講核心介面概念與高頻操作手勢，前置消化新手焦慮。`
+      });
+
+      // 長期架構
+      actions.push({
+        badgeClass: 'badge-ca',
+        badgeText: '長期架構 (Architecture)',
+        title: `無縫開展【${course}】進階商業實戰班`,
+        detail: `趁結業熱度與高滿意度口碑，提供舊生專屬折價碼轉化續報，規劃進階作品集專題！`
+      });
+
+      if (badge) badge.textContent = `已推導 ${actions.length} 項策略`;
+
+      actions.forEach(a => {
+        const item = document.createElement('div');
+        item.className = 'action-item';
+        item.innerHTML = `
+          <span class="${a.badgeClass}">${a.badgeText}</span>
+          <div style="font-size: 0.9rem; font-weight: 600; color: #fff; margin-top: 4px;">${a.title}</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">${a.detail}</div>
+        `;
+        container.appendChild(item);
+      });
     }
 
     function renderRedemptionTable(data) {
@@ -1174,7 +1346,7 @@
           labels: ['講師授課', '課綱講義', '助教支援', '平台順暢', 'NPS推薦折算'],
           datasets: [{
             label: '滿意度 (滿分 5★)',
-            data: [4.87, 4.56, 4.91, 4.80, 4.72],
+            data: [0, 0, 0, 0, 0],
             backgroundColor: 'rgba(99, 102, 241, 0.25)',
             borderColor: '#818cf8',
             pointBackgroundColor: '#818cf8'
@@ -1199,11 +1371,11 @@
       rewardChart = new Chart(rewardCtx, {
         type: 'bar',
         data: {
-          labels: ['單元課 B：光影氛圍', '單元課 A：筆刷神技', '單元課 C：調色秘笈', '單元課 D：動態人體'],
+          labels: ['尚無兌換'],
           datasets: [{
             label: '兌換人數',
-            data: [18, 14, 8, 5],
-            backgroundColor: ['#f59e0b', '#6366f1', '#10b981', '#ec4899'],
+            data: [0],
+            backgroundColor: ['#6366f1'],
             borderRadius: 6
           }]
         },
@@ -1223,10 +1395,10 @@
       expChart = new Chart(expCtx, {
         type: 'doughnut',
         data: {
-          labels: ['偶爾塗鴉新手', '零基礎小白', '有一定經驗'],
+          labels: ['暫無資料'],
           datasets: [{
-            data: [20, 16, 9],
-            backgroundColor: ['#6366f1', '#ec4899', '#f59e0b']
+            data: [1],
+            backgroundColor: ['rgba(255,255,255,0.06)']
           }]
         },
         options: {
@@ -1241,9 +1413,9 @@
       struggleChart = new Chart(struggleCtx, {
         type: 'bar',
         data: {
-          labels: ['無特別卡關', '光影色彩抽象', '示範節奏偏快', '圖層筆刷運用'],
+          labels: ['暫無資料'],
           datasets: [{
-            data: [22, 11, 8, 4],
+            data: [0],
             backgroundColor: '#818cf8',
             borderRadius: 6
           }]
@@ -1374,11 +1546,14 @@
         runBtn.disabled = true;
         runBtn.textContent = '🤖 代理人協同分析中...';
         try {
-          const res = await fetch('/api/analyze', { method: 'POST' });
+          const res = await fetch(`/api/analyze?class_id=${currentClassId}`, { method: 'POST' });
           const data = await res.json();
           if (data.status === 'success') {
-            alert('多代理協同分析成功完成！已即時更新數據與報告。');
-            location.reload();
+            await Promise.all([
+              loadStats(currentClassId),
+              loadResponsesData(currentClassId)
+            ]);
+            alert(`多代理協同分析成功完成！已針對【${data.course_name}】（講師: ${data.teacher_name}）即時更新數據、金句與診斷報告。`);
           }
         } catch (e) {
           console.error(e);
@@ -1399,13 +1574,13 @@
         askBtn.disabled = true;
         askBtn.textContent = '思考中...';
         chatBox.style.display = 'block';
-        chatBox.textContent = '🤖 顧問代理人正在調閱問卷數據思考中...';
+        chatBox.textContent = '🤖 顧問代理人正在調閱本班問卷數據思考中...';
 
         try {
           const res = await fetch('/api/ask', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ question: q })
+            body: JSON.stringify({ question: q, class_id: currentClassId })
           });
           const data = await res.json();
           chatBox.textContent = data.answer || '分析完成。';

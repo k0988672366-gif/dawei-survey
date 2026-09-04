@@ -111,16 +111,32 @@ class SurveyHandler(BaseHTTPRequestHandler):
             self.serve_file(file_path, mime_type)
             return
 
-        # 5. 報告預覽與列印 (/report/html) (需要管理員密碼保護！)
+        # 5. 報告預覽與列印 (/report/html?class_id=...) (需要管理員密碼保護！)
         if path == "/report/html":
             if not self.check_auth():
                 return
-            global current_state
-            if not current_state.final_report_md:
-                current_state = orchestrator.run_pipeline(current_state)
+            cid = query_params.get("class_id", [None])[0]
+            if not cid:
+                cfg = config.load_classes_config()
+                cid = cfg.get("active_class_id", "class_1788504131")
+
+            class_info = config.get_class_info(cid)
+            class_responses = self.get_all_responses(class_id=cid)
+
+            report_state = SurveyAnalysisState(
+                class_id=cid,
+                course_name=class_info.get("course_name", config.COURSE_NAME),
+                organizer=class_info.get("organizer", config.ORGANIZER),
+                teacher_name=class_info.get("teacher_name", "授課講師"),
+                syllabus_topics=class_info.get("syllabus_topics", []),
+                raw_responses=class_responses
+            )
+            report_state.df = pd.DataFrame(class_responses) if class_responses else pd.DataFrame()
+            report_state = orchestrator.run_pipeline(report_state)
+
             html_content = export_html(
-                current_state.final_report_md, 
-                title=f"{config.COURSE_NAME} 結業問卷綜合審查報告"
+                report_state.final_report_md, 
+                title=f"{report_state.course_name} 結業問卷綜合審查報告"
             )
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -129,16 +145,34 @@ class SurveyHandler(BaseHTTPRequestHandler):
             self.wfile.write(html_content.encode("utf-8"))
             return
 
-        # 6. 報告 Markdown 下載 (/report/markdown) (需要管理員密碼保護！)
+        # 6. 報告 Markdown 下載 (/report/markdown?class_id=...) (需要管理員密碼保護！)
         if path == "/report/markdown":
             if not self.check_auth():
                 return
-            if not current_state.final_report_md:
-                current_state = orchestrator.run_pipeline(current_state)
-            md_bytes = current_state.final_report_md.encode("utf-8")
+            cid = query_params.get("class_id", [None])[0]
+            if not cid:
+                cfg = config.load_classes_config()
+                cid = cfg.get("active_class_id", "class_1788504131")
+
+            class_info = config.get_class_info(cid)
+            class_responses = self.get_all_responses(class_id=cid)
+
+            report_state = SurveyAnalysisState(
+                class_id=cid,
+                course_name=class_info.get("course_name", config.COURSE_NAME),
+                organizer=class_info.get("organizer", config.ORGANIZER),
+                teacher_name=class_info.get("teacher_name", "授課講師"),
+                syllabus_topics=class_info.get("syllabus_topics", []),
+                raw_responses=class_responses
+            )
+            report_state.df = pd.DataFrame(class_responses) if class_responses else pd.DataFrame()
+            report_state = orchestrator.run_pipeline(report_state)
+
+            md_bytes = report_state.final_report_md.encode("utf-8")
+            filename = f"survey_report_{cid}.md"
             self.send_response(200)
             self.send_header("Content-Type", "text/markdown; charset=utf-8")
-            self.send_header("Content-Disposition", 'attachment; filename="survey_audit_report.md"')
+            self.send_header("Content-Disposition", f'attachment; filename="{filename}"')
             self.send_header("Content-Length", str(len(md_bytes)))
             self.end_headers()
             self.wfile.write(md_bytes)
@@ -299,16 +333,37 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 self.send_json(500, {"status": "error", "message": f"同步失敗: {str(e)}"})
             return
 
-        # 觸發多代理協同分析 (/api/analyze) (需要管理員密碼保護！)
+        # 觸發多代理協同分析 (/api/analyze?class_id=...) (需要管理員密碼保護！)
         if parsed.path == "/api/analyze":
             if not self.check_auth():
                 return
-            if config.RESPONSES_CSV_PATH.exists():
-                current_state.df = pd.read_csv(config.RESPONSES_CSV_PATH)
+            query_params = parse_qs(parsed.query)
+            cid = query_params.get("class_id", [None])[0]
+            if not cid:
+                cfg = config.load_classes_config()
+                cid = cfg.get("active_class_id", "class_1788504131")
+
+            class_info = config.get_class_info(cid)
+            class_responses = self.get_all_responses(class_id=cid)
+
+            current_state = SurveyAnalysisState(
+                class_id=cid,
+                course_name=class_info.get("course_name", config.COURSE_NAME),
+                organizer=class_info.get("organizer", config.ORGANIZER),
+                teacher_name=class_info.get("teacher_name", "授課講師"),
+                syllabus_topics=class_info.get("syllabus_topics", []),
+                raw_responses=class_responses
+            )
+            current_state.df = pd.DataFrame(class_responses) if class_responses else pd.DataFrame()
             current_state = orchestrator.run_pipeline(current_state)
+
             self.send_json(200, {
                 "status": "success",
-                "message": "多代理協同分析完成",
+                "message": f"多代理協同分析完成（班級：{current_state.course_name}）",
+                "class_id": cid,
+                "course_name": current_state.course_name,
+                "teacher_name": current_state.teacher_name,
+                "total_responses": len(class_responses),
                 "executive_summary": current_state.executive_summary,
                 "nps": current_state.quant_metrics.get("nps", 0),
                 "avg_instructor": current_state.quant_metrics.get("avg_instructor", 5.0)
@@ -322,11 +377,29 @@ class SurveyHandler(BaseHTTPRequestHandler):
             try:
                 payload = json.loads(body)
                 question = payload.get("question", "")
+                cid = payload.get("class_id")
             except Exception as e:
                 self.send_json(400, {"status": "error", "message": str(e)})
                 return
 
-            answer = orchestrator.ask_advisor(question, current_state)
+            if not cid:
+                cfg = config.load_classes_config()
+                cid = cfg.get("active_class_id", "class_1788504131")
+
+            class_info = config.get_class_info(cid)
+            class_responses = self.get_all_responses(class_id=cid)
+            ask_state = SurveyAnalysisState(
+                class_id=cid,
+                course_name=class_info.get("course_name", config.COURSE_NAME),
+                organizer=class_info.get("organizer", config.ORGANIZER),
+                teacher_name=class_info.get("teacher_name", "授課講師"),
+                syllabus_topics=class_info.get("syllabus_topics", []),
+                raw_responses=class_responses
+            )
+            ask_state.df = pd.DataFrame(class_responses) if class_responses else pd.DataFrame()
+            ask_state = orchestrator.run_pipeline(ask_state)
+
+            answer = orchestrator.ask_advisor(question, ask_state)
             self.send_json(200, {"status": "success", "answer": answer})
             return
 

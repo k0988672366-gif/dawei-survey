@@ -14,7 +14,23 @@ class QuantAgent:
 
         df = state.df
         if df is None or len(df) == 0:
-            state.log(self.name, "error", "無可用數據", status="error")
+            state.quant_metrics = {
+                "avg_instructor": 0.0,
+                "std_instructor": 0.0,
+                "avg_course": 0.0,
+                "std_course": 0.0,
+                "avg_ta": 0.0,
+                "std_ta": 0.0,
+                "nps": 0.0,
+                "promoters_count": 0,
+                "promoters_pct": 0.0,
+                "passives_count": 0,
+                "passives_pct": 0.0,
+                "detractors_count": 0,
+                "detractors_pct": 0.0,
+                "platform_distribution": {}
+            }
+            state.log(self.name, "done", "目前尚無問卷量化數據。")
             return state
 
         total = len(df)
@@ -67,9 +83,10 @@ class QuantAgent:
             "platform_distribution": platform_dist
         }
 
+        teacher_label = state.teacher_name or "講師"
         state.log(
             self.name, 
             "done", 
-            f"量化指標計算完成：大維老師滿意度 {inst_mean}★，助教滿意度 {ta_mean}★，NPS 達 +{nps} (極佳口碑表現)！"
+            f"量化指標計算完成：{teacher_label}滿意度 {inst_mean}★，助教滿意度 {ta_mean}★，NPS 達 {'+' if nps >= 0 else ''}{nps}！"
         )
         return state

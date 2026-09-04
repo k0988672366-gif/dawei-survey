@@ -8,7 +8,8 @@ class ChiefSynthesizerAgent:
         self.llm_client = llm_client
 
     def run(self, state: SurveyAnalysisState) -> SurveyAnalysisState:
-        state.log(self.name, "start", "彙整 5 大代理人洞察，生成高階決策級《結業問卷綜合診斷報告書》...")
+        teacher_label = state.teacher_name or "講師"
+        state.log(self.name, "start", f"彙整多代理人洞察，生成【{state.course_name}】決策級《結業問卷綜合診斷報告書》...")
 
         insp = state.inspection_summary
         qm = state.quant_metrics
@@ -17,22 +18,35 @@ class ChiefSynthesizerAgent:
         ps = state.pedagogical_strategies
 
         now_str = datetime.now().strftime("%Y-%m-%d")
+        total_resp = insp.get("total_responses", 0)
 
         # 產出執行摘要
-        exec_summary = (
-            f"本期【{state.course_name}】結業問卷共回收 {insp.get('total_responses', 0)} 份有效填答。"
-            f"整體辦學滿意度極高，大維老師個人教學滿意度達 {qm.get('avg_instructor', 5.0)}★，"
-            f"助教滿意度達 {qm.get('avg_ta', 5.0)}★，淨推薦值 NPS 高達 +{qm.get('nps', 0)}（頂尖水準）。"
-            f"質化挖掘顯示，學員對『筆刷調色與光影邏輯』高度讚賞，助教的課後紅線圖批改提供了極佳的安全感。"
-            f"主要改進焦點在於：零基礎學員在第 3 週光影示範時節奏稍快，建議透過課前預習包與示範操作口訣實現教學閉環。"
-        )
+        if total_resp == 0:
+            exec_summary = (
+                f"本期【{state.course_name}】（授課講師：{teacher_label}）目前累計 0 份學員填答，"
+                f"系統已完成評鑑架構與課綱對應設定。待學員填寫後，多代理 AI 團隊將即時運算各維度均分、淨推薦值 NPS、口碑金句與教學改進矩陣。"
+            )
+        else:
+            gold_sample = ti.get("gold_quotes", [{}])[0].get("quote", "") if ti.get("gold_quotes") else ""
+            alert_sample = ti.get("alert_quotes", [{}])[0].get("quote", "") if ti.get("alert_quotes") else ""
+            
+            exec_summary = (
+                f"本期【{state.course_name}】結業問卷共回收 {total_resp} 份有效填答。"
+                f"整體辦學與教學評價優良，{teacher_label} 個人教學滿意度達 {qm.get('avg_instructor', 5.0)}★，"
+                f"助教滿意度達 {qm.get('avg_ta', 5.0)}★，淨推薦值 NPS 為 {'+' if qm.get('nps', 0) >= 0 else ''}{qm.get('nps', 0)}。"
+            )
+            if gold_sample:
+                exec_summary += f" 學員原聲金句如『{gold_sample}』印證了授課專業與吸引力。"
+            if alert_sample:
+                exec_summary += f" 同時學員提醒『{alert_sample}』，為後續課程提供明確的教學優化切入點。"
 
         # 產出完整 Markdown 審查報告
         report_md = f"""# 《{state.course_name}》結業問卷綜合診斷與教學改進審查報告
 
 **評審機構**：{state.organizer} ✕ 班級結業問卷分析師多代理 AI 團隊  
+**授課講師**：{teacher_label}  
 **報告生成日期**：{now_str}  
-**資料覆蓋**：有效問卷 {insp.get('total_responses', 0)} 份（填答覆蓋完整度 {insp.get('data_health_score', 100)}%）
+**資料覆蓋**：有效問卷 {total_resp} 份（填答覆蓋完整度 {insp.get('data_health_score', 100)}%）
 
 ---
 
@@ -44,15 +58,19 @@ class ChiefSynthesizerAgent:
 
 ## 一、問卷資料健康度與學員背景畫像
 
-* **有效問卷總數**：{insp.get('total_responses', 0)} 份
+* **有效問卷總數**：{total_resp} 份
 * **學員起點分佈**：
 """
-        for exp, cnt in insp.get("experience_distribution", {}).items():
-            report_md += f"  - **{exp}**：{cnt} 位 ({round(cnt / max(insp.get('total_responses', 1), 1) * 100, 1)}%)\n"
+        exp_dist = insp.get("experience_distribution", {})
+        if exp_dist:
+            for exp, cnt in exp_dist.items():
+                report_md += f"  - **{exp}**：{cnt} 位 ({round(cnt / max(total_resp, 1) * 100, 1)}%)\n"
+        else:
+            report_md += "  - *(尚無學員填答數據)*\n"
 
         report_md += f"""
 > [!NOTE]
-> **學員結構觀察**：本期班級呈現明顯的「初學者為骨幹」結構（零基礎與塗鴉新手合計超過 80%），因此課程內容的「降維解釋」與「操作信心建立」是決定口碑的最關鍵支柱。
+> **學員結構觀察**：本期班級資料顯示，重視初學者的「操作引導」與「實作信心建立」是奠定課程滿意度與高續報口碑的最關鍵支柱。
 
 ---
 
@@ -61,12 +79,12 @@ class ChiefSynthesizerAgent:
 ### 1. 教學核心維度指標
 | 評鑑維度 | 平均滿意度 (滿分 5★) | 標準差 (離散度) | 評等 |
 | :--- | :---: | :---: | :---: |
-| **大維老師授課與示範** | **{qm.get('avg_instructor', 5.0)}** | {qm.get('std_instructor', 0.0)} | 卓越 (A+) |
-| **課綱安排與素材講義** | **{qm.get('avg_course', 5.0)}** | {qm.get('std_course', 0.0)} | 優良 (A) |
-| **助教課堂解答與課後陪伴** | **{qm.get('avg_ta', 5.0)}** | {qm.get('std_ta', 0.0)} | 卓越 (A+) |
+| **{teacher_label} 授課與示範** | **{qm.get('avg_instructor', 5.0)}** | {qm.get('std_instructor', 0.0)} | {'卓越 (A+)' if qm.get('avg_instructor', 5.0) >= 4.5 else '良好 (A)'} |
+| **課綱安排與教材實用度** | **{qm.get('avg_course', 5.0)}** | {qm.get('std_course', 0.0)} | {'卓越 (A+)' if qm.get('avg_course', 5.0) >= 4.5 else '良好 (A)'} |
+| **助教課堂解答與課後陪伴** | **{qm.get('avg_ta', 5.0)}** | {qm.get('std_ta', 0.0)} | {'卓越 (A+)' if qm.get('avg_ta', 5.0) >= 4.5 else '良好 (A)'} |
 
 ### 2. 淨推薦值 (Net Promoter Score, NPS)
-* **NPS 分數**：**+{qm.get('nps', 0)}**
+* **NPS 分數**：**{'+' if qm.get('nps', 0) >= 0 else ''}{qm.get('nps', 0)}**
 * **推薦者 (Promoters, 9-10分)**：{qm.get('promoters_count', 0)} 人 ({qm.get('promoters_pct', 0)}%)
 * **被動者 (Passives, 7-8分)**：{qm.get('passives_count', 0)} 人 ({qm.get('passives_pct', 0)}%)
 * **批評者 (Detractors, 0-6分)**：{qm.get('detractors_count', 0)} 人 ({qm.get('detractors_pct', 0)}%)
@@ -75,39 +93,51 @@ class ChiefSynthesizerAgent:
 
 ## 三、質化語意與學員原聲洞察 (Voice of Students)
 
-* **正面情感比例**：**{ti.get('sentiment_ratio', {}).get('positive', 90)}%**
-* **建設性反饋比例**：**{ti.get('sentiment_ratio', {}).get('constructive', 10)}%**
+* **正面情感比例**：**{ti.get('sentiment_ratio', {}).get('positive', 100)}%**
+* **建設性反饋比例**：**{ti.get('sentiment_ratio', {}).get('constructive', 0)}%**
 
-### 🎨 學員精選口碑金句（大維老師教學魅力）
+### 🎨 學員精選口碑金句（{teacher_label} 教學魅力）
 """
-        for g in ti.get("gold_quotes", [])[:5]:
-            report_md += f"> *「{g.get('quote')}」*  \n> —— **{g.get('student_name')}** ({g.get('experience')}, 評分 {g.get('rating')}★)\n\n"
+        gold_quotes = ti.get("gold_quotes", [])
+        if gold_quotes:
+            for g in gold_quotes[:5]:
+                report_md += f"> *「{g.get('quote')}」*  \n> —— **{g.get('student_name')}** ({g.get('experience')}, 評分 {g.get('rating')}★)\n\n"
+        else:
+            report_md += "> *（目前尚無文字金句，等待學員填寫反饋）*\n\n"
 
-        report_md += """
-### ⚠️ 教學警訊與節奏微調提醒
+        report_md += f"""### ⚠️ 教學警訊與關鍵建議
 """
-        for a in ti.get("alert_quotes", [])[:4]:
-            report_md += f"> *「{a.get('quote')}」*  \n> —— **{a.get('student_name')}** ({a.get('experience')})\n\n"
+        alert_quotes = ti.get("alert_quotes", [])
+        if alert_quotes:
+            for a in alert_quotes[:4]:
+                report_md += f"> *「{a.get('quote')}」*  \n> —— **{a.get('student_name')}** ({a.get('experience')})\n\n"
+        else:
+            report_md += "> *（目前無急迫性教學警訊反饋）*\n\n"
 
-        report_md += """
-### 🤝 助教課後護航口碑
+        report_md += f"""### 🤝 助教課堂陪伴口碑
 """
-        for ta in ti.get("ta_highlights", [])[:3]:
-            report_md += f"> *「{ta.get('quote')}」*  \n> —— **{ta.get('student_name')}**\n\n"
+        ta_highlights = ti.get("ta_highlights", [])
+        if ta_highlights:
+            for ta in ta_highlights[:3]:
+                report_md += f"> *「{ta.get('quote')}」*  \n> —— **{ta.get('student_name')}**\n\n"
+        else:
+            report_md += "> *（目前尚無助教文字評語）*\n\n"
 
-        report_md += """
----
+        report_md += f"""---
 
 ## 四、交叉因果與根因診斷 (Root Cause Analysis)
 
 """
-        for ins in cc.get("key_insights", []):
-            report_md += f"### 📌 發現：{ins.get('finding')}\n"
-            report_md += f"* **現象證據**：{ins.get('evidence')}\n"
-            report_md += f"* **底層根因**：{ins.get('root_cause')}\n\n"
+        insights = cc.get("key_insights", [])
+        if insights:
+            for ins in insights:
+                report_md += f"### 📌 發現：{ins.get('finding')}\n"
+                report_md += f"* **現象證據**：{ins.get('evidence')}\n"
+                report_md += f"* **底層根因**：{ins.get('root_cause')}\n\n"
+        else:
+            report_md += "> *（目前數據累積中，等待更多填答進行交叉關聯）*\n\n"
 
-        report_md += """
----
+        report_md += f"""---
 
 ## 五、教學改進與行動策略矩陣 (Pedagogical Action Roadmap)
 
@@ -122,8 +152,8 @@ class ChiefSynthesizerAgent:
         for ca in ps.get("action_matrix", {}).get("curriculum_architecture", []):
             report_md += f"| **長期架構** | **{ca.get('title')}**：{ca.get('detail')} | {ca.get('impact')} | {ca.get('effort')} |\n"
 
-        report_md += """
-### 2. 大維老師個人教學覆盤指引
+        report_md += f"""
+### 2. {teacher_label} 個人教學覆盤指引
 """
         for tr in ps.get("teacher_reflection", []):
             report_md += f"- **{tr}**\n"
@@ -139,8 +169,8 @@ class ChiefSynthesizerAgent:
 
 ## 六、下一期招生與轉化策略建言
 
-1. **口碑素材庫建立**：本報告第三節萃取之 {len(ti.get('gold_quotes', []))} 則學員金句（如『解開正片疊底任督二脈』、『看老師畫畫像魔法』），可直接製作為下一期宣傳海報與 IG 輪播素材。
-2. **舊生續報專屬通道**：本次 NPS 高達 +{qm.get('nps', 0)}，學員對大維老師忠誠度極高。建議在結業 72 小時內於 LINE 群推播進階班《風景氛圍與光影史詩》，搭配問卷領取之專屬優惠碼，預估續報轉化率可達 25%~35%。
+1. **口碑素材庫建立**：本報告第三節萃取之 {len(gold_quotes)} 則學員金句與高度評價，可直接製作為下一期招生海報、EDM 與社群輪播素材。
+2. **舊生續報專屬通道**：本次 NPS 為 {'+' if qm.get('nps', 0) >= 0 else ''}{qm.get('nps', 0)}，學員對 {teacher_label} 與課程具備良好信任。建議在結業 72 小時內於班級群組推播進階延伸實戰單元，搭配問卷領取之專屬優惠碼，有效鎖定舊生續報轉化！
 
 ---
 *報告由「班級結業問卷分析師 多代理協同 AI Agent」自動彙整驗證完成。*
@@ -149,5 +179,5 @@ class ChiefSynthesizerAgent:
         state.executive_summary = exec_summary
         state.final_report_md = report_md
 
-        state.log(self.name, "done", "《結業問卷綜合診斷報告書》編制完成！隨時可供預覽、列印與匯出。")
+        state.log(self.name, "done", f"《結業問卷綜合診斷報告書》編制完成！已專屬對齊【{state.course_name}】與講師【{teacher_label}】。")
         return state

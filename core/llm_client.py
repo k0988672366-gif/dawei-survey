@@ -53,19 +53,19 @@ class LLMClient:
         return self._local_heuristic_generate(prompt, system_instruction)
 
     def _local_heuristic_generate(self, prompt: str, system_instruction: str) -> str:
-        """本機智慧規則生成器，針對教育與繪畫問卷產出結構化高品質回覆"""
+        """本機智慧規則生成器，針對課程問卷產出結構化高品質回覆"""
         prompt_lower = prompt.lower()
 
         if "質化" in prompt or "sentiment" in prompt_lower or "情緒" in prompt:
             return (
-                "學員對大維老師的筆刷拆解與技法示範表達極高度讚賞，許多人提到『解開正片疊底與混色心魔』；"
-                "助教的耐心陪伴獲得近乎滿分評價。警訊主要集中於初學者在光影單元跟隨示範時節奏稍快。"
+                "學員對授課講師的專業示範與觀念拆解表達高度讚賞，肯定課程實用性與操作解惑；"
+                "助教的課堂解答與課後陪伴亦獲得優異評價。主要建議集中於初學者在實作環節希望能有更充裕的示範停頓時間。"
             )
         elif "建議" in prompt or "策略" in prompt or "pedagogy" in prompt_lower:
             return (
-                "1. 即刻優化：在光影單元前提供 3 分鐘重點色階卡預習圖。\n"
-                "2. 次期優化：針對零基礎學員增加專屬 10 分鐘軟體手勢操作前導片。\n"
-                "3. 課綱迭代：下一期可增設『風格化商業插畫』延伸模組。"
+                "1. 即刻速贏：在示範核心關鍵環節時，口述具體參數並保留 5~10 秒操作緩衝。\n"
+                "2. 次期優化：針對初學者提供課前新手導航微影音與預習資料包，前置消化操作障礙。\n"
+                "3. 長期架構：依據結業高滿意度口碑，規劃進階商業實戰單元帶動續報轉化。"
             )
         else:
-            return "經多代理人綜合分析，本期課程整體滿意度與 NPS 表現優異，學員忠誠度高，具有強大口碑推薦潛力。"
+            return "經多代理協同分析，本期課程整體滿意度與 NPS 表現良好，學員回饋積極，建議持續維持教學節奏並落實速贏改進方案。"
