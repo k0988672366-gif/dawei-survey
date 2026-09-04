@@ -345,7 +345,13 @@
     <header>
       <div class="brand">
         <h1 id="topTitle">🎨 劉大維畫室 ✕ 多代理協同 AI 結業分析師</h1>
-        <p>赫綵設計學院 ✕ 結業問卷即時數據監控 ＆ 線上單元課兌換後台</p>
+        <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px; flex-wrap: wrap;">
+          <p style="margin: 0;">赫綵設計學院 ✕ 結業問卷即時數據監控 ＆ 線上單元課兌換後台</p>
+          <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.76rem; color: #34d399; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 2px 10px;">
+            <span style="display: inline-block; width: 6px; height: 6px; background: #34d399; border-radius: 50%; box-shadow: 0 0 8px #34d399;"></span>
+            即時自動同步中 (每 10 秒自動刷新)
+          </span>
+        </div>
       </div>
       <div class="header-actions">
         <div style="display: flex; align-items: center; gap: 8px;">
@@ -773,10 +779,45 @@
     let currentClassId = 'class_1788504131';
     let allClassesData = {};
 
-    document.addEventListener('DOMContentLoaded', () => {
+    async function autoSyncAndRefresh() {
+      // 1. 若當前在電腦本機端，自動利用瀏覽器網路向 Render 雲端抓取最新填答並快取至本機
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        try {
+          const cloudRes = await fetch(`${CLOUD_PUBLIC_ORIGIN}/api/responses`, {
+            headers: { 'Authorization': 'Basic ' + btoa('admin:art888') }
+          });
+          if (cloudRes.ok) {
+            const cloudJson = await cloudRes.json();
+            if (cloudJson.data) {
+              await fetch('/api/sync-responses', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: cloudJson.data })
+              });
+            }
+          }
+        } catch (e) {
+          // 靜默跳過，不影響本地瀏覽
+        }
+      }
+
+      // 2. 自動更新當前選中班級之統計、名冊與圖表 (免手動重整，實時動態跳轉)
+      if (currentClassId) {
+        await Promise.all([
+          loadStats(currentClassId),
+          loadResponsesData(currentClassId)
+        ]);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
       initCharts();
-      loadClassesDropdown();
+      await loadClassesDropdown();
       initEvents();
+      // 初次啟動立即執行一次同步
+      await autoSyncAndRefresh();
+      // 每 10 秒在背景自動輪詢同步 (學員填完自動更新跳出，免手動點擊)
+      setInterval(autoSyncAndRefresh, 10000);
     });
 
     function switchTab(tabId) {

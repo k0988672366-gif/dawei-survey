@@ -165,9 +165,49 @@ class SurveyHandler(BaseHTTPRequestHandler):
             return
         self.send_error(404, "Not Found")
 
+    def do_HEAD(self):
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.end_headers()
+
+    def do_OPTIONS(self):
+        self.send_response(204)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, HEAD")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        self.end_headers()
+
     def do_POST(self):
         parsed = urlparse(self.path)
         global current_state
+
+        # 接收雲端資料並快取至本機 (/api/sync-responses)
+        if parsed.path == "/api/sync-responses":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length).decode("utf-8")
+            try:
+                payload = json.loads(body)
+                rows = payload.get("data", [])
+                fieldnames = [
+                    "timestamp", "class_id", "student_name", "phone", "line_id", "email",
+                    "prior_experience", "key_progress", "struggle_point", "instructor_rating",
+                    "instructor_comment", "course_rating", "ta_rating", "ta_comment",
+                    "platform_experience", "nps_score", "selected_reward_course", "wants_reward"
+                ]
+                with open(config.RESPONSES_CSV_PATH, "w", newline="", encoding="utf-8-sig") as f:
+                    writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
+                    writer.writeheader()
+                    for r in rows:
+                        writer.writerow(r)
+
+                if config.RESPONSES_CSV_PATH.exists():
+                    current_state.df = pd.read_csv(config.RESPONSES_CSV_PATH)
+
+                self.send_json(200, {"status": "success", "count": len(rows)})
+            except Exception as e:
+                self.send_json(500, {"status": "error", "message": str(e)})
+            return
 
         # 學員提交問卷
         if parsed.path == "/api/submit":
