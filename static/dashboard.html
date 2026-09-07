@@ -362,6 +362,9 @@
           <button id="copyCurrentClassLinkBtn" class="btn btn-secondary" style="border-color: #fbbf24; color: #fbbf24; padding: 8px 14px;" title="複製當前選中班級的學生填答網址">
             🔗 複製本班問卷連結
           </button>
+          <button id="deleteCurrentClassBtn" class="btn btn-secondary" style="border-color: #ef4444; color: #f87171; background: rgba(239, 68, 68, 0.08); padding: 8px 12px;" title="刪除目前選中的班級">
+            🗑️ 刪除此班級
+          </button>
         </div>
         <button id="syncCloudBtn" class="btn btn-secondary" style="border-color: #38bdf8; color: #38bdf8;" title="從 Render 雲端同步學員最新填答資料">☁️ 同步雲端填答</button>
         <a id="cloudAdminLink" href="https://dawei-survey.onrender.com/admin" target="_blank" class="btn btn-secondary" style="border-color: #a855f7; color: #c084fc;">🌐 雲端正式後台</a>
@@ -947,6 +950,9 @@
             <button type="button" class="btn btn-primary" onclick="switchToClass('${cid}', true)" style="padding: 7px 14px; font-size: 0.84rem;">
               📊 切換查看數據表
             </button>
+            <button type="button" class="btn btn-secondary" onclick="confirmDeleteClass('${cid}', '${(c.course_name||cid).replace(/'/g, "\\'")}')" style="padding: 7px 12px; font-size: 0.84rem; border-color: #ef4444; color: #f87171; background: rgba(239, 68, 68, 0.08);" title="刪除此班級">
+              🗑️ 刪除班級
+            </button>
           </div>
         `;
         container.appendChild(card);
@@ -1432,6 +1438,37 @@
       });
     }
 
+    async function confirmDeleteClass(classId, className) {
+      if (!classId) return;
+
+      const totalClasses = Object.keys(allClassesData || {}).length;
+      if (totalClasses <= 1) {
+        alert('⚠️ 系統至少需保留一個班級，無法刪除唯一的班級。');
+        return;
+      }
+
+      const confirmed = confirm(`⚠️ 確定要刪除班級【${className}】嗎？\n\n【警告】刪除後：\n1. 該班級的專屬問卷將立即失效\n2. 該班級的所有學員填答與兌換名冊資料將一併清除\n3. 此操作無法復原！\n\n您確定要繼續刪除嗎？`);
+      if (!confirmed) return;
+
+      try {
+        const res = await fetch('/api/delete-class', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ class_id: classId })
+        });
+        const data = await res.json();
+        if (res.ok && data.status === 'success') {
+          alert(`✅ ${data.message}`);
+          await loadClassesDropdown(data.new_active_class_id);
+        } else {
+          alert(`❌ 刪除失敗：${data.message || '未知錯誤'}`);
+        }
+      } catch (err) {
+        alert(`❌ 連線異常：${err.message}`);
+      }
+    }
+    window.confirmDeleteClass = confirmDeleteClass;
+
     function initEvents() {
       // 切換班級 (選取哪個班就能自動跳轉該班的班級回饋統整數據表)
       const selector = document.getElementById('classSelector');
@@ -1439,6 +1476,15 @@
         selector.addEventListener('change', (e) => {
           const cid = e.target.value;
           switchToClass(cid, true);
+        });
+      }
+
+      // 頂部刪除當前班級按鈕
+      const deleteCurrentBtn = document.getElementById('deleteCurrentClassBtn');
+      if (deleteCurrentBtn) {
+        deleteCurrentBtn.addEventListener('click', () => {
+          const classInfo = allClassesData[currentClassId] || {};
+          confirmDeleteClass(currentClassId, classInfo.course_name || '當前班級');
         });
       }
 

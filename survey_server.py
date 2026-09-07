@@ -298,6 +298,68 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 self.send_json(400, {"status": "error", "message": str(e)})
             return
 
+        # 刪除指定班級 API (/api/delete-class) (需要管理員密碼保護！)
+        if parsed.path == "/api/delete-class":
+            if not self.check_auth():
+                return
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length).decode("utf-8")
+            try:
+                payload = json.loads(body)
+                cid = payload.get("class_id")
+                if not cid:
+                    self.send_json(400, {"status": "error", "message": "未指定欲刪除的班級 ID"})
+                    return
+
+                cfg = config.load_classes_config()
+                classes = cfg.get("classes", {})
+
+                if cid not in classes:
+                    self.send_json(404, {"status": "error", "message": "找不到欲刪除的班級"})
+                    return
+
+                if len(classes) <= 1:
+                    self.send_json(400, {"status": "error", "message": "系統至少需保留一個班級，無法刪除唯一的班級"})
+                    return
+
+                deleted_name = classes[cid].get("course_name", cid)
+                del classes[cid]
+                cfg["classes"] = classes
+
+                # 若刪除的正好是當前活躍班級，將活躍班級移轉到剩餘的第一個班級
+                if cfg.get("active_class_id") == cid:
+                    cfg["active_class_id"] = list(classes.keys())[0]
+
+                with open(config.CLASSES_JSON_PATH, "w", encoding="utf-8") as f:
+                    json.dump(cfg, f, ensure_ascii=False, indent=2)
+
+                # 同步清理 responses CSV 中的此班級填答資料 (維持資料乾淨)
+                if config.RESPONSES_CSV_PATH.exists():
+                    try:
+                        all_rows = []
+                        with open(config.RESPONSES_CSV_PATH, mode="r", encoding="utf-8-sig") as f:
+                            reader = csv.DictReader(f)
+                            fieldnames = reader.fieldnames
+                            for row in reader:
+                                if row.get("class_id") != cid:
+                                    all_rows.append(row)
+                        if fieldnames:
+                            with open(config.RESPONSES_CSV_PATH, mode="w", encoding="utf-8-sig", newline="") as f:
+                                writer = csv.DictWriter(f, fieldnames=fieldnames)
+                                writer.writeheader()
+                                writer.writerows(all_rows)
+                    except Exception as err:
+                        print(f"[DeleteClass Warning] 清除舊資料失敗: {err}")
+
+                self.send_json(200, {
+                    "status": "success",
+                    "message": f"班級【{deleted_name}】已成功刪除！",
+                    "new_active_class_id": cfg.get("active_class_id")
+                })
+            except Exception as e:
+                self.send_json(500, {"status": "error", "message": f"刪除處理異常: {str(e)}"})
+            return
+
         # 同步雲端回饋資料到本機 (/api/sync-cloud) (需要管理員密碼保護！)
         if parsed.path == "/api/sync-cloud":
             if not self.check_auth():
