@@ -91,4 +91,12 @@ if not GEMINI_API_KEY and _env_path.exists():
     except Exception:
         pass
 
-DEFAULT_GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
+DEFAULT_GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.7-flash")
+if _env_path.exists():
+    try:
+        for line in _env_path.read_text(encoding="utf-8").splitlines():
+            if line.startswith("GEMINI_MODEL="):
+                DEFAULT_GEMINI_MODEL = line.split("=", 1)[1].strip().strip('"').strip("'")
+                break
+    except Exception:
+        pass

@@ -35,7 +35,7 @@ class SurveyChatAdvisorAgent:
 """
             try:
                 res = self.llm.generate_text(prompt)
-                if res and len(res.strip()) > 10:
+                if res and len(res.strip()) > 10 and not res.strip().startswith("經多代理協同分析"):
                     return res.strip()
             except Exception as e:
                 print(f"[ChatAdvisor Warning] Live LLM error: {e}")
@@ -52,6 +52,13 @@ class SurveyChatAdvisorAgent:
                 f"這幾週看著大家從起步摸索到產出屬於自己的作品，真的非常感動。問卷中每一位同學的回饋與鼓勵我都仔細讀過了，"
                 f"謝謝大家對課堂的投入與支持。無論大家的起點在哪裡，持續練習就是最棒的超能力！"
                 f"結業不是結束，別忘了領取專屬單元課繼續深化技能，有任何問題隨時在 LINE 班群交流，期待在未來的創作路上再次看見大家發光！✨"
+            )
+
+        # 停課 / 調課 / 補課 / 班級公告通知講稿
+        elif any(w in q_lower for w in ["停課", "請假", "補課", "調課", "公告", "講稿", "通知"]):
+            return (
+                f"【{state.course_name} 停課/調課公告講稿】\n\n"
+                f"各位學員好：因故原定明天課程將暫停一次，後續補課時間與進度調整將儘速於班群另行公告通知，感謝大家的體諒與配合！"
             )
 
         # 2. 詢問卡關點 / 痛點 / 難題 / 節奏

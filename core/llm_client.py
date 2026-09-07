@@ -36,27 +36,39 @@ class LLMClient:
                 else:
                     # 使用標準 requests 調用 Gemini REST API
                     import requests
-                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent?key={self.api_key}"
-                    payload = {
-                        "contents": [{"parts": [{"text": prompt}]}],
-                        "generationConfig": {
-                            "thinkingConfig": {
-                                "thinkingLevel": "low"
+                    models_to_try = [self.model]
+                    for m in ["gemini-3.7-flash", "gemini-2.5-flash"]:
+                        if m not in models_to_try:
+                            models_to_try.append(m)
+
+                    for target_model in models_to_try:
+                        try:
+                            url = f"https://generativelanguage.googleapis.com/v1beta/models/{target_model}:generateContent?key={self.api_key}"
+                            payload = {
+                                "contents": [{"parts": [{"text": prompt}]}],
+                                "generationConfig": {
+                                    "temperature": 0.7,
+                                    "maxOutputTokens": 1500
+                                }
                             }
-                        }
-                    }
-                    if system_instruction:
-                        payload["system_instruction"] = {"parts": [{"text": system_instruction}]}
-                    res = requests.post(url, json=payload, timeout=45)
-                    if res.status_code == 200:
-                        data = res.json()
-                        candidates = data.get("candidates", [])
-                        if candidates and "content" in candidates[0]:
-                            parts = candidates[0]["content"].get("parts", [])
-                            if parts:
-                                return parts[0].get("text", "").strip()
-                    else:
-                        print(f"[LLMClient Error] Gemini API returned status {res.status_code}: {res.text[:200]}")
+                            if system_instruction:
+                                payload["system_instruction"] = {"parts": [{"text": system_instruction}]}
+
+                            res = requests.post(url, json=payload, timeout=25)
+                            if res.status_code == 200:
+                                data = res.json()
+                                candidates = data.get("candidates", [])
+                                if candidates and "content" in candidates[0]:
+                                    parts = candidates[0]["content"].get("parts", [])
+                                    text_parts = [p.get("text", "") for p in parts if "text" in p and not p.get("thought", False)]
+                                    full_text = "".join(text_parts).strip()
+                                    if full_text:
+                                        return full_text
+                            else:
+                                print(f"[LLMClient Error] {target_model} returned {res.status_code}: {res.text[:200]}")
+                        except Exception as req_err:
+                            print(f"[LLMClient Error] Request to {target_model} failed: {req_err}")
+                            continue
             except Exception as e:
                 print(f"[LLMClient Warning] Gemini API 調用失敗，自動切換為本機啟發式引擎: {e}")
 
