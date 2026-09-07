@@ -31,27 +31,24 @@ class SurveyChatAdvisorAgent:
 【用戶提問】
 {question}
 
-請以專業、客觀且具備教育同理心的繁體中文回答。若用戶要求撰寫致詞、感謝信或文案，請直接產出符合語氣與字數要求的完整內容。
+請以專業、客觀且具備教育同理心的繁體中文直接回答。若用戶要求產出特定情境之文案（如節慶祝賀、停課公告、招生推廣或致謝詞），請直接產出符合該主題與字數限制的文字，切勿答非所問。
 """
             try:
                 res = self.llm.generate_text(prompt)
                 if res and len(res.strip()) > 10 and not res.strip().startswith("經多代理協同分析"):
                     return res.strip()
             except Exception as e:
-                print(f"[ChatAdvisor Warning] Live LLM error: {e}")
+                print(f"[ChatAdvisor Warning] Live LLM error: {e}", flush=True)
 
         # 本機智慧問答應答器（當尚未配置 API Key 時的智慧語意推論）
         q = question.strip()
         q_lower = q.lower()
 
-        # 1. 請求寫致詞 / 感謝信 / LINE 群發言 / 結業文案
-        if any(w in q_lower for w in ["致詞", "感謝", "line", "群發", "文案", "寫一段", "祝賀", "結業詞", "說的話", "開場"]):
+        # 節慶 / 假期祝賀詞 (如中秋、端午、新年、連假等)
+        if any(w in q_lower for w in ["中秋", "端午", "新年", "春節", "過年", "假期", "連假", "節日", "節慶"]):
             return (
-                f"【{teacher_label} 給【{state.course_name}】全體學員的結業致謝信】\n\n"
-                f"各位同學辛苦了！恭喜大家順利結業 🎉！\n"
-                f"這幾週看著大家從起步摸索到產出屬於自己的作品，真的非常感動。問卷中每一位同學的回饋與鼓勵我都仔細讀過了，"
-                f"謝謝大家對課堂的投入與支持。無論大家的起點在哪裡，持續練習就是最棒的超能力！"
-                f"結業不是結束，別忘了領取專屬單元課繼續深化技能，有任何問題隨時在 LINE 班群交流，期待在未來的創作路上再次看見大家發光！✨"
+                f"【{state.course_name} 節慶祝賀文案】\n\n"
+                f"各位同學佳節愉快！願大家假期充實圓滿、生活美好，在創作與學習路上持續發光發熱，祝闔家平安順心！"
             )
 
         # 停課 / 調課 / 補課 / 班級公告通知講稿
@@ -59,6 +56,16 @@ class SurveyChatAdvisorAgent:
             return (
                 f"【{state.course_name} 停課/調課公告講稿】\n\n"
                 f"各位學員好：因故原定明天課程將暫停一次，後續補課時間與進度調整將儘速於班群另行公告通知，感謝大家的體諒與配合！"
+            )
+
+        # 1. 請求寫結業致詞 / 感謝信 / LINE 結業群發言
+        elif any(w in q_lower for w in ["結業", "完課", "畢業", "致詞", "感謝信", "致謝"]):
+            return (
+                f"【{teacher_label} 給【{state.course_name}】全體學員的結業致謝信】\n\n"
+                f"各位同學辛苦了！恭喜大家順利結業 🎉！\n"
+                f"這幾週看著大家從起步摸索到產出屬於自己的作品，真的非常感動。問卷中每一位同學的回饋與鼓勵我都仔細讀過了，"
+                f"謝謝大家對課堂的投入與支持。無論大家的起點在哪裡，持續練習就是最棒的超能力！"
+                f"結業不是結束，別忘了領取專屬單元課繼續深化技能，有任何問題隨時在 LINE 班群交流，期待在未來的創作路上再次看見大家發光！✨"
             )
 
         # 2. 詢問卡關點 / 痛點 / 難題 / 節奏

@@ -36,9 +36,11 @@ class LLMClient:
                 else:
                     # 使用標準 requests 調用 Gemini REST API
                     import requests
-                    models_to_try = [self.model]
-                    for m in ["gemini-3.7-flash", "gemini-2.5-flash"]:
-                        if m not in models_to_try:
+                    primary = self.model if self.model else "gemini-3.5-flash-lite"
+                    candidate_pool = [primary, "gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-3.7-flash"]
+                    models_to_try = []
+                    for m in candidate_pool:
+                        if m and m not in models_to_try:
                             models_to_try.append(m)
 
                     for target_model in models_to_try:
