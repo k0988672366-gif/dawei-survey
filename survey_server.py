@@ -254,12 +254,19 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 return
 
             data["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            if data.get("wants_reward") == "no":
+            is_pure_feedback = (
+                data.get("wants_reward") == "no" or
+                not data.get("selected_reward_course") or
+                data.get("selected_reward_course") in ["無需兌換好禮", "無需兌換 (純回饋)", "未開放兌換 (純回饋)", "活動未開放"]
+            )
+
+            if is_pure_feedback:
+                data["wants_reward"] = "no"
                 data["student_name"] = data.get("student_name") or "匿名學員"
                 data["selected_reward_course"] = "無需兌換 (純回饋)"
-                data["phone"] = ""
-                data["line_id"] = ""
-                data["email"] = ""
+                data["phone"] = data.get("phone", "")
+                data["line_id"] = data.get("line_id", "")
+                data["email"] = data.get("email", "")
 
             self.append_to_csv(data)
 
@@ -268,11 +275,49 @@ class SurveyHandler(BaseHTTPRequestHandler):
             except:
                 pass
 
+            msg = "感謝您的寶貴回饋！問卷已成功送出。" if is_pure_feedback else "感謝您的回饋！單元課兌換申請已受理。"
             self.send_json(200, {
                 "status": "success",
-                "message": "感謝您的回饋！單元課兌換申請已受理。",
+                "message": msg,
                 "selected_reward_course": data.get("selected_reward_course", "")
             })
+            return
+
+        # 快速切換好禮贈送開關 API (/api/toggle-gift) (需要管理員密碼保護！)
+        if parsed.path == "/api/toggle-gift":
+            if not self.check_auth():
+                return
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length).decode("utf-8")
+            try:
+                payload = json.loads(body)
+                cid = payload.get("class_id")
+                if not cid:
+                    self.send_json(400, {"status": "error", "message": "未指定班級 ID"})
+                    return
+                cfg = config.load_classes_config()
+                classes = cfg.get("classes", {})
+                if cid not in classes:
+                    self.send_json(404, {"status": "error", "message": "找不到指定班級"})
+                    return
+
+                # 若指定 enable_gift 則套用，若無則反轉 toggle
+                current_val = classes[cid].get("enable_gift", True)
+                new_val = payload["enable_gift"] if "enable_gift" in payload else (not current_val)
+                classes[cid]["enable_gift"] = bool(new_val)
+                cfg["classes"] = classes
+
+                with open(config.CLASSES_JSON_PATH, "w", encoding="utf-8") as f:
+                    json.dump(cfg, f, ensure_ascii=False, indent=2)
+
+                self.send_json(200, {
+                    "status": "success",
+                    "class_id": cid,
+                    "enable_gift": classes[cid]["enable_gift"],
+                    "message": "🎁 好禮課程贈送已開啟！學員可勾選兌換單元課。" if classes[cid]["enable_gift"] else "⛔ 好禮課程贈送已關閉！已切換為純回饋模式（免選課直接送出）。"
+                })
+            except Exception as e:
+                self.send_json(500, {"status": "error", "message": f"好禮切換異常: {str(e)}"})
             return
 
         # 更新班級與問卷文案設定 (/api/update-class) (需要管理員密碼保護！)
@@ -287,7 +332,13 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 cfg = config.load_classes_config()
                 if "classes" not in cfg:
                     cfg["classes"] = {}
-                cfg["classes"][cid] = payload
+                existing = cfg["classes"].get(cid, {})
+                existing.update(payload)
+                if "enable_gift" in payload:
+                    existing["enable_gift"] = bool(payload["enable_gift"])
+                elif "enable_gift" not in existing:
+                    existing["enable_gift"] = True
+                cfg["classes"][cid] = existing
                 cfg["active_class_id"] = cid
 
                 with open(config.CLASSES_JSON_PATH, "w", encoding="utf-8") as f:

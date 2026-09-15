@@ -35,16 +35,25 @@ async function loadClassConfig() {
       document.getElementById('classIdInput').value = data.class_id || classId || 'default';
     }
 
+    // 判斷是否開啟完課好禮課程 (預設為 true，若後台設為 false 則轉為純回饋模式)
+    window.isGiftEnabled = (data.enable_gift !== false);
+
     // 更新頂部卡片所有文案
     if (data.badge_text && document.getElementById('badgeText')) {
-      document.getElementById('badgeText').textContent = data.badge_text;
+      document.getElementById('badgeText').textContent = window.isGiftEnabled 
+        ? data.badge_text 
+        : (data.badge_text.includes('好禮') ? '📝 結業成果回饋 ✕ 匿名填答' : data.badge_text);
     }
     if (data.course_name && document.getElementById('courseTitle')) {
       document.getElementById('courseTitle').textContent = data.course_name;
-      document.title = `${data.course_name} 結業回饋＆線上單元課兌換`;
+      document.title = window.isGiftEnabled 
+        ? `${data.course_name} 結業回饋＆線上單元課兌換` 
+        : `${data.course_name} 結業滿意度回饋問卷`;
     }
     if (data.course_subtitle && document.getElementById('courseSubtitle')) {
-      document.getElementById('courseSubtitle').textContent = data.course_subtitle;
+      document.getElementById('courseSubtitle').textContent = window.isGiftEnabled 
+        ? data.course_subtitle 
+        : (data.course_subtitle.includes('兌換') ? '結業滿意度回饋 ＆ 學習成效檢討' : data.course_subtitle);
     }
     if (data.gift_banner_title && document.getElementById('giftBannerTitle')) {
       document.getElementById('giftBannerTitle').textContent = data.gift_banner_title;
@@ -59,13 +68,16 @@ async function loadClassConfig() {
       document.getElementById('pill2').textContent = data.pill_2;
     }
     if (data.pill_3 && document.getElementById('pill3')) {
-      document.getElementById('pill3').textContent = data.pill_3;
+      document.getElementById('pill3').textContent = window.isGiftEnabled ? data.pill_3 : '✨ 純回饋免選課';
     }
     if (data.teacher_name) {
       document.querySelectorAll('.teacher-name-span').forEach(el => {
         el.textContent = `${data.teacher_name}老師`;
       });
     }
+
+    // 依據好禮設定即時套用顯隱邏輯
+    applyGiftVisibility();
 
     // 動態載入單元課清單
     if (data.reward_courses && data.reward_courses.length > 0) {
@@ -240,6 +252,51 @@ function initTagSelectors() {
   }
 }
 
+// 根據後台好禮設定套用顯隱邏輯
+function applyGiftVisibility() {
+  const isGiftEnabled = window.isGiftEnabled !== false;
+  const giftBanner = document.getElementById('heroGiftBanner');
+  const q11 = document.getElementById('q11WantsRewardContainer');
+  const rewardSection = document.getElementById('rewardRedemptionSection');
+  const submitBtn = document.getElementById('submitBtn');
+  const secNote = document.getElementById('securityNoteText');
+
+  if (!isGiftEnabled) {
+    if (giftBanner) giftBanner.style.display = 'none';
+    if (q11) q11.style.display = 'none';
+    if (rewardSection) rewardSection.style.display = 'none';
+
+    // 自動勾選無需兌換好禮
+    const noRadio = document.querySelector('input[name="wants_reward"][value="no"]');
+    if (noRadio) noRadio.checked = true;
+
+    // 移除第 05 區所有必填限制
+    if (rewardSection) {
+      const requiredFields = [
+        'input[name="student_name"]',
+        'input[name="phone"]',
+        'input[name="privacy_agree"]'
+      ];
+      requiredFields.forEach(sel => {
+        const el = rewardSection.querySelector(sel);
+        if (el) el.removeAttribute('required');
+      });
+      const courseRadios = rewardSection.querySelectorAll('input[name="selected_reward_course"]');
+      courseRadios.forEach(r => r.removeAttribute('required'));
+    }
+
+    if (submitBtn) {
+      submitBtn.innerHTML = '<span>🚀 送出結業回饋問卷</span>';
+    }
+    if (secNote) {
+      secNote.textContent = '🔒 我們嚴格保護您的回饋，資訊僅用於教學檢討與持續優化課程品質';
+    }
+  } else {
+    if (giftBanner) giftBanner.style.display = 'flex';
+    if (q11) q11.style.display = 'block';
+  }
+}
+
 // 初始化是否兌換好禮之動態展開/折疊
 function initRewardToggle() {
   const wantsRadios = document.querySelectorAll('input[name="wants_reward"]');
@@ -257,6 +314,11 @@ function initRewardToggle() {
   ];
 
   function updateVisibility() {
+    if (window.isGiftEnabled === false) {
+      applyGiftVisibility();
+      return;
+    }
+
     const selectedVal = document.querySelector('input[name="wants_reward"]:checked')?.value || 'yes';
     if (selectedVal === 'no') {
       rewardSection.style.display = 'none';
@@ -372,10 +434,12 @@ function initFormSubmit() {
       }
     }
 
-    const wantsReward = data.wants_reward !== 'no';
+    const isGiftEnabled = window.isGiftEnabled !== false;
+    const wantsReward = isGiftEnabled && (data.wants_reward !== 'no');
     if (!wantsReward) {
+      data.wants_reward = 'no';
       data.student_name = data.student_name || '匿名學員';
-      data.selected_reward_course = '無需兌換好禮';
+      data.selected_reward_course = isGiftEnabled ? '無需兌換好禮' : '未開放兌換 (純回饋模式)';
       data.phone = '';
       data.line_id = '';
       data.email = '';

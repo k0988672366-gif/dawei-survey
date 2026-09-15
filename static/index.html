@@ -22,7 +22,7 @@
       <h1 id="courseTitle">劉大維畫室 直播課程</h1>
       <p class="subtitle" id="courseSubtitle">結業滿意度回饋 ＆ 線上單元課免費兌換</p>
       
-      <div class="gift-banner">
+      <div class="gift-banner" id="heroGiftBanner">
         <div class="gift-icon">🎓</div>
         <div class="gift-info">
           <strong id="giftBannerTitle">完課專屬好禮：任選一門線上單元課！</strong>
@@ -259,7 +259,7 @@
         </div>
 
         <!-- 結業好禮兌換意願 -->
-        <div class="question-group" style="margin-top: 24px; padding-top: 20px; border-top: 1px dashed rgba(255, 255, 255, 0.1);">
+        <div class="question-group" id="q11WantsRewardContainer" style="margin-top: 24px; padding-top: 20px; border-top: 1px dashed rgba(255, 255, 255, 0.1);">
           <label class="question-label">
             11. 您是否想要免費兌換一門「線上單元課」結業好禮？ <span class="req">*</span>
             <small class="hint">（勾選「想兌換」再填寫專員開通聯繫資訊即可）</small>
@@ -378,9 +378,9 @@
       <!-- 提交按鈕 -->
       <div class="submit-wrap">
         <button type="submit" id="submitBtn" class="primary-btn">
-          <span>送出問卷 ＆ 申請線上單元課兌換 🎁</span>
+          <span id="submitBtnText">送出問卷 ＆ 申請線上單元課兌換 🎁</span>
         </button>
-        <p class="security-note">🔒 我們嚴格保護您的個資，資訊僅用於教學檢討與本次單元課兌換聯繫</p>
+        <p class="security-note" id="securityNoteText">🔒 我們嚴格保護您的個資，資訊僅用於教學檢討與本次單元課兌換聯繫</p>
       </div>
     </form>
   </main>

@@ -381,6 +381,15 @@
           <span id="activeClassTeacherDisplay" style="color: #a5b4fc; font-size: 0.85rem; margin-left: 6px;"></span>
         </div>
       </div>
+      <!-- 完課好禮課程模式切換開關 -->
+      <div style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 5px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+        <span style="font-size: 0.82rem; color: #cbd5e1;">完課好禮課程：</span>
+        <button id="toggleGiftBtn" type="button" class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.82rem; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;" title="點擊即刻切換好禮贈送模式">
+          <span id="toggleGiftIcon">🎁</span>
+          <span id="toggleGiftText">載入中...</span>
+          <span style="font-size: 0.72rem; opacity: 0.75; margin-left: 2px;">[點此切換]</span>
+        </button>
+      </div>
       <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
         <span style="font-size: 0.82rem; color: #cbd5e1;">學員 LINE 填答網址 (雲端公開)：</span>
         <code id="activeClassUrlDisplay" style="background: rgba(0,0,0,0.4); padding: 5px 12px; border-radius: 6px; color: #38bdf8; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(56, 189, 248, 0.2);">載入中...</code>
@@ -589,6 +598,20 @@
 單元課 B：【光影魔法】商業插畫光影氛圍感進階實戰 (市價 $1,500)
 單元課 C：【調色秘笈】色彩心理學與私房調色盤全解析 (市價 $1,200)
 單元課 D：【動態人體】角色五官比例與肢體骨架速繪 (市價 $1,600)</textarea>
+          </div>
+
+          <div style="grid-column: span 2; background: rgba(245, 158, 11, 0.07); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 14px 18px; margin-top: 6px;">
+            <label style="font-size: 0.92rem; font-weight: 600; color: #fbbf24; display: block; margin-bottom: 4px;">
+              🎁 11. 完課好禮課程贈送開關（隨時依行銷推廣需求開啟或關閉）
+            </label>
+            <p style="font-size: 0.82rem; color: #cbd5e1; margin-bottom: 10px; line-height: 1.5;">
+              • <strong>開啟贈送（行銷活動模式）</strong>：問卷會展示完課好禮橫幅、線上單元課選單與電話聯絡欄位，適合行銷擴散。<br>
+              • <strong>關閉贈送（純回饋模式）</strong>：自動隱藏好禮橫幅與單元課清單，學員填完教學評分後「免選課、免填電話」即可一鍵直接送出，大幅提升填答率！
+            </p>
+            <select id="editEnableGift" class="chat-input" style="font-size: 0.9rem; padding: 10px 14px; background: rgba(15, 23, 42, 0.9);">
+              <option value="true">🎁 開啟好禮課程贈送（行銷活動模式：學員選課＋留電話）</option>
+              <option value="false">⛔ 關閉好禮課程贈送（純回饋模式：免選課免填電話，直接送出問卷）</option>
+            </select>
           </div>
         </form>
       </div>
@@ -846,11 +869,72 @@
       copyTextToClipboard(fullUrl, `🎉 已成功複製【${courseName}】學員問卷公開連結！\n\n(此為正式雲端網址，傳入 LINE 群組後任何人手機皆可秒開！)`);
     }
 
+    function updateGiftToggleUI(enableGift) {
+      const btn = document.getElementById('toggleGiftBtn');
+      const icon = document.getElementById('toggleGiftIcon');
+      const text = document.getElementById('toggleGiftText');
+      if (!btn) return;
+      if (enableGift) {
+        btn.style.borderColor = '#10b981';
+        btn.style.color = '#34d399';
+        btn.style.background = 'rgba(16, 185, 129, 0.12)';
+        if (icon) icon.textContent = '🎁';
+        if (text) text.textContent = '啟用中 (行銷模式)';
+        btn.title = '目前此班【開啟好禮課程贈送】（學員可挑選單元課＋留電話開通）。點此切換為純回饋模式';
+      } else {
+        btn.style.borderColor = '#f59e0b';
+        btn.style.color = '#fbbf24';
+        btn.style.background = 'rgba(245, 158, 11, 0.12)';
+        if (icon) icon.textContent = '⛔';
+        if (text) text.textContent = '已關閉 (純回饋模式)';
+        btn.title = '目前此班【關閉好禮課程贈送】（學員免選課免填電話，直接送出問卷）。點此切換為開啟好禮贈送';
+      }
+    }
+
+    async function toggleGiftForClass(classId) {
+      if (!classId) return;
+      const classInfo = allClassesData[classId] || {};
+      const currentEnable = classInfo.enable_gift !== false;
+      const newEnable = !currentEnable;
+      const courseName = classInfo.course_name || classId;
+      const actionName = newEnable ? '【🎁 開啟好禮課程贈送】（學員問卷將顯示單元課好禮兌換區）' : '【⛔ 關閉好禮課程贈送】（切換為純回饋模式，學員免選課直接送出）';
+
+      const confirmed = confirm(`確定要將班級【${courseName}】切換為：\n${actionName} 嗎？`);
+      if (!confirmed) return;
+
+      try {
+        const res = await fetch('/api/toggle-gift', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ class_id: classId, enable_gift: newEnable })
+        });
+        const data = await res.json();
+        if (res.ok && data.status === 'success') {
+          alert(`✅ ${data.message}`);
+          if (allClassesData[classId]) {
+            allClassesData[classId].enable_gift = data.enable_gift;
+          }
+          if (classId === currentClassId) {
+            updateGiftToggleUI(data.enable_gift);
+            const editSelect = document.getElementById('editEnableGift');
+            if (editSelect) editSelect.value = data.enable_gift ? 'true' : 'false';
+          }
+          renderPublishedClassesList(allClassesData, currentClassId);
+        } else {
+          alert(`❌ 切換失敗：${data.message || '未知錯誤'}`);
+        }
+      } catch (err) {
+        alert(`❌ 連線異常：${err.message}`);
+      }
+    }
+    window.toggleGiftForClass = toggleGiftForClass;
+
     async function switchToClass(classId, autoSwitchTab = false) {
       currentClassId = classId;
       const classInfo = allClassesData[classId] || {};
       const courseName = classInfo.course_name || '專業培訓班';
       const teacherName = classInfo.teacher_name || '授課講師';
+      const enableGift = classInfo.enable_gift !== false;
 
       // 1. 更新頂部標題與目前班級顯示列
       document.getElementById('topTitle').textContent = `🎨 ${courseName} ✕ 多代理協同 AI 結業分析師`;
@@ -858,6 +942,9 @@
       if (nameDisp) nameDisp.textContent = courseName;
       const teacherDisp = document.getElementById('activeClassTeacherDisplay');
       if (teacherDisp) teacherDisp.textContent = `(授課講師: ${teacherName})`;
+
+      // 更新好禮開關按鈕狀態
+      updateGiftToggleUI(enableGift);
 
       // 2. 更新學員問卷網址 (優先顯示可發送給任何人的正式雲端公開網址)
       const publicBase = getPublicBaseUrl();
@@ -911,6 +998,7 @@
       const publicBase = getPublicBaseUrl();
       entries.forEach(([cid, c]) => {
         const isActive = cid === activeId;
+        const isGiftEnabled = c.enable_gift !== false;
         const url = `${publicBase}/?class=${cid}`;
         const card = document.createElement('div');
         card.style.cssText = `
@@ -925,11 +1013,16 @@
           gap: 12px;
         `;
 
+        const giftBadge = isGiftEnabled 
+          ? '<span style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); padding:2px 8px; border-radius:6px; font-size:0.75rem; font-weight:600;">🎁 好禮贈送中</span>'
+          : '<span style="background:rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.3); padding:2px 8px; border-radius:6px; font-size:0.75rem; font-weight:600;">📝 純回饋模式</span>';
+
         card.innerHTML = `
           <div>
-            <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
               <strong style="color: #fff; font-size: 1rem;">${c.course_name || cid}</strong>
               ${isActive ? '<span style="background:rgba(16,185,129,0.2); color:#10b981; border:1px solid rgba(16,185,129,0.4); padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:600;">● 現正檢視</span>' : ''}
+              ${giftBadge}
               <span style="color: #94a3b8; font-size: 0.82rem;">(講師: ${c.teacher_name || '老師'})</span>
             </div>
             <div style="margin-top: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
@@ -938,6 +1031,9 @@
             </div>
           </div>
           <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <button type="button" class="btn btn-secondary" onclick="toggleGiftForClass('${cid}')" style="padding: 7px 12px; font-size: 0.84rem; border-color: ${isGiftEnabled ? '#10b981' : '#f59e0b'}; color: ${isGiftEnabled ? '#34d399' : '#fbbf24'}; background: rgba(0,0,0,0.25);" title="切換此班的好禮贈送模式">
+              ${isGiftEnabled ? '⛔ 切換為純回饋' : '🎁 開啟好禮贈送'}
+            </button>
             <button type="button" class="btn btn-secondary" onclick="copyClassLink('${cid}', '${(c.course_name||cid).replace(/'/g, "\\'")}')" style="padding: 7px 14px; font-size: 0.84rem; border-color: #fbbf24; color: #fbbf24; background: rgba(245, 158, 11, 0.1);">
               🔗 複製本班問卷連結
             </button>
@@ -1335,6 +1431,9 @@
         if (data.reward_courses && data.reward_courses.length > 0) {
           document.getElementById('editRewardCourses').value = data.reward_courses.join('\n');
         }
+        if (document.getElementById('editEnableGift')) {
+          document.getElementById('editEnableGift').value = (data.enable_gift !== false) ? 'true' : 'false';
+        }
       } catch (e) {
         console.error('Failed to load class config to editor:', e);
       }
@@ -1485,6 +1584,14 @@
         });
       }
 
+      // 頂部常駐好禮模式快速切換按鈕
+      const toggleGiftBtn = document.getElementById('toggleGiftBtn');
+      if (toggleGiftBtn) {
+        toggleGiftBtn.addEventListener('click', () => {
+          toggleGiftForClass(currentClassId);
+        });
+      }
+
       // 頂部常駐複製問卷連結按鈕
       const copyCurrentBtn = document.getElementById('copyCurrentClassLinkBtn');
       if (copyCurrentBtn) {
@@ -1543,6 +1650,8 @@
             .map(s => s.trim())
             .filter(Boolean);
 
+          const enableGiftVal = document.getElementById('editEnableGift') ? (document.getElementById('editEnableGift').value === 'true') : true;
+
           const payload = {
             class_id: document.getElementById('editClassId').value,
             badge_text: document.getElementById('editBadgeText').value,
@@ -1556,6 +1665,7 @@
             pill_1: document.getElementById('editPill1').value,
             pill_2: document.getElementById('editPill2').value,
             pill_3: document.getElementById('editPill3').value,
+            enable_gift: enableGiftVal,
             reward_courses: rewardCourses
           };
 
@@ -1567,8 +1677,16 @@
             });
             const data = await res.json();
             if (data.status === 'success') {
-              alert('🎉 恭喜！問卷文案與線上單元課清單已儲存更新！\n學員問卷畫面已即時同步！');
+              alert('🎉 恭喜！問卷文案、線上單元課清單與好禮開關已儲存更新！\n學員問卷畫面已即時同步！');
               document.getElementById('topTitle').textContent = `🎨 ${payload.course_name} ✕ 多代理協同 AI 結業分析師`;
+              if (allClassesData[payload.class_id]) {
+                allClassesData[payload.class_id].enable_gift = payload.enable_gift;
+                allClassesData[payload.class_id].course_name = payload.course_name;
+              }
+              if (payload.class_id === currentClassId) {
+                updateGiftToggleUI(payload.enable_gift);
+              }
+              renderPublishedClassesList(allClassesData, currentClassId);
             } else {
               alert('儲存失敗：' + data.message);
             }

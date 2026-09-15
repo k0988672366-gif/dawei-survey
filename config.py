@@ -38,7 +38,8 @@ def load_classes_config():
                     "單元課 B：【光影魔法】商業插畫光影氛圍感進階實戰 (市價 $1,500)",
                     "單元課 C：【調色秘笈】色彩心理學與私房調色盤全解析 (市價 $1,200)",
                     "單元課 D：【動態人體】角色五官比例與肢體骨架速繪 (市價 $1,600)"
-                ]
+                ],
+                "enable_gift": True
             }
         }
     }
@@ -47,19 +48,25 @@ def get_class_info(class_id: str = None) -> dict:
     cfg = load_classes_config()
     classes = cfg.get("classes", {})
     target_id = class_id or cfg.get("active_class_id", "dawei_studio_01")
+    info = None
     if target_id in classes:
-        return classes[target_id]
+        info = dict(classes[target_id])
     elif classes:
-        return list(classes.values())[0]
-    return {
-        "class_id": "default",
-        "course_name": "專業直播培訓課程",
-        "teacher_name": "授課講師",
-        "organizer": "赫綵設計學院",
-        "platform_name": "OKBOM直播平台",
-        "syllabus_topics": [],
-        "reward_courses": []
-    }
+        info = dict(list(classes.values())[0])
+    else:
+        info = {
+            "class_id": "default",
+            "course_name": "專業直播培訓課程",
+            "teacher_name": "授課講師",
+            "organizer": "赫綵設計學院",
+            "platform_name": "OKBOM直播平台",
+            "syllabus_topics": [],
+            "reward_courses": [],
+            "enable_gift": True
+        }
+    if "enable_gift" not in info:
+        info["enable_gift"] = True
+    return info
 
 _default_info = get_class_info()
 COURSE_NAME = _default_info.get("course_name", "劉大維畫室直播課程")
