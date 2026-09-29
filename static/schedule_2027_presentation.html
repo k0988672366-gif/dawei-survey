@@ -646,6 +646,55 @@
     gap: 8px;
   }
 
+
+  /* Gantt & Pre-schedule Styles */
+  .gantt-bar {
+    display: block;
+    height: 22px;
+    line-height: 22px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    padding: 0 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .g-ongoing {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px dashed #f87171;
+  }
+  .g-t1 {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+  }
+  .g-up {
+    background: #f3e8ff;
+    color: #6b21a8;
+    border: 1px solid #c084fc;
+  }
+  .g-t2 {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+  }
+  .month-tag {
+    display: inline-block;
+    width: 78px;
+    text-align: center;
+    padding: 2px 0;
+    border-radius: 3px;
+    font-size: 11.5px;
+    font-weight: 700;
+    background: #1e293b;
+    color: #ffffff;
+  }
+  .month-tag.m-q1 { background: #1d4ed8; }
+  .month-tag.m-q2 { background: #0f766e; }
+
   @media print {
     body { background: #fff; padding: 0; }
     .sheet { box-shadow: none; border: 1px solid #000; }
@@ -1051,6 +1100,402 @@
         <div class="cy-meta">26 堂｜19 人｜AI 遊戲設計建議排於 3 月下旬</div>
       </div>
     </div>
+
+    <!-- ===================================================================== -->
+    <!-- SECTION 4: 2027 H1 PRE-PLANNED SCHEDULE (GANTT MATRIX + 17-CLASS LIST)-->
+    <!-- ===================================================================== -->
+    <div class="section-bar" style="background:#0f172a; border-top: 2px solid #334155;">
+      <span>四、2027 上半年（1～6月）預排開班課表（依兩年數據梳理結果、師資不撞期、跨年結業日無縫接棒安排，共 17 班）</span>
+      <span class="note">已避開 2027 年初 5 門在途班結業日，並完成同師資/同課系錯開排程｜產品部可依此檔期直接與老師對接</span>
+    </div>
+
+    <!-- 4-1: Visual Track & Month Continuity Matrix -->
+    <div style="padding: 10px 20px; background: #f8fafc; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--text-sub); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+      <div>
+        <b>【四大產品線跨月接棒甘特圖】</b> 清楚呈現「2026 跨年在途班結業（紅虛線）」如何無縫交棒給「2027 上半年新開班（綠/紫/藍實線）」，確保老師不撞課、舊生一路直升：
+      </div>
+      <div style="display:flex; gap:12px; font-size:11.5px; font-weight:600;">
+        <span><span style="display:inline-block;width:10px;height:10px;background:#fee2e2;border:1px dashed #f87171;margin-right:4px;"></span>2026 跨年在途班</span>
+        <span><span style="display:inline-block;width:10px;height:10px;background:#dcfce7;border:1px solid #86efac;margin-right:4px;"></span>第一優先王牌班</span>
+        <span><span style="display:inline-block;width:10px;height:10px;background:#f3e8ff;border:1px solid #c084fc;margin-right:4px;"></span>★ 依 2025 數據上調班</span>
+        <span><span style="display:inline-block;width:10px;height:10px;background:#dbeafe;border:1px solid #93c5fd;margin-right:4px;"></span>第二優先口碑班</span>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="grid-table">
+        <colgroup>
+          <col style="width: 13%;">
+          <col style="width: 17%;">
+          <col style="width: 10%;">
+          <col style="width: 10%;">
+          <col style="width: 10%;">
+          <col style="width: 10%;">
+          <col style="width: 10%;">
+          <col style="width: 10%;">
+          <col style="width: 10%;">
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="al-l">核心產品線 / 師資動線</th>
+            <th class="al-l">班級接力動線說明</th>
+            <th class="al-c">2027 / 01月</th>
+            <th class="al-c">2027 / 02月</th>
+            <th class="al-c">2027 / 03月</th>
+            <th class="al-c">2027 / 04月</th>
+            <th class="al-c">2027 / 05月</th>
+            <th class="al-c">2027 / 06月</th>
+            <th class="al-c">07月～跨下半年</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Track 1: 黃俊傑 Vtuber 三部曲 -->
+          <tr>
+            <td class="al-l num-strong">① 黃俊傑・Vtuber 線</td>
+            <td class="al-l">01/29 結業 ➔ 三部曲階梯直升</td>
+            <td class="al-c"><span class="gantt-bar g-ongoing">在途 Live2D (01/29結)</span></td>
+            <td class="al-c"><span class="gantt-bar g-t1">① Vtuber 一期 (8堂)</span></td>
+            <td class="al-c" colspan="2"><span class="gantt-bar g-t1">② V皮角色繪製 (16堂｜承接Vtuber)</span></td>
+            <td class="al-c" colspan="2"><span class="gantt-bar g-t1">③ Live2D 動畫 (16堂｜承接V皮)</span></td>
+            <td class="al-c"><span class="gantt-bar g-t1">④ Vtuber 二期(06中開)</span></td>
+          </tr>
+          <!-- Track 2: 數位漫畫線 -->
+          <tr>
+            <td class="al-l num-strong">② 數位漫畫線 (★上調2班)</td>
+            <td class="al-l">01/23 結業 ➔ 夏宜嵐 20堂雙班接力</td>
+            <td class="al-c"><span class="gantt-bar g-ongoing">在途漫畫 羅品傑(01/23結)</span></td>
+            <td class="al-c" colspan="3"><span class="gantt-bar g-up">① 數位漫畫班 一期｜夏宜嵐 (20堂｜02上～04中)</span></td>
+            <td class="al-c" colspan="3"><span class="gantt-bar g-up">② 數位漫畫班 二期｜夏宜嵐/羅品傑 (20堂｜05上～07中)</span></td>
+          </tr>
+          <!-- Track 3: Procreate 繪畫線 -->
+          <tr>
+            <td class="al-l num-strong">③ Procreate 線 (★上調2班)</td>
+            <td class="al-l">曹育禎 ＋ 簡佳慧 24堂前後接棒</td>
+            <td class="al-c" colspan="4"><span class="gantt-bar g-up">① Procreate 數位繪畫 一期｜曹育禎 (24堂｜01下～04中)</span></td>
+            <td class="al-c">檔期緩衝</td>
+            <td class="al-c" colspan="2"><span class="gantt-bar g-up">② Procreate 二期｜簡佳慧 (24堂｜06上～08中)</span></td>
+          </tr>
+          <!-- Track 4: 數位繪畫班 (張博涵) -->
+          <tr>
+            <td class="al-l num-strong">④ 數位繪畫線 (張博涵)</td>
+            <td class="al-l">夾在兩班 Procreate 中間開課不搶客</td>
+            <td class="al-c" colspan="2">與 Procreate 一期錯開</td>
+            <td class="al-c" colspan="3"><span class="gantt-bar g-t1">① 數位繪畫班｜張博涵 (20堂｜03下～06上，單班172人規模)</span></td>
+            <td class="al-c" colspan="2">與 Procreate 二期錯開</td>
+          </tr>
+          <!-- Track 5: 商用視覺平面基礎線 -->
+          <tr>
+            <td class="al-l num-strong">⑤ 商用視覺平面基礎線</td>
+            <td class="al-l">黃偉勳(2月) ＋ 曾國軒(4月) 雙主帥</td>
+            <td class="al-c" colspan="2"><span class="gantt-bar g-ongoing">在途 AI平面 黃貴濃 (至 03/04 結業)</span></td>
+            <td class="al-c" colspan="3"><span class="gantt-bar g-t1">① 商用視覺平面｜黃偉勳 (30堂｜02中～05中，全校最大現金牛)</span></td>
+            <td class="al-c" colspan="2"><span class="gantt-bar g-t1">② AI商用平面｜曾國軒 (27堂｜04下～07下)</span></td>
+          </tr>
+          <!-- Track 6: 王仁駿 (平面進階 + AI品牌) -->
+          <tr>
+            <td class="al-l num-strong">⑥ 王仁駿・進階＆品牌線</td>
+            <td class="al-l">先開平面進階(3月) ➔ 再開AI品牌(5月)</td>
+            <td class="al-c" colspan="2">累積平面基礎班結業生</td>
+            <td class="al-c" colspan="2"><span class="gantt-bar g-up">① 商用平面進階｜王仁駿 (16堂｜03上～04下，完課55%)</span></td>
+            <td class="al-c" colspan="3"><span class="gantt-bar g-t2">② AI 品牌系統創建｜王仁駿 (18堂｜05中～07上，出席84.6%)</span></td>
+          </tr>
+          <!-- Track 7: 遊戲設計線 -->
+          <tr>
+            <td class="al-l num-strong">⑦ AI 遊戲設計線</td>
+            <td class="al-l">待 03/23 角色美術結業後接棒</td>
+            <td class="al-c" colspan="3"><span class="gantt-bar g-ongoing">在途 遊戲角色美術 龎士禮 (至 03/23 結業)</span></td>
+            <td class="al-c" colspan="3"><span class="gantt-bar g-t1">① AI 遊戲設計班｜葉繁晟 (24堂｜04上～06中，單班160人爆款)</span></td>
+            <td class="al-c">暑期二期籌備</td>
+          </tr>
+          <!-- Track 8: 動畫職人 / AE / UI -->
+          <tr>
+            <td class="al-l num-strong">⑧ 特效 / 動畫職人 / UI</td>
+            <td class="al-l">2月開 AE ➔ 4月開日本動畫職人與 UI</td>
+            <td class="al-c">檔期準備</td>
+            <td class="al-c" colspan="2"><span class="gantt-bar g-t2">① AE 特效｜石皓瑋 (20堂｜02下～04下)</span></td>
+            <td class="al-c" colspan="3"><span class="gantt-bar g-t2">② 日本動畫職人(16堂) ＆ ③ UI視覺介面(20堂) (04中下～06下)</span></td>
+            <td class="al-c">Q3 輪動</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 4-2: Detailed 17-Class Chronological Pre-Schedule Table -->
+    <div class="section-bar" style="background:#1e293b;">
+      <span>五、2027 上半年（1～6月）17 班預排課表明細清單（依建議開課月份排序，可直接交由產品部對接老師時間）</span>
+      <span class="note">每月開班數：1月(1班)、2月(4班)、3月(3班)、4月(4班)、5月(3班)、6月(2班)，合計 17 班</span>
+    </div>
+    <div class="table-wrap">
+      <table class="grid-table">
+        <colgroup>
+          <col style="width: 6%;">
+          <col style="width: 9%;">
+          <col style="width: 11%;">
+          <col style="width: 18%;">
+          <col style="width: 12%;">
+          <col style="width: 7%;">
+          <col style="width: 8%;">
+          <col style="width: 9%;">
+          <col style="width: 20%;">
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="al-c">班次序號</th>
+            <th class="al-c">預排開課月份</th>
+            <th class="al-c">預計完課月份</th>
+            <th class="al-l">預排開班課程名稱</th>
+            <th class="al-l">優先對接師資</th>
+            <th class="al-c">固定堂數</th>
+            <th class="al-c">優先級屬性</th>
+            <th class="al-r">歷史單班參考</th>
+            <th class="al-l">排課檔期設定依據 ＆ 前後班銜接邏輯</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="row-group-header">
+            <td colspan="9">【第一季度（2027 年 1 月 ～ 3 月）預排開班：共 8 班】重點：避開 1 月在途班結業，2～3 月啟動王牌引流與產能回補</td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">第 01 班</td>
+            <td class="al-c"><span class="month-tag m-q1">01 月下旬</span></td>
+            <td class="al-c">2027 / 04 月中旬</td>
+            <td class="al-l num-strong">Procreate 數位繪畫（第 1 班）</td>
+            <td class="al-l">曹育禎</td>
+            <td class="al-c">24 堂</td>
+            <td class="al-c"><span class="badge b-up">★ 修正上調</span></td>
+            <td class="al-r">121人 / 完課43.7%</td>
+            <td class="al-l cell-insight" onclick="openPreschedModal(0)">
+              <div class="insight-preview"><span class="insight-short">1 月唯一無在途撞期之王牌繪畫課，搶攻寒假年前第一波繪畫新生買氣</span><button class="btn-detail">💬 排課邏輯</button></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">第 02 班</td>
+            <td class="al-c"><span class="month-tag m-q1">02 月上旬</span></td>
+            <td class="al-c">2027 / 03 月初</td>
+            <td class="al-l num-strong">Vtuber 創作全攻略（第 1 班）</td>
+            <td class="al-l">黃俊傑</td>
+            <td class="al-c">8 堂</td>
+            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
+            <td class="al-r">200人 / 完課59.8%</td>
+            <td class="al-l cell-insight" onclick="openPreschedModal(1)">
+              <div class="insight-preview"><span class="insight-short">待黃俊傑在途 Live2D (01/29) 結業後立即開出，作為新春 200 人級首波引流漏斗</span><button class="btn-detail">💬 排課邏輯</button></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">第 03 班</td>
+            <td class="al-c"><span class="month-tag m-q1">02 月上旬</span></td>
+            <td class="al-c">2027 / 04 月中旬</td>
+            <td class="al-l num-strong">數位漫畫班（第 1 班）</td>
+            <td class="al-l">夏宜嵐</td>
+            <td class="al-c">20 堂</td>
+            <td class="al-c"><span class="badge b-up">★ 修正上調</span></td>
+            <td class="al-r">215人 / 完課40.7%</td>
+            <td class="al-l cell-insight" onclick="openPreschedModal(2)">
+              <div class="insight-preview"><span class="insight-short">待羅品傑在途班 (01/23) 結業後無縫接棒！優先邀約夏宜嵐老師重現單班 215 人盛況</span><button class="btn-detail">💬 排課邏輯</button></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">第 04 班</td>
+            <td class="al-c"><span class="month-tag m-q1">02 月中旬</span></td>
+            <td class="al-c">2027 / 05 月中旬</td>
+            <td class="al-l num-strong">商用視覺平面設計（第 1 班）</td>
+            <td class="al-l">黃偉勳</td>
+            <td class="al-c">30 堂</td>
+            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
+            <td class="al-r">285人 / 均席115人</td>
+            <td class="al-l cell-insight" onclick="openPreschedModal(3)">
+              <div class="insight-preview"><span class="insight-short">由兩年全校單班最高紀錄（285人/194人）黃偉勳老師領銜開出 Q1 平面旗艦大班</span><button class="btn-detail">💬 排課邏輯</button></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">第 05 班</td>
+            <td class="al-c"><span class="month-tag m-q1">02 月下旬</span></td>
+            <td class="al-c">2027 / 04 月下旬</td>
+            <td class="al-l num-strong">After Effects 特效動畫</td>
+            <td class="al-l">石皓瑋</td>
+            <td class="al-c">20 堂</td>
+            <td class="al-c"><span class="badge b-t2">第二優先</span></td>
+            <td class="al-r">92人 / 完課36.6%</td>
+            <td class="al-l cell-insight" onclick="openPreschedModal(4)">
+              <div class="insight-preview"><span class="insight-short">前班已於 2026/12/19 結業，排於 2 月底開課完美承接 Q1 影視後製與動態設計需求</span><button class="btn-detail">💬 排課邏輯</button></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">第 06 班</td>
+            <td class="al-c"><span class="month-tag m-q1">03 月上旬</span></td>
+            <td class="al-c">2027 / 04 月下旬</td>
+            <td class="al-l num-strong">商用平面設計進階班</td>
+            <td class="al-l">王仁駿</td>
+            <td class="al-c">16 堂</td>
+            <td class="al-c"><span class="badge b-up">★ 修正上調</span></td>
+            <td class="al-r">106人 / 完課55.4%</td>
+            <td class="al-l cell-insight" onclick="openPreschedModal(5)">
+              <div class="insight-preview"><span class="insight-short">精準銜接 03/04 結業之平面在途班與前期結業舊生，連續三期破百人之高完課升學班</span><button class="btn-detail">💬 排課邏輯</button></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">第 07 班</td>
+            <td class="al-c"><span class="month-tag m-q1">03 月中旬</span></td>
+            <td class="al-c">2027 / 04 月底</td>
+            <td class="al-l num-strong">V皮角色繪製（第 1 班）</td>
+            <td class="al-l">黃俊傑</td>
+            <td class="al-c">16 堂</td>
+            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
+            <td class="al-r">229人 / 完課60.9%</td>
+            <td class="al-l cell-insight" onclick="openPreschedModal(6)">
+              <div class="insight-preview"><span class="insight-short">緊接第 02 班「Vtuber 全攻略 (3月初結業)」後開出！直接轉化剛結業之百名學員</span><button class="btn-detail">💬 排課邏輯</button></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">第 08 班</td>
+            <td class="al-c"><span class="month-tag m-q1">03 月下旬</span></td>
+            <td class="al-c">2027 / 06 月上旬</td>
+            <td class="al-l num-strong">數位繪畫班</td>
+            <td class="al-l">張博涵</td>
+            <td class="al-c">20 堂</td>
+            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
+            <td class="al-r">172人 / 均席55.6人</td>
+            <td class="al-l cell-insight" onclick="openPreschedModal(7)">
+              <div class="insight-preview"><span class="insight-short">與第 01 班 Procreate(1月) 及第 16 班 Procreate(6月) 完美間隔 2 個月，不互搶繪畫客群</span><button class="btn-detail">💬 排課邏輯</button></div>
+            </td>
+          </tr>
+
+          <tr class="row-group-header">
+            <td colspan="9">【第二季度（2027 年 4 月 ～ 6 月）預排開班：共 9 班】重點：承接 Q1 結業生進階轉化（Live2D / AI品牌）並開出二期王牌班</td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">第 09 班</td>
+            <td class="al-c"><span class="month-tag m-q2">04 月上旬</span></td>
+            <td class="al-c">2027 / 06 月中旬</td>
+            <td class="al-l num-strong">AI 遊戲設計班</td>
+            <td class="al-l">葉繁晟</td>
+            <td class="al-c">24 堂</td>
+            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
+            <td class="al-r">160人 / 完課33.4%</td>
+            <td class="al-l cell-insight" onclick="openPreschedModal(8)">
+              <div class="insight-preview"><span class="insight-short">待在途「遊戲角色美術 (03/23 結業)」結束後於 4 月初開出，獨享 Q2 遊戲開發客群</span><button class="btn-detail">💬 排課邏輯</button></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">第 10 班</td>
+            <td class="al-c"><span class="month-tag m-q2">04 月中旬</span></td>
+            <td class="al-c">2027 / 06 月初</td>
+            <td class="al-l num-strong">日本動畫職人養成班</td>
+            <td class="al-l">涂國雄 ＋ 邱文美</td>
+            <td class="al-c">16 堂</td>
+            <td class="al-c"><span class="badge b-t2">第二優先</span></td>
+            <td class="al-r">68人 / 完課47.1%</td>
+            <td class="al-l cell-insight" onclick="openPreschedModal(9)">
+              <div class="insight-preview"><span class="insight-short">複製 2026 年 4 月中旬開課之成功檔期（首日出席率 77.9%、完課率 47.1%）</span><button class="btn-detail">💬 排課邏輯</button></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">第 11 班</td>
+            <td class="al-c"><span class="month-tag m-q2">04 月下旬</span></td>
+            <td class="al-c">2027 / 06 月下旬</td>
+            <td class="al-l num-strong">UI 視覺介面設計班</td>
+            <td class="al-l">沈宇哲</td>
+            <td class="al-c">20 堂</td>
+            <td class="al-c"><span class="badge b-t2">第二優先</span></td>
+            <td class="al-r">61人 / 完課42.2%</td>
+            <td class="al-l cell-insight" onclick="openPreschedModal(10)">
+              <div class="insight-preview"><span class="insight-short">複製 2026 年 4 月底開課之黃金檔期（20堂精實規格，首日出席 73.8%、完課 42.2%）</span><button class="btn-detail">💬 排課邏輯</button></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">第 12 班</td>
+            <td class="al-c"><span class="month-tag m-q2">04 月下旬</span></td>
+            <td class="al-c">2027 / 07 月下旬</td>
+            <td class="al-l num-strong">AI 商用視覺平面設計（第 2 班）</td>
+            <td class="al-l">曾國軒</td>
+            <td class="al-c">27 堂</td>
+            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
+            <td class="al-r">93人 / 首日65.6%</td>
+            <td class="al-l cell-insight" onclick="openPreschedModal(11)">
+              <div class="insight-preview"><span class="insight-short">與第 04 班黃偉勳平面班（2月中旬）間隔逾 2 個月，雙師接力消化 Q2 平面設計新生</span><button class="btn-detail">💬 排課邏輯</button></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">第 13 班</td>
+            <td class="al-c"><span class="month-tag m-q2">05 月上旬</span></td>
+            <td class="al-c">2027 / 06 月中旬</td>
+            <td class="al-l num-strong">Live2D 動畫製作</td>
+            <td class="al-l">黃俊傑</td>
+            <td class="al-c">16 堂</td>
+            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
+            <td class="al-r">228人 / 完課54.6%</td>
+            <td class="al-l cell-insight" onclick="openPreschedModal(12)">
+              <div class="insight-preview"><span class="insight-short">緊接第 07 班「V皮角色繪製 (4月底結業)」後開出！讓畫完 V皮的學員無縫升級動態建模</span><button class="btn-detail">💬 排課邏輯</button></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">第 14 班</td>
+            <td class="al-c"><span class="month-tag m-q2">05 月上旬</span></td>
+            <td class="al-c">2027 / 07 月中旬</td>
+            <td class="al-l num-strong">數位漫畫班（第 2 班）</td>
+            <td class="al-l">夏宜嵐 / 羅品傑</td>
+            <td class="al-c">20 堂</td>
+            <td class="al-c"><span class="badge b-up">★ 修正上調</span></td>
+            <td class="al-r">215人 / 完課40.7%</td>
+            <td class="al-l cell-insight" onclick="openPreschedModal(13)">
+              <div class="insight-preview"><span class="insight-short">待第 03 班數位漫畫一期（4月中旬結業）結束後開出二期，完整補足全年漫畫課高需求</span><button class="btn-detail">💬 排課邏輯</button></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">第 15 班</td>
+            <td class="al-c"><span class="month-tag m-q2">05 月中旬</span></td>
+            <td class="al-c">2027 / 07 月上旬</td>
+            <td class="al-l num-strong">AI 品牌系統創建</td>
+            <td class="al-l">王仁駿</td>
+            <td class="al-c">18 堂</td>
+            <td class="al-c"><span class="badge b-t2">第二優先</span></td>
+            <td class="al-r">91人 / 出席84.6%</td>
+            <td class="al-l cell-insight" onclick="openPreschedModal(14)">
+              <div class="insight-preview"><span class="insight-short">待王仁駿老師第 06 班「平面進階 (4月下旬結業)」後接棒，老師不撞課且可吸收平面舊生</span><button class="btn-detail">💬 排課邏輯</button></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">第 16 班</td>
+            <td class="al-c"><span class="month-tag m-q2">06 月上旬</span></td>
+            <td class="al-c">2027 / 08 月中旬</td>
+            <td class="al-l num-strong">Procreate 數位繪畫（第 2 班）</td>
+            <td class="al-l">簡佳慧</td>
+            <td class="al-c">24 堂</td>
+            <td class="al-c"><span class="badge b-up">★ 修正上調</span></td>
+            <td class="al-r">90人 / 完課39.1%</td>
+            <td class="al-l cell-insight" onclick="openPreschedModal(15)">
+              <div class="insight-preview"><span class="insight-short">接續第 01 班曹育禎 Procreate 結業與第 08 班張博涵數位繪畫尾聲，開啟暑期檔繪畫大班</span><button class="btn-detail">💬 排課邏輯</button></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">第 17 班</td>
+            <td class="al-c"><span class="month-tag m-q2">06 月中旬</span></td>
+            <td class="al-c">2027 / 07 月中旬</td>
+            <td class="al-l num-strong">Vtuber 創作全攻略（第 2 班）</td>
+            <td class="al-l">黃俊傑</td>
+            <td class="al-c">8 堂</td>
+            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
+            <td class="al-r">200人 / 完課59.8%</td>
+            <td class="al-l cell-insight" onclick="openPreschedModal(16)">
+              <div class="insight-preview"><span class="insight-short">待第 13 班 Live2D (6月中旬結業) 後開出暑期首波 8 堂引流班，為下半年 V皮二期蓄水</span><button class="btn-detail">💬 排課邏輯</button></div>
+            </td>
+          </tr>
+
+          <tr class="row-total">
+            <td class="al-c">總計 17 班</td>
+            <td class="al-c">Q1: 8班 / Q2: 9班</td>
+            <td class="al-c">全部無縫銜接</td>
+            <td class="al-l">第一優先 13 班 ＋ 第二優先 4 班</td>
+            <td class="al-l">11 位主力講師零撞期</td>
+            <td class="al-c">8～30 堂</td>
+            <td class="al-c" style="color:var(--green);">預排完成</td>
+            <td class="al-r">預估總登記 2,300+ 人</td>
+            <td class="al-l" style="color:var(--primary);">產品部可直接依「預排開課月份」與各授課老師確認最終開課日與結業日</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
 
   </div>
 
@@ -2659,7 +3104,29 @@
 
   let currentModalIdx = 0;
 
+  
+  const PRESCHED_DATA = [{"seq": "第 01 班", "period": "01 月下旬 ~ 04 月中旬", "name": "Procreate 數位繪畫（第 1 班）", "teacher": "曹育禎｜24 堂", "short": "1 月唯一無在途撞期之王牌繪畫課，搶攻寒假年前第一波繪畫新生買氣", "full": "2027年1月共有5門跨年在途班（數位漫畫、Live2D、裝修乙級、AI平面、遊戲角色美術），唯獨「Procreate 數位繪畫」在1月份完全沒有在途班撞期！因此排在1月下旬由完課率43.7%的曹育禎老師打頭陣，搶攻年前與寒假第一波iPad繪畫買氣。"}, {"seq": "第 02 班", "period": "02 月上旬 ~ 03 月初", "name": "Vtuber 創作全攻略（第 1 班）", "teacher": "黃俊傑｜8 堂", "short": "待黃俊傑在途 Live2D (01/29) 結業後立即開出，作為新春 200 人級首波引流漏斗", "full": "黃俊傑老師的跨年在途班「Live2D動畫製作」於 2027-01-29 結業。休息一週後於 2 月上旬立即開出僅 8 堂（約 3.5 週）的「Vtuber 創作全攻略」，完美複製 2026 年初單班 200 人登記、完課率 59.8% 的引流漏斗，為 3 月份的 V皮角色繪製蓄水。"}, {"seq": "第 03 班", "period": "02 月上旬 ~ 04 月中旬", "name": "數位漫畫班（第 1 班）", "teacher": "夏宜嵐｜20 堂", "short": "待羅品傑在途班 (01/23) 結業後無縫接棒！優先邀約夏宜嵐老師重現單班 215 人盛況", "full": "羅品傑老師的跨年在途班「數位漫畫班」於 2027-01-23 結業。2 月上旬無縫接棒開出 2027 第 1 班（20堂），強烈建議優先對接 2025 年創下單班 215 人登記、完課率 40.7% 的夏宜嵐老師，正式補回 2026 年少開的漫畫課產能。"}, {"seq": "第 04 班", "period": "02 月中旬 ~ 05 月中旬", "name": "商用視覺平面設計（第 1 班）", "teacher": "黃偉勳｜30 堂", "short": "由兩年全校單班最高紀錄（285人/194人）黃偉勳老師領銜開出 Q1 平面旗艦大班", "full": "黃偉勳老師為兩年全校單班人數最高紀錄保持人（2025單班285人、2026單班194人）。安排於年後 2 月中旬開出 Q1 旗艦班（30堂），不僅避開 1 月份過年假期，更能穩定消化超過 100+ 名新舊生。"}, {"seq": "第 05 班", "period": "02 月下旬 ~ 04 月下旬", "name": "After Effects 特效動畫", "teacher": "石皓瑋｜20 堂", "short": "前班已於 2026/12/19 結業，排於 2 月底開課完美承接 Q1 影視後製與動態設計需求", "full": "石皓瑋老師的 2026 Q4 班次已於 2026-12-19 結業，經過 2 個月名單累積，於 2027 年 2 月下旬開出 20 堂精實規格班（完課率 36.6%），與平面、漫畫客群完全不重疊。"}, {"seq": "第 06 班", "period": "03 月上旬 ~ 04 月下旬", "name": "商用平面設計進階班", "teacher": "王仁駿｜16 堂", "short": "精準銜接 03/04 結業之平面在途班與前期結業舊生，連續三期破百人之高完課升學班", "full": "跨年在途班「AI商用視覺平面（黃貴濃）」於 2027-03-04 結業。將王仁駿老師的「商用平面設計進階班（16堂，完課率 55.4%）」排在 3 月上旬開課，能直接承接 2026 下半年至 2027 年 3 月初結業的所有平面設計基礎班舊生！"}, {"seq": "第 07 班", "period": "03 月中旬 ~ 04 月底", "name": "V皮角色繪製（第 1 班）", "teacher": "黃俊傑｜16 堂", "short": "緊接第 02 班「Vtuber 全攻略 (3月初結業)」後開出！直接轉化剛結業之百名學員", "full": "黃俊傑老師第 02 班「Vtuber 創作全攻略（8堂）」於 3 月初結業後，隔週（3月中旬）立即開出「V皮角色繪製（16堂）」。2026 年此排法創下單班 229 人登記、均席 140.8 人、完課率 60.9% 全校第一紀錄！"}, {"seq": "第 08 班", "period": "03 月下旬 ~ 06 月上旬", "name": "數位繪畫班", "teacher": "張博涵｜20 堂", "short": "與第 01 班 Procreate(1月) 及第 16 班 Procreate(6月) 完美間隔 2 個月，不互搶繪畫客群", "full": "為了避免「數位繪畫班（張博涵 20堂，單班172人）」與「Procreate 數位繪畫（24堂）」互搶繪畫類學員，特別將張博涵老師排在 3 月下旬（夾在 1 月下旬 Procreate 一期與 6 月上旬 Procreate 二期正中間），達成每兩個月一班繪畫大課的完美節奏。"}, {"seq": "第 09 班", "period": "04 月上旬 ~ 06 月中旬", "name": "AI 遊戲設計班", "teacher": "葉繁晟｜24 堂", "short": "待在途「遊戲角色美術 (03/23 結業)」結束後於 4 月初開出，獨享 Q2 遊戲開發客群", "full": "跨年在途班「遊戲角色美術班（龎士禮）」於 2027-03-23 結業。待其結業後，於 4 月上旬推出 2026 單班 160 人爆款「AI 遊戲設計班｜葉繁晟（24堂）」，完全避開遊戲類課程撞期。"}, {"seq": "第 10 班", "period": "04 月中旬 ~ 06 月初", "name": "日本動畫職人養成班", "teacher": "涂國雄 ＋ 邱文美｜16 堂", "short": "複製 2026 年 4 月中旬開課之成功檔期（首日出席率 77.9%、完課率 47.1%）", "full": "2026 年「日本動畫職人養成班（涂國雄＋邱文美 16堂）」正是在 4 月 21 日開課並創下 77.9% 首日出席率與 47.1% 高完課率。2027 年同樣排在 4 月中旬黃金檔期，並集中資源不另拆背景美術小班。"}, {"seq": "第 11 班", "period": "04 月下旬 ~ 06 月下旬", "name": "UI 視覺介面設計班", "teacher": "沈宇哲｜20 堂", "short": "複製 2026 年 4 月底開課之黃金檔期（20堂精實規格，首日出席 73.8%、完課 42.2%）", "full": "沈宇哲老師的「UI 視覺介面設計班（20堂）」於 2026 年 4 月 28 日開課時完課率翻倍至 42.2%、首日出席率達 73.8%。2027 年維持 4 月下旬開課，承接 Q2 轉職與介面設計需求。"}, {"seq": "第 12 班", "period": "04 月下旬 ~ 07 月下旬", "name": "AI 商用視覺平面設計（第 2 班）", "teacher": "曾國軒｜27 堂", "short": "與第 04 班黃偉勳平面班（2月中旬）間隔逾 2 個月，雙師接力消化 Q2 平面設計新生", "full": "第 04 班黃偉勳老師於 2 月中旬開課後，經過 2 個多月的招生蓄水，於 4 月下旬由曾國軒老師開出第 2 班「AI 商用視覺平面設計（27堂）」，完成上半年平面基礎必開 2 班的雙主帥配置。"}, {"seq": "第 13 班", "period": "05 月上旬 ~ 06 月中旬", "name": "Live2D 動畫製作", "teacher": "黃俊傑｜16 堂", "short": "緊接第 07 班「V皮角色繪製 (4月底結業)」後開出！讓畫完 V皮的學員無縫升級動態建模", "full": "黃俊傑老師第 07 班「V皮角色繪製」於 4 月底結業後，5 月上旬緊接著開出三部曲第 3 棒「Live2D 動畫製作（16堂）」。讓剛畫好 V皮立繪的百名學員直接報名學習動態建模，複製 2026 年單班 228 人、完課率 54.6% 的高轉化奇蹟！"}, {"seq": "第 14 班", "period": "05 月上旬 ~ 07 月中旬", "name": "數位漫畫班（第 2 班）", "teacher": "夏宜嵐 / 羅品傑｜20 堂", "short": "待第 03 班數位漫畫一期（4月中旬結業）結束後開出二期，完整補足全年漫畫課高需求", "full": "第 03 班「數位漫畫班一期（2月上旬～4月中旬）」結業後，於 5 月上旬接力開出第 2 班（20堂），確保上半年兩班漫畫課前後銜接、不互搶客源，重現 2025 年 510 人級別的漫畫課產能。"}, {"seq": "第 15 班", "period": "05 月中旬 ~ 07 月上旬", "name": "AI 品牌系統創建", "teacher": "王仁駿｜18 堂", "short": "待王仁駿老師第 06 班「平面進階 (4月下旬結業)」後接棒，老師不撞課且可吸收平面舊生", "full": "王仁駿老師的第 06 班「商用平面設計進階班」於 4 月下旬結業後，5 月中旬無縫接棒開出「AI 品牌系統創建（18堂，2026 全校首日出席率冠軍 84.6%）」。不僅讓王老師時間完全不撞期，還能將剛從平面進階班結業的學員進一步導流至 AI 品牌系統！"}, {"seq": "第 16 班", "period": "06 月上旬 ~ 08 月中旬", "name": "Procreate 數位繪畫（第 2 班）", "teacher": "簡佳慧｜24 堂", "short": "接續第 01 班曹育禎 Procreate 結業與第 08 班張博涵數位繪畫尾聲，開啟暑期檔繪畫大班", "full": "第 01 班 Procreate（4月中旬結業）與第 08 班數位繪畫（6月上旬結業）相繼進入尾聲後，於 6 月上旬由簡佳慧老師（24堂完課率 39.1%）開出 Procreate 第 2 班，精準卡位 6～8 月暑期繪畫旺季。"}, {"seq": "第 17 班", "period": "06 月中旬 ~ 07 月中旬", "name": "Vtuber 創作全攻略（第 2 班）", "teacher": "黃俊傑｜8 堂", "short": "待第 13 班 Live2D (6月中旬結業) 後開出暑期首波 8 堂引流班，為下半年 V皮二期蓄水", "full": "黃俊傑老師的第 13 班「Live2D 動畫製作」於 6 月中旬結業後，立即於 6 月中下旬開出第 2 班「Vtuber 創作全攻略（8堂）」，搶攻暑假動漫族群最大流量，並為 2027 下半年（8月）的 V皮角色繪製二期提前引流蓄水！"}];
+  let currentPreschedIdx = 0;
+  let isPreschedMode = false;
+
+  function openPreschedModal(idx) {
+    isPreschedMode = true;
+    currentPreschedIdx = idx;
+    const p = PRESCHED_DATA[idx];
+    document.getElementById('mBadgeWrap').innerHTML = '<span class="month-tag m-q1" style="width:auto;padding:2px 10px;">' + p.seq + '｜預排檔期：' + p.period + '</span>';
+    document.getElementById('mTitle').textContent = p.name;
+    document.getElementById('mMeta').textContent = '優先對接師資與堂數：' + p.teacher;
+    document.getElementById('mStat2025').textContent = p.period.split('~')[0].trim() + ' 開課';
+    document.getElementById('mSub2025').textContent = '預排開課時間點（由產品部與老師確認最終日期）';
+    document.getElementById('mStat2026').textContent = p.period.split('~')[1].trim() + ' 完課';
+    document.getElementById('mSub2026').textContent = '依固定課綱堂數推算之預計結業月份';
+    document.getElementById('mConclusion').textContent = p.short;
+    document.getElementById('mDirection').textContent = p.full;
+    document.getElementById('courseModal').classList.add('open');
+  }
+
   function openCourseModal(idx) {
+    isPreschedMode = false;
     currentModalIdx = idx;
     const d = COURSE_DATA[idx];
     document.getElementById('mBadgeWrap').innerHTML = d.badge;
@@ -2679,8 +3146,13 @@
   }
 
   function stepCourseModal(delta) {
-    let next = (currentModalIdx + delta + COURSE_DATA.length) % COURSE_DATA.length;
-    openCourseModal(next);
+    if (isPreschedMode) {
+      let next = (currentPreschedIdx + delta + PRESCHED_DATA.length) % PRESCHED_DATA.length;
+      openPreschedModal(next);
+    } else {
+      let next = (currentModalIdx + delta + COURSE_DATA.length) % COURSE_DATA.length;
+      openCourseModal(next);
+    }
   }
 
   function toggleInlineInsights(btn) {
