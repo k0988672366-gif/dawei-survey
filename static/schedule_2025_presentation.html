@@ -450,6 +450,7 @@
       <p>涵蓋：2025 全年 28 班實績表、2026 全年 25 班實績表、兩年交叉比對診斷，以及重新修正後之 2027 上半年開班方向（龍和設計已轉線上錄播課）</p>
     </div>
     <div class="header-actions">
+      <button class="btn-action" style="background:var(--primary);" onclick="copyShareLink(this)">🔗 複製公開分享網址</button>
       <button class="btn-action secondary" onclick="toggleAllViews()" id="btnExpandAll">展開全部三張報表（一頁檢視）</button>
       <button class="btn-action" onclick="window.print()">列印 / 匯出 PDF</button>
     </div>
@@ -1466,6 +1467,19 @@
 
 <script>
   let allExpanded = false;
+
+  function copyShareLink(btn) {
+    const shareUrl = 'https://dawei-survey.onrender.com/static/schedule_2025_presentation.html';
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      const orig = btn.innerHTML;
+      btn.innerHTML = '✅ 已複製分享網址！';
+      btn.style.background = '#15803d';
+      setTimeout(() => {
+        btn.innerHTML = orig;
+        btn.style.background = 'var(--primary)';
+      }, 2500);
+    });
+  }
 
   function switchTab(tabId, btn) {
     allExpanded = false;
