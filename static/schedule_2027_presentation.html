@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 線上直播開班數據復盤 ＆ 2027 上半年必開課程預排簡報</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --bg-card: rgba(17, 24, 39, 0.88);
+      --bg-card-hover: rgba(30, 41, 59, 0.95);
+      --primary: #6366f1;
+      --primary-light: #818cf8;
+      --accent-gold: #f59e0b;
+      --accent-emerald: #10b981;
+      --accent-rose: #f43f5e;
+      --accent-sky: #0ea5e9;
+      --accent-purple: #a855f7;
+      --text-main: #f8fafc;
+      --text-sub: #cbd5e1;
+      --text-muted: #94a3b8;
+      --border-glass: rgba(255, 255, 255, 0.1);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 10% 15%, rgba(99, 102, 241, 0.16), transparent 35%),
+        radial-gradient(circle at 90% 20%, rgba(16, 185, 129, 0.12), transparent 35%),
+        radial-gradient(circle at 50% 85%, rgba(245, 158, 11, 0.1), transparent 40%);
+      color: var(--text-main);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    /* 頂部懸浮控制導覽列 */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(9, 13, 22, 0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-glass);
+      padding: 12px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-badge {
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-glass);
+      color: var(--text-sub);
+      padding: 7px 15px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-btn:hover {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: var(--primary-light);
+      color: #fff;
+    }
+
+    .nav-btn.primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      border-color: transparent;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .container {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 28px 24px;
+    }
+
+    /* 簡報頁籤與章節卡片 */
+    .slide-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      padding: 36px 40px;
+      margin-bottom: 32px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide-section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #6366f1, #10b981, #f59e0b);
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 20px;
+    }
+
+    .slide-step {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--primary-light);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .slide-title {
+      font-size: 1.75rem;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.3;
+    }
+
+    .slide-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* 封面 Hero 區塊 */
+    .hero-slide {
+      background: linear-gradient(135deg, rgba(30, 27, 75, 0.92), rgba(15, 23, 42, 0.96));
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      padding: 48px 44px;
+    }
+
+    .hero-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 32px;
+    }
+
+    .hero-kpi-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-md);
+      padding: 20px 22px;
+      transition: transform 0.2s;
+    }
+
+    .hero-kpi-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(99, 102, 241, 0.45);
+    }
+
+    .kpi-label {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .kpi-num {
+      font-size: 2.1rem;
+      font-weight: 900;
+      margin: 8px 0 4px;
+      color: #fff;
+    }
+
+    .kpi-desc {
+      font-size: 0.8rem;
+      color: #a5b4fc;
+    }
+
+    /* 四大必開分級矩陣卡片 */
+    .tier-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+
+    @media (max-width: 980px) {
+      .tier-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .tier-box {
+      border-radius: var(--radius-md);
+      padding: 24px;
+      border: 1px solid var(--border-glass);
+      background: rgba(15, 23, 42, 0.65);
+    }
+
+    .tier-box.tier-sss {
+      background: linear-gradient(160deg, rgba(245, 158, 11, 0.12), rgba(15, 23, 42, 0.8));
+      border-color: rgba(245, 158, 11, 0.45);
+    }
+
+    .tier-box.tier-s {
+      background: linear-gradient(160deg, rgba(16, 185, 129, 0.12), rgba(15, 23, 42, 0.8));
+      border-color: rgba(16, 185, 129, 0.45);
+    }
+
+    .tier-box.tier-a {
+      background: linear-gradient(160deg, rgba(14, 165, 233, 0.12), rgba(15, 23, 42, 0.8));
+      border-color: rgba(14, 165, 233, 0.45);
+    }
+
+    .tier-box.tier-vod {
+      background: linear-gradient(160deg, rgba(168, 85, 247, 0.12), rgba(15, 23, 42, 0.8));
+      border-color: rgba(168, 85, 247, 0.45);
+    }
+
+    .tier-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .tier-badge {
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .course-pill-item {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .course-pill-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .metric-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .m-tag {
+      font-size: 0.76rem;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-weight: 600;
+      background: rgba(0, 0, 0, 0.35);
+    }
+
+    /* 表格樣式 */
+    .table-wrap {
+      overflow-x: auto;
+      margin-top: 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-glass);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+
+    th {
+      background: rgba(30, 41, 59, 0.95);
+      color: #cbd5e1;
+      font-weight: 700;
+      padding: 13px 16px;
+      white-space: nowrap;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      color: #e2e8f0;
+    }
+
+    tr:hover td {
+      background: rgba(99, 102, 241, 0.08);
+    }
+
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      font-weight: 800;
+      font-size: 0.8rem;
+    }
+
+    /* 圖表區 */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 980px) {
+      .charts-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .chart-box {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      height: 360px;
+      position: relative;
+    }
+
+    /* 時間軸甘特條視覺化 */
+    .timeline-row {
+      display: grid;
+      grid-template-columns: 240px 1fr 150px;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 0.86rem;
+    }
+
+    .timeline-track {
+      background: rgba(255, 255, 255, 0.05);
+      height: 28px;
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+
+    .timeline-bar {
+      height: 100%;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    /* 列印優化 */
+    @media print {
+      body {
+        background: #090d16 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .top-nav {
+        display: none !important;
+      }
+      .slide-section {
+        page-break-inside: avoid;
+        margin-bottom: 20px;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 頂部導覽控制列 -->
+  <nav class="top-nav">
+    <div class="nav-brand">
+      <span class="nav-badge">EXECUTIVE DECK 2027</span>
+      <span class="nav-title">DATE線上學院｜2026 開班數據復盤 ＆ 2027 H1 必開課程排課戰略簡報</span>
+    </div>
+    <div class="nav-actions">
+      <a href="#slide-matrix" class="nav-btn">🏆 必開課程分級</a>
+      <a href="#slide-ranking" class="nav-btn">📊 完課與出席總榜</a>
+      <a href="#slide-timeline" class="nav-btn">⏳ 跨年檔期碰撞</a>
+      <a href="#slide-schedule" class="nav-btn">🗓️ 2027 H1 預排表</a>
+      <button onclick="window.print()" class="nav-btn primary">🖨️ 列印簡報 / 另存 PDF</button>
+    </div>
+  </nav>
+
+  <main class="container">
+
+    <!-- SLIDE 1: 封面與高階決策總覽 -->
+    <section class="slide-section hero-slide">
+      <div class="slide-header" style="border-bottom-color: rgba(99, 102, 241, 0.25);">
+        <div>
+          <span class="slide-step">SLIDE 01 ｜ EXECUTIVE SUMMARY</span>
+          <h1 class="slide-title" style="font-size: 2.2rem;">2026 直播開班數據總體檢 ✕ 2027 上半年必開排課戰略</h1>
+          <p class="slide-subtitle" style="color: #cbd5e1; font-size: 1.02rem; margin-top: 8px;">
+            基於 2026 全年 25 門直播班真實數據，剔除轉型「線上錄播課（室內乙級證照）」後，鎖定<strong>高完課、高出席、高消課</strong>之核心必開課程。
+          </p>
+        </div>
+        <div style="text-align: right; background: rgba(0,0,0,0.35); padding: 12px 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+          <div style="font-size: 0.78rem; color: #94a3b8;">資料基準範圍</div>
+          <div style="font-size: 0.95rem; font-weight: 700; color: #38bdf8;">DATE線上(日琪) 全年度 25 班</div>
+          <div style="font-size: 0.75rem; color: #fbbf24; margin-top: 2px;">★ 已納入龍和設計轉「線上錄播課」政策</div>
+        </div>
+      </div>
+
+      <div class="hero-kpi-grid">
+        <div class="hero-kpi-card">
+          <div class="kpi-label"><span>2026 直播總登記人次</span><span>📈</span></div>
+          <div class="kpi-num" style="color: #38bdf8;">2,397 <small style="font-size: 1rem;">人</small></div>
+          <div class="kpi-desc">H1 班均 129.2 人 ｜ H2 班均 69.7 人</div>
+        </div>
+        <div class="hero-kpi-card">
+          <div class="kpi-label"><span>最高完課率黃金堂數</span><span>⏱️</span></div>
+          <div class="kpi-num" style="color: #34d399;">8～16 <small style="font-size: 1rem;">堂</small></div>
+          <div class="kpi-desc">平均完課率 50.3%（27堂以上跌至 31%）</div>
+        </div>
+        <div class="hero-kpi-card">
+          <div class="kpi-label"><span>SSS 級三冠王完課率</span><span>👑</span></div>
+          <div class="kpi-num" style="color: #fbbf24;">58.4%</div>
+          <div class="kpi-desc">Vtuber / V皮 / Live2D 場場破 200 人</div>
+        </div>
+        <div class="hero-kpi-card">
+          <div class="kpi-label"><span>轉錄播釋放長課產能</span><span>🎬</span></div>
+          <div class="kpi-num" style="color: #c084fc;">69 <small style="font-size: 1rem;">堂/年</small></div>
+          <div class="kpi-desc">室內乙級認證轉錄播，資源聚焦高動能直播</div>
+        </div>
+        <div class="hero-kpi-card">
+          <div class="kpi-label"><span>2027 H1 建議最佳開班數</span><span>🎯</span></div>
+          <div class="kpi-num" style="color: #f43f5e;">11～12 <small style="font-size: 1rem;">班</small></div>
+          <div class="kpi-desc">避開 Q1 跨年在途 4 班與 2 月春節斷層</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: 哪些課程必開？四大必開分級矩陣 -->
+    <section class="slide-section" id="slide-matrix">
+      <div class="slide-header">
+        <div>
+          <span class="slide-step">SLIDE 02 ｜ MUST-OPEN COURSE MATRIX</span>
+          <h2 class="slide-title">哪些課程必開？依「完課率 ✕ 出席率 ✕ 登記數」四級歸類</h2>
+          <p class="slide-subtitle">
+            將全年度課程依實際完課表現與出席黏著度進行科學分級，作為 2027 上半年排課優先序之核心依據。
+          </p>
+        </div>
+      </div>
+
+      <div class="tier-grid">
+        <!-- Tier 1: SSS 級 -->
+        <div class="tier-box tier-sss">
+          <div class="tier-header">
+            <div>
+              <h3 style="color: #fbbf24; font-size: 1.15rem;">👑 第一級【SSS 絕對必開】流量與完課三冠王</h3>
+              <p style="font-size: 0.8rem; color: #cbd5e1;">高登記（200~229人）✕ 高出席（120~140人）✕ 高完課（55~61%）</p>
+            </div>
+            <span class="tier-badge" style="background: rgba(245, 158, 11, 0.25); color: #fbbf24; border: 1px solid #f59e0b;">優先序 NO.1</span>
+          </div>
+
+          <div class="course-pill-item">
+            <div>
+              <strong style="color: #fff; font-size: 0.98rem;">1. V皮角色繪製｜線上直播</strong>
+              <span style="color: #94a3b8; font-size: 0.82rem; margin-left: 6px;">（黃俊傑｜16堂）</span>
+            </div>
+            <div class="metric-tags">
+              <span class="m-tag" style="color: #38bdf8;">登記 229人</span>
+              <span class="m-tag" style="color: #34d399;">首堂出席 76.4% (175人)</span>
+              <span class="m-tag" style="color: #fbbf24;">完課率 60.9% (全院第1)</span>
+            </div>
+          </div>
+
+          <div class="course-pill-item">
+            <div>
+              <strong style="color: #fff; font-size: 0.98rem;">2. Vtuber 創作全攻略｜線上直播</strong>
+              <span style="color: #94a3b8; font-size: 0.82rem; margin-left: 6px;">（黃俊傑｜8堂）</span>
+            </div>
+            <div class="metric-tags">
+              <span class="m-tag" style="color: #38bdf8;">登記 200人</span>
+              <span class="m-tag" style="color: #34d399;">首堂出席 71.5% (143人)</span>
+              <span class="m-tag" style="color: #fbbf24;">完課率 59.8% (全院第2)</span>
+            </div>
+          </div>
+
+          <div class="course-pill-item">
+            <div>
+              <strong style="color: #fff; font-size: 0.98rem;">3. Live2D 動畫製作｜線上直播</strong>
+              <span style="color: #94a3b8; font-size: 0.82rem; margin-left: 6px;">（黃俊傑｜16堂）</span>
+            </div>
+            <div class="metric-tags">
+              <span class="m-tag" style="color: #38bdf8;">登記 228人</span>
+              <span class="m-tag" style="color: #34d399;">平均出席 122.7人</span>
+              <span class="m-tag" style="color: #fbbf24;">完課率 54.6% (全院第3)</span>
+            </div>
+          </div>
+          <div style="margin-top: 10px; font-size: 0.8rem; color: #fde68a;">
+            💡 <strong>排課鐵律</strong>：三門課形成完美「8堂引流 ➔ 16堂繪製 ➔ 16堂建模」漏斗，合計貢獻 412 名新生消課，2027 H1 必完整排入一輪！
+          </div>
+        </div>
+
+        <!-- Tier 2: S 級 -->
+        <div class="tier-box tier-s">
+          <div class="tier-header">
+            <div>
+              <h3 style="color: #34d399; font-size: 1.15rem;">🌟 第二級【S 口碑必開】高完課與高出席中堅課</h3>
+              <p style="font-size: 0.8rem; color: #cbd5e1;">首堂出席率極高（68~85%）✕ 完課率穩居 41%~47% 以上</p>
+            </div>
+            <span class="tier-badge" style="background: rgba(16, 185, 129, 0.25); color: #34d399; border: 1px solid #10b981;">高完課保障</span>
+          </div>
+
+          <div class="course-pill-item">
+            <div>
+              <strong style="color: #fff; font-size: 0.96rem;">4. 日本動畫職人養成班</strong>
+              <span style="color: #94a3b8; font-size: 0.8rem;">（涂國雄＋邱文美｜16堂）</span>
+            </div>
+            <div class="metric-tags">
+              <span class="m-tag" style="color: #34d399;">首堂出席 77.9%</span>
+              <span class="m-tag" style="color: #fbbf24;">完課率 47.1%</span>
+              <span class="m-tag" style="color: #cbd5e1;">消課 41人</span>
+            </div>
+          </div>
+
+          <div class="course-pill-item">
+            <div>
+              <strong style="color: #fff; font-size: 0.96rem;">5. 商用平面設計進階班</strong>
+              <span style="color: #94a3b8; font-size: 0.8rem;">（王仁駿｜16堂）</span>
+            </div>
+            <div class="metric-tags">
+              <span class="m-tag" style="color: #38bdf8;">登記 97人</span>
+              <span class="m-tag" style="color: #fbbf24;">完課率 45.5%</span>
+              <span class="m-tag" style="color: #c084fc;">舊生消課 16人</span>
+            </div>
+          </div>
+
+          <div class="course-pill-item">
+            <div>
+              <strong style="color: #fff; font-size: 0.96rem;">6. Procreate 數位繪畫</strong>
+              <span style="color: #94a3b8; font-size: 0.8rem;">（曹育禎｜24堂）</span>
+            </div>
+            <div class="metric-tags">
+              <span class="m-tag" style="color: #38bdf8;">登記 121人</span>
+              <span class="m-tag" style="color: #34d399;">首堂出席 67.8%</span>
+              <span class="m-tag" style="color: #fbbf24;">完課率 43.7%</span>
+            </div>
+          </div>
+
+          <div class="course-pill-item">
+            <div>
+              <strong style="color: #fff; font-size: 0.96rem;">7. AI 品牌系統創建 ＆ UI 介面設計</strong>
+              <span style="color: #94a3b8; font-size: 0.8rem;">（王仁駿18堂 / 沈宇哲20堂）</span>
+            </div>
+            <div class="metric-tags">
+              <span class="m-tag" style="color: #34d399;">AI品牌出席 84.6% (全院最高)</span>
+              <span class="m-tag" style="color: #fbbf24;">完課率 40.8% ~ 42.2%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tier 3: A 級 -->
+        <div class="tier-box tier-a">
+          <div class="tier-header">
+            <div>
+              <h3 style="color: #38bdf8; font-size: 1.15rem;">🚀 第三級【A 流量必開・需減堂數】三大吸客巨獸</h3>
+              <p style="font-size: 0.8rem; color: #cbd5e1;">市場需求極大（160~194人登記），但因堂數過長（24~30堂）拉低完課率</p>
+            </div>
+            <span class="tier-badge" style="background: rgba(14, 165, 233, 0.25); color: #38bdf8; border: 1px solid #0ea5e9;">必開＋瘦身改制</span>
+          </div>
+
+          <div class="course-pill-item">
+            <div>
+              <strong style="color: #fff; font-size: 0.96rem;">8. 商用視覺平面設計</strong>
+              <span style="color: #94a3b8; font-size: 0.8rem;">（黃偉勳｜原30堂 ➔ 建議改18堂）</span>
+            </div>
+            <div class="metric-tags">
+              <span class="m-tag" style="color: #38bdf8;">登記 194人 (全院第4)</span>
+              <span class="m-tag" style="color: #c084fc;">總消課 76人 (舊生33人全院冠)</span>
+              <span class="m-tag" style="color: #f87171;">原30堂完課 30.1%</span>
+            </div>
+          </div>
+
+          <div class="course-pill-item">
+            <div>
+              <strong style="color: #fff; font-size: 0.96rem;">9. 數位繪畫班</strong>
+              <span style="color: #94a3b8; font-size: 0.8rem;">（張博涵｜20堂）</span>
+            </div>
+            <div class="metric-tags">
+              <span class="m-tag" style="color: #38bdf8;">登記 172人 (全院第5)</span>
+              <span class="m-tag" style="color: #c084fc;">總消課 72人 (新52+舊20)</span>
+              <span class="m-tag" style="color: #fbbf24;">平均出席 55.6人</span>
+            </div>
+          </div>
+
+          <div class="course-pill-item">
+            <div>
+              <strong style="color: #fff; font-size: 0.96rem;">10. AI 遊戲設計班</strong>
+              <span style="color: #94a3b8; font-size: 0.8rem;">（葉繁晟｜原24堂 ➔ 建議改18堂）</span>
+            </div>
+            <div class="metric-tags">
+              <span class="m-tag" style="color: #38bdf8;">登記 160人 (H2最強黑馬)</span>
+              <span class="m-tag" style="color: #34d399;">平均出席 53.0人</span>
+              <span class="m-tag" style="color: #fbbf24;">完課率 33.4%</span>
+            </div>
+          </div>
+          <div style="margin-top: 10px; font-size: 0.8rem; color: #bae6fd;">
+            💡 <strong>改制關鍵</strong>：此三門課每開必破 160～190 人，只要將堂數控制在 <strong>16～20 堂內結業</strong>，完課率將立即從 31% 躍升至 45%+！
+          </div>
+        </div>
+
+        <!-- Tier 4: 轉型與整併 -->
+        <div class="tier-box tier-vod">
+          <div class="tier-header">
+            <div>
+              <h3 style="color: #c084fc; font-size: 1.15rem;">🎬 第四級【模式轉型與整併】轉錄播課 ＆ 主題整併</h3>
+              <p style="font-size: 0.8rem; color: #cbd5e1;">釋放長週期直播人力，將小眾單一主題整併為高含金量綜合班</p>
+            </div>
+            <span class="tier-badge" style="background: rgba(168, 85, 247, 0.25); color: #c084fc; border: 1px solid #a855f7;">產能優化</span>
+          </div>
+
+          <div class="course-pill-item" style="border-color: rgba(168, 85, 247, 0.4); background: rgba(168, 85, 247, 0.08);">
+            <div>
+              <strong style="color: #e9d5ff; font-size: 0.96rem;">★ 室內設計乙級認證 (48堂) ＆ 裝修工程管理乙級 (21堂)</strong>
+              <div style="color: #cbd5e1; font-size: 0.8rem; margin-top: 2px;">師資：龍和設計工坊｜2026表現：首堂出席 92.7%、完課率 48.3%～53.3%</div>
+            </div>
+            <div class="metric-tags">
+              <span class="m-tag" style="background: #a855f7; color: #fff;">2027 正式改為「線上錄播課」</span>
+            </div>
+          </div>
+
+          <div class="course-pill-item">
+            <div>
+              <strong style="color: #fff; font-size: 0.94rem;">• 單一細分課整併建議</strong>
+              <div style="color: #94a3b8; font-size: 0.8rem; margin-top: 2px;">
+                《背景美術(47人)》併入《日本動畫職人雙師班(68人)》；《網站架設(50人)》與《UI設計(61人)》輪開或整併。
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 10px; font-size: 0.8rem; color: #e9d5ff;">
+            💡 <strong>政策效益</strong>：龍和設計轉為線上錄播課後，不再佔用直播排程，且錄播形式更利於考生反覆觀看繪圖細節！
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: 數據圖表與完整績效排行總榜 -->
+    <section class="slide-section" id="slide-ranking">
+      <div class="slide-header">
+        <div>
+          <span class="slide-step">SLIDE 03 ｜ QUANTITATIVE PERFORMANCE LEADERBOARD</span>
+          <h2 class="slide-title">2026 直播課程「完課率 ✕ 出席人數 ✕ 登記數」績效總榜</h2>
+          <p class="slide-subtitle">
+            已開課班級（排除轉錄播之室內乙級證照班）之實戰指標排名與堂數衰減曲線分析。
+          </p>
+        </div>
+      </div>
+
+      <div class="charts-row">
+        <div class="chart-box">
+          <h4 style="font-size: 0.95rem; color: #e2e8f0; margin-bottom: 10px;">📈 各主力直播課程「開班登記人數 vs. 完課率(%)」表現對照</h4>
+          <canvas id="coursePerfChart"></canvas>
+        </div>
+        <div class="chart-box">
+          <h4 style="font-size: 0.95rem; color: #e2e8f0; margin-bottom: 10px;">⏱️ 班級堂數長度 vs. 平均完課率衰減定律</h4>
+          <canvas id="durationChart"></canvas>
+        </div>
+      </div>
+
+      <div class="table-wrap" style="margin-top: 24px;">
+        <table>
+          <thead>
+            <tr>
+              <th>綜合排名</th>
+              <th>班級名稱（已開課直播班）</th>
+              <th>授課師資</th>
+              <th>堂數</th>
+              <th>開班登記</th>
+              <th>首堂出席 (出席率)</th>
+              <th>平均出席人數</th>
+              <th>完課率</th>
+              <th>消耗新生 / 舊生</th>
+              <th>2027 排課建議定級</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="rank-badge" style="background:#f59e0b; color:#000;">1</span></td>
+              <td><strong>V皮角色繪製｜線上直播</strong></td>
+              <td>黃俊傑</td>
+              <td>16 堂</td>
+              <td style="color:#38bdf8; font-weight:700;">229 人</td>
+              <td>175 人 (76.4%)</td>
+              <td style="color:#34d399; font-weight:700;">140.8 人</td>
+              <td style="color:#fbbf24; font-weight:800;">60.9%</td>
+              <td>149 新 / 0 舊</td>
+              <td><span class="m-tag" style="background:rgba(245,158,11,0.2); color:#fbbf24;">👑 SSS 必開王牌</span></td>
+            </tr>
+            <tr>
+              <td><span class="rank-badge" style="background:#94a3b8; color:#000;">2</span></td>
+              <td><strong>Live2D 動畫製作｜線上直播</strong></td>
+              <td>黃俊傑</td>
+              <td>16 堂</td>
+              <td style="color:#38bdf8; font-weight:700;">228 人</td>
+              <td>158 人 (69.3%)</td>
+              <td style="color:#34d399; font-weight:700;">122.7 人</td>
+              <td style="color:#fbbf24; font-weight:800;">54.6%</td>
+              <td>136 新 / 0 舊</td>
+              <td><span class="m-tag" style="background:rgba(245,158,11,0.2); color:#fbbf24;">👑 SSS 必開王牌</span></td>
+            </tr>
+            <tr>
+              <td><span class="rank-badge" style="background:#d97706; color:#fff;">3</span></td>
+              <td><strong>Vtuber 創作全攻略｜線上直播 (1月班)</strong></td>
+              <td>黃俊傑</td>
+              <td>8 堂</td>
+              <td style="color:#38bdf8; font-weight:700;">200 人</td>
+              <td>143 人 (71.5%)</td>
+              <td style="color:#34d399; font-weight:700;">120.5 人</td>
+              <td style="color:#fbbf24; font-weight:800;">59.8%</td>
+              <td>127 新 / 9 舊</td>
+              <td><span class="m-tag" style="background:rgba(245,158,11,0.2); color:#fbbf24;">👑 SSS 必開引流</span></td>
+            </tr>
+            <tr>
+              <td><span class="rank-badge" style="background:#334155; color:#fff;">4</span></td>
+              <td><strong>日本動畫職人養成班｜線上直播</strong></td>
+              <td>涂國雄、邱文美</td>
+              <td>16 堂</td>
+              <td>68 人</td>
+              <td style="color:#34d399; font-weight:700;">53 人 (77.9%)</td>
+              <td>32.6 人</td>
+              <td style="color:#34d399; font-weight:800;">47.1%</td>
+              <td>32 新 / 9 舊</td>
+              <td><span class="m-tag" style="background:rgba(16,185,129,0.2); color:#34d399;">🌟 S 高完課必開</span></td>
+            </tr>
+            <tr>
+              <td><span class="rank-badge" style="background:#334155; color:#fff;">5</span></td>
+              <td><strong>商用平面設計進階班｜線上直播</strong></td>
+              <td>王仁駿</td>
+              <td>16 堂</td>
+              <td>97 人</td>
+              <td>56 人 (57.7%)</td>
+              <td>44.1 人</td>
+              <td style="color:#34d399; font-weight:800;">45.5%</td>
+              <td>33 新 / <strong style="color:#c084fc;">16 舊</strong></td>
+              <td><span class="m-tag" style="background:rgba(16,185,129,0.2); color:#34d399;">🌟 S 高完課必開</span></td>
+            </tr>
+            <tr>
+              <td><span class="rank-badge" style="background:#334155; color:#fff;">6</span></td>
+              <td><strong>Procreate 數位繪畫｜線上直播</strong></td>
+              <td>曹育禎</td>
+              <td>24 堂</td>
+              <td style="color:#38bdf8; font-weight:700;">121 人</td>
+              <td>82 人 (67.8%)</td>
+              <td>52.8 人</td>
+              <td style="color:#34d399; font-weight:800;">43.7%</td>
+              <td>48 新 / <strong style="color:#c084fc;">19 舊</strong></td>
+              <td><span class="m-tag" style="background:rgba(16,185,129,0.2); color:#34d399;">🌟 S 高完課必開</span></td>
+            </tr>
+            <tr>
+              <td><span class="rank-badge" style="background:#334155; color:#fff;">7</span></td>
+              <td><strong>UI 視覺介面設計班｜線上直播</strong></td>
+              <td>沈宇哲</td>
+              <td>20 堂</td>
+              <td>61 人</td>
+              <td style="color:#34d399; font-weight:700;">45 人 (73.8%)</td>
+              <td>25.3 人</td>
+              <td style="color:#34d399; font-weight:800;">42.2%</td>
+              <td>21 新 / 12 舊</td>
+              <td><span class="m-tag" style="background:rgba(16,185,129,0.2); color:#34d399;">🌟 S 口碑必開</span></td>
+            </tr>
+            <tr>
+              <td><span class="rank-badge" style="background:#334155; color:#fff;">8</span></td>
+              <td><strong>AI 品牌系統創建｜線上直播</strong></td>
+              <td>王仁駿</td>
+              <td>18 堂</td>
+              <td>91 人</td>
+              <td style="color:#34d399; font-weight:700;">77 人 (84.6% 冠)</td>
+              <td>36.7 人</td>
+              <td style="color:#34d399; font-weight:800;">40.8%</td>
+              <td>63 新 / 0 舊</td>
+              <td><span class="m-tag" style="background:rgba(16,185,129,0.2); color:#34d399;">🌟 S 首堂出席王</span></td>
+            </tr>
+            <tr>
+              <td><span class="rank-badge" style="background:#334155; color:#fff;">9</span></td>
+              <td><strong>商用視覺平面設計｜線上直播</strong></td>
+              <td>黃偉勳</td>
+              <td>30 堂</td>
+              <td style="color:#38bdf8; font-weight:700;">194 人</td>
+              <td>114 人 (58.8%)</td>
+              <td>59.3 人</td>
+              <td style="color:#f87171;">30.1% (堂數過長)</td>
+              <td>43 新 / <strong style="color:#c084fc;">33 舊 (冠)</strong></td>
+              <td><span class="m-tag" style="background:rgba(14,165,233,0.2); color:#38bdf8;">🚀 A 必開 (改18堂)</span></td>
+            </tr>
+            <tr>
+              <td><span class="rank-badge" style="background:#334155; color:#fff;">10</span></td>
+              <td><strong>數位繪畫班｜線上直播</strong></td>
+              <td>張博涵</td>
+              <td>20 堂</td>
+              <td style="color:#38bdf8; font-weight:700;">172 人</td>
+              <td>90 人 (52.3%)</td>
+              <td>55.6 人</td>
+              <td>31.0%</td>
+              <td>52 新 / <strong style="color:#c084fc;">20 舊</strong></td>
+              <td><span class="m-tag" style="background:rgba(14,165,233,0.2); color:#38bdf8;">🚀 A 流量必開</span></td>
+            </tr>
+            <tr>
+              <td><span class="rank-badge" style="background:#334155; color:#fff;">11</span></td>
+              <td><strong>AI 遊戲設計班｜線上直播</strong></td>
+              <td>葉繁晟</td>
+              <td>24 堂</td>
+              <td style="color:#38bdf8; font-weight:700;">160 人</td>
+              <td>79 人 (49.4%)</td>
+              <td>53.0 人</td>
+              <td>33.4%</td>
+              <td>2 新 / 0 舊</td>
+              <td><span class="m-tag" style="background:rgba(14,165,233,0.2); color:#38bdf8;">🚀 A 黑馬必開 (改18堂)</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: 跨年檔期碰撞與結業日卡位分析 -->
+    <section class="slide-section" id="slide-timeline">
+      <div class="slide-header">
+        <div>
+          <span class="slide-step">SLIDE 04 ｜ CROSS-YEAR TIMELINE & COLLISION GUARD</span>
+          <h2 class="slide-title">2026 跨 2027 在途班級「結業日」與新班接棒時間軸</h2>
+          <p class="slide-subtitle">
+            2026 年底開課的 4 門直播班將一路上到 2027 年 1～3 月。新班排課必須精準卡在「舊班結業後 1～2 週」，實現零撞期、無縫轉班！
+          </p>
+        </div>
+      </div>
+
+      <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid var(--border-glass); border-radius: var(--radius-md); padding: 20px;">
+        <div style="display: grid; grid-template-columns: 240px 1fr 150px; padding: 0 16px 10px; color: #94a3b8; font-size: 0.8rem; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <div>班級與師資</div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>2026/12</span><span>2027/01</span><span style="color:#f43f5e;">2027/02 (春節2/4-2/10)</span><span>2027/03</span><span>2027/04</span><span>2027/05</span><span>2027/06</span>
+          </div>
+          <div style="text-align: right;">關鍵結業/接棒日</div>
+        </div>
+
+        <!-- Line 1: 繪畫線 -->
+        <div class="timeline-row">
+          <div>
+            <strong style="color:#fff;">🎨 繪畫插畫線接力</strong>
+            <div style="font-size:0.76rem; color:#94a3b8;">羅品傑 ➔ 曹育禎 ➔ 張博涵</div>
+          </div>
+          <div class="timeline-track">
+            <div class="timeline-bar" style="width: 24%; background: #475569;">數位漫畫 (至1/23結業)</div>
+            <div style="width: 6%;"></div>
+            <div class="timeline-bar" style="width: 35%; background: linear-gradient(90deg, #10b981, #059669);">2/21 開課：Procreate (至5/09)</div>
+            <div style="width: 2%;"></div>
+            <div class="timeline-bar" style="width: 33%; background: linear-gradient(90deg, #0ea5e9, #2563eb);">5/16 開課：數位繪畫班</div>
+          </div>
+          <div style="text-align: right; color:#34d399; font-weight:700;">1/23 結業 ➔ 2/21 接棒</div>
+        </div>
+
+        <!-- Line 2: Vtuber 線 -->
+        <div class="timeline-row">
+          <div>
+            <strong style="color:#fbbf24;">👑 Vtuber 王牌三部曲</strong>
+            <div style="font-size:0.76rem; color:#94a3b8;">黃俊傑老師專線</div>
+          </div>
+          <div class="timeline-track">
+            <div class="timeline-bar" style="width: 27%; background: #475569;">26年底 Live2D (至1/29結業)</div>
+            <div style="width: 4%;"></div>
+            <div class="timeline-bar" style="width: 16%; background: linear-gradient(90deg, #f59e0b, #d97706);">2/15 全攻略(8堂)</div>
+            <div style="width: 2%;"></div>
+            <div class="timeline-bar" style="width: 25%; background: linear-gradient(90deg, #f59e0b, #ea580c);">3/22 V皮繪製(16堂)</div>
+            <div style="width: 2%;"></div>
+            <div class="timeline-bar" style="width: 24%; background: linear-gradient(90deg, #f43f5e, #e11d48);">5/24 Live2D(16堂)</div>
+          </div>
+          <div style="text-align: right; color:#fbbf24; font-weight:700;">1/29 結業 ➔ 2/15 啟動</div>
+        </div>
+
+        <!-- Line 3: 平面與品牌線 -->
+        <div class="timeline-row">
+          <div>
+            <strong style="color:#fff;">📐 AI 與商用平面線</strong>
+            <div style="font-size:0.76rem; color:#94a3b8;">黃貴濃 ➔ 王仁駿 / 黃偉勳</div>
+          </div>
+          <div class="timeline-track">
+            <div class="timeline-bar" style="width: 42%; background: #475569;">26年底 AI商用平面 (至3/04結業)</div>
+            <div style="width: 8%;"></div>
+            <div class="timeline-bar" style="width: 30%; background: linear-gradient(90deg, #0ea5e9, #0284c7);">4/12 商用平面核心(18堂)</div>
+            <div style="width: 2%;"></div>
+            <div class="timeline-bar" style="width: 18%; background: linear-gradient(90deg, #10b981, #059669);">6/21 平面進階</div>
+          </div>
+          <div style="text-align: right; color:#38bdf8; font-weight:700;">3/04 結業 ➔ 4/12 接棒</div>
+        </div>
+
+        <!-- Line 4: 遊戲與動畫線 -->
+        <div class="timeline-row" style="border-bottom: none;">
+          <div>
+            <strong style="color:#fff;">🎮 遊戲與角色美術線</strong>
+            <div style="font-size:0.76rem; color:#94a3b8;">龎士禮 ➔ 葉繁晟</div>
+          </div>
+          <div class="timeline-track">
+            <div class="timeline-bar" style="width: 50%; background: #475569;">26年底 遊戲角色美術 (至3/23結業)</div>
+            <div style="width: 2%;"></div>
+            <div class="timeline-bar" style="width: 36%; background: linear-gradient(90deg, #8b5cf6, #6d28d9);">3/29 開課：AI 遊戲設計班 (18堂)</div>
+          </div>
+          <div style="text-align: right; color:#c084fc; font-weight:700;">3/23 結業 ➔ 3/29 接棒</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: 2027 上半年 (1~6月) 建議預排課總表 -->
+    <section class="slide-section" id="slide-schedule">
+      <div class="slide-header">
+        <div>
+          <span class="slide-step">SLIDE 05 ｜ 2027 H1 RECOMMENDED SCHEDULE BLUEPRINT</span>
+          <h2 class="slide-title">2027 上半年（1～6月）黃金預排課建議表（精選 11 班必開配置）</h2>
+          <p class="slide-subtitle">
+            已扣除轉為「線上錄播課」之室內乙級認證班，全面聚焦高完課、高出席與高流量之核心直播課。
+          </p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>預排月份</th>
+              <th>建議開課日</th>
+              <th>預計結業日</th>
+              <th>預排必開班級名稱</th>
+              <th>建議師資</th>
+              <th>建議堂數</th>
+              <th>歷史數據背書</th>
+              <th>檔期卡位與排課邏輯說明</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong style="color:#a5b4fc;">1 月</strong></td>
+              <td><strong>2027-01-18</strong></td>
+              <td>2027-03-22</td>
+              <td><strong>AI 品牌系統創建｜線上直播</strong></td>
+              <td>王仁駿</td>
+              <td>16～18 堂</td>
+              <td><span class="m-tag" style="color:#34d399;">首堂出席 84.6% (冠)</span></td>
+              <td>1月避開在途之漫畫、Live2D 與平面課，以高出席率的 AI 品牌打響開年第一班。</td>
+            </tr>
+            <tr style="background: rgba(245, 158, 11, 0.05);">
+              <td><strong style="color:#fbbf24;">2 月</strong></td>
+              <td><strong>2027-02-15</strong></td>
+              <td>2027-03-12</td>
+              <td><strong>👑 Vtuber 創作全攻略｜線上直播</strong></td>
+              <td>黃俊傑</td>
+              <td><strong>8 堂</strong></td>
+              <td><span class="m-tag" style="color:#fbbf24;">登記 200人 / 完課 59.8%</span></td>
+              <td><strong>三部曲首棒！</strong>1/29 Live2D 結業＋休完春節連假(2/4-2/10)後開工首日即刻引流！</td>
+            </tr>
+            <tr>
+              <td><strong style="color:#fbbf24;">2 月</strong></td>
+              <td><strong>2027-02-21</strong></td>
+              <td>2027-05-09</td>
+              <td><strong>🌟 Procreate 數位繪畫｜線上直播</strong></td>
+              <td>曹育禎</td>
+              <td>20 堂</td>
+              <td><span class="m-tag" style="color:#34d399;">登記 121人 / 完課 43.7%</span></td>
+              <td>完美承接 <strong>1/23《數位漫畫班》結業</strong>之繪畫客群，年後開課吸收寒假與年後買氣。</td>
+            </tr>
+            <tr style="background: rgba(245, 158, 11, 0.05);">
+              <td><strong style="color:#34d399;">3 月</strong></td>
+              <td><strong>2027-03-22</strong></td>
+              <td>2027-05-14</td>
+              <td><strong>👑 V皮角色繪製｜線上直播</strong></td>
+              <td>黃俊傑</td>
+              <td><strong>16 堂</strong></td>
+              <td><span class="m-tag" style="color:#fbbf24;">登記 229人 / 完課 60.9%</span></td>
+              <td><strong>三部曲二部曲！</strong>緊接 3/12《Vtuber全攻略》結業後 10 天開班，無縫轉化首部曲學員。</td>
+            </tr>
+            <tr>
+              <td><strong style="color:#34d399;">3 月</strong></td>
+              <td><strong>2027-03-29</strong></td>
+              <td>2027-06-04</td>
+              <td><strong>🚀 AI 遊戲設計班｜線上直播</strong></td>
+              <td>葉繁晟</td>
+              <td>18～20 堂</td>
+              <td><span class="m-tag" style="color:#38bdf8;">登記 160人 (H2黑馬)</span></td>
+              <td>精準卡位 <strong>3/23《遊戲角色美術班》結業</strong>後 6 天開課，直接接收遊戲線學員續修。</td>
+            </tr>
+            <tr>
+              <td><strong style="color:#38bdf8;">4 月</strong></td>
+              <td><strong>2027-04-12</strong></td>
+              <td>2027-06-18</td>
+              <td><strong>🚀 商用視覺平面設計核心班｜線上直播</strong></td>
+              <td>黃偉勳</td>
+              <td><strong>18～20 堂</strong></td>
+              <td><span class="m-tag" style="color:#38bdf8;">登記 194人 / 消課 76人</span></td>
+              <td>避開 <strong>3/04 結業之 AI 商用平面</strong>，並將原 30 堂濃縮為 18~20 堂，拉高完課率至 45%+。</td>
+            </tr>
+            <tr>
+              <td><strong style="color:#38bdf8;">4 月</strong></td>
+              <td><strong>2027-04-20</strong></td>
+              <td>2027-06-15</td>
+              <td><strong>🌟 日本動畫職人養成班｜線上直播</strong></td>
+              <td>涂國雄＋邱文美</td>
+              <td>16 堂</td>
+              <td><span class="m-tag" style="color:#34d399;">出席 77.9% / 完課 47.1%</span></td>
+              <td>雙師合授口碑極高（完課率 47.1%），定於 4 月下旬開班，複製 2026 同期成功經驗。</td>
+            </tr>
+            <tr>
+              <td><strong style="color:#c084fc;">5 月</strong></td>
+              <td><strong>2027-05-16</strong></td>
+              <td>2027-07-25</td>
+              <td><strong>🚀 數位繪畫實戰班｜線上直播</strong></td>
+              <td>張博涵</td>
+              <td>20 堂</td>
+              <td><span class="m-tag" style="color:#38bdf8;">登記 172人 / 消課 72人</span></td>
+              <td>完美接棒 <strong>5/09《Procreate 數位繪畫》結業</strong>，讓 iPad 繪畫學員進階銜接電腦電繪！</td>
+            </tr>
+            <tr style="background: rgba(245, 158, 11, 0.05);">
+              <td><strong style="color:#c084fc;">5 月</strong></td>
+              <td><strong>2027-05-24</strong></td>
+              <td>2027-07-16</td>
+              <td><strong>👑 Live2D 動畫製作｜線上直播</strong></td>
+              <td>黃俊傑</td>
+              <td><strong>16 堂</strong></td>
+              <td><span class="m-tag" style="color:#fbbf24;">登記 228人 / 完課 54.6%</span></td>
+              <td><strong>三部曲最終章！</strong>緊接 5/14《V皮角色繪製》結業後 10 天開課，完成上半年 650 人次閉環。</td>
+            </tr>
+            <tr>
+              <td><strong style="color:#f43f5e;">6 月</strong></td>
+              <td><strong>2027-06-08</strong></td>
+              <td>2027-08-10</td>
+              <td><strong>🌟 UI 視覺介面設計實戰班｜線上直播</strong></td>
+              <td>沈宇哲</td>
+              <td>18～20 堂</td>
+              <td><span class="m-tag" style="color:#34d399;">出席 73.8% / 完課 42.2%</span></td>
+              <td>高出席與高完課口碑課，排於 6 月初迎接暑期轉職與作品集準備熱潮。</td>
+            </tr>
+            <tr>
+              <td><strong style="color:#f43f5e;">6 月</strong></td>
+              <td><strong>2027-06-21</strong></td>
+              <td>2027-08-16</td>
+              <td><strong>🌟 商用平面設計進階班｜線上直播</strong></td>
+              <td>王仁駿</td>
+              <td><strong>16 堂</strong></td>
+              <td><span class="m-tag" style="color:#34d399;">登記 97人 / 完課 45.5%</span></td>
+              <td>精準接棒 <strong>6/18 黃偉勳《商用平面核心班》結業</strong>！隔週無縫銜接進階班，舊生轉化最大化。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // Chart 1: 主力課程登記人數 vs 完課率
+    const ctxPerf = document.getElementById('coursePerfChart').getContext('2d');
+    new Chart(ctxPerf, {
+      type: 'bar',
+      data: {
+        labels: [
+          'V皮繪製 (黃俊傑)',
+          'Live2D (黃俊傑)',
+          'Vtuber攻略 (黃俊傑)',
+          '商用平面 (黃偉勳)',
+          '數位繪畫 (張博涵)',
+          'AI遊戲 (葉繁晟)',
+          'Procreate (曹育禎)',
+          '平面進階 (王仁駿)',
+          'AI品牌 (王仁駿)',
+          '日本動畫 (雙師)',
+          'UI設計 (沈宇哲)'
+        ],
+        datasets: [
+          {
+            label: '開班登記人數 (人)',
+            data: [229, 228, 200, 194, 172, 160, 121, 97, 91, 68, 61],
+            backgroundColor: 'rgba(56, 189, 248, 0.7)',
+            borderColor: '#38bdf8',
+            borderWidth: 1,
+            borderRadius: 5,
+            yAxisID: 'y'
+          },
+          {
+            label: '完課率 (%)',
+            data: [60.9, 54.6, 59.8, 30.1, 31.0, 33.4, 43.7, 45.5, 40.8, 47.1, 42.2],
+            type: 'line',
+            borderColor: '#fbbf24',
+            backgroundColor: '#fbbf24',
+            borderWidth: 3,
+            pointRadius: 5,
+            tension: 0.3,
+            yAxisID: 'y1'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: '#e2e8f0' } }
+        },
+        scales: {
+          x: { ticks: { color: '#cbd5e1', font: { size: 11 } }, grid: { display: false } },
+          y: {
+            type: 'linear',
+            position: 'left',
+            title: { display: true, text: '登記人數 (人)', color: '#38bdf8' },
+            ticks: { color: '#38bdf8' },
+            grid: { color: 'rgba(255,255,255,0.06)' }
+          },
+          y1: {
+            type: 'linear',
+            position: 'right',
+            min: 0,
+            max: 75,
+            title: { display: true, text: '完課率 (%)', color: '#fbbf24' },
+            ticks: { color: '#fbbf24' },
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    // Chart 2: 堂數長度 vs 平均完課率
+    const ctxDur = document.getElementById('durationChart').getContext('2d');
+    new Chart(ctxDur, {
+      type: 'bar',
+      data: {
+        labels: ['短週期 (8~16堂)\n🔥 最佳甜蜜點', '中週期 (18~24堂)\n⚡ 穩定養成', '長週期 (27~30堂)\n⚠️ 疲乏流失高'],
+        datasets: [
+          {
+            label: '平均完課率 (%)',
+            data: [50.3, 39.1, 31.0],
+            backgroundColor: [
+              'rgba(16, 185, 129, 0.8)',
+              'rgba(99, 102, 241, 0.8)',
+              'rgba(244, 63, 94, 0.8)'
+            ],
+            borderColor: ['#10b981', '#6366f1', '#f43f5e'],
+            borderWidth: 1,
+            borderRadius: 8
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          x: { ticks: { color: '#e2e8f0', font: { weight: 'bold' } }, grid: { display: false } },
+          y: {
+            min: 0,
+            max: 60,
+            title: { display: true, text: '平均完課率 (%)', color: '#cbd5e1' },
+            ticks: { color: '#cbd5e1' },
+            grid: { color: 'rgba(255,255,255,0.06)' }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
