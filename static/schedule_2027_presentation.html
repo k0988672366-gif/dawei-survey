@@ -47,7 +47,7 @@
   }
 
   .sheet {
-    max-width: 1420px;
+    max-width: 1440px;
     margin: 0 auto;
     background: var(--surface);
     border: 1px solid var(--border);
@@ -165,7 +165,7 @@
     display: block;
   }
 
-  /* Summary KPI Strip */
+  /* Summary KPI Strip (4 columns for Compare, 6 unified columns for 2025 & 2026) */
   .kpi-strip {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -173,9 +173,17 @@
     background: var(--subhead-bg);
   }
 
+  .kpi-strip-6 {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    border-bottom: 1px solid var(--border);
+    background: var(--subhead-bg);
+  }
+
   .kpi-cell {
-    padding: 13px 20px;
+    padding: 12px 16px;
     border-right: 1px solid var(--border);
+    min-width: 0;
   }
 
   .kpi-cell:last-child {
@@ -183,30 +191,39 @@
   }
 
   .kpi-label {
-    font-size: 11.5px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
     color: var(--text-muted);
     margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .kpi-val {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     color: var(--text-main);
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .kpi-val span {
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 500;
     color: var(--text-muted);
-    margin-left: 4px;
+    margin-left: 3px;
   }
 
   .kpi-sub {
-    font-size: 11.5px;
+    font-size: 11px;
     color: var(--text-sub);
     margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* Section Title Bar */
@@ -447,7 +464,7 @@
   <div class="sheet-header">
     <div class="sheet-title-group">
       <h1>DATE線上學院｜2025 vs 2026 兩年開班數據對比 ＆ 2027 上半年重新規劃總表</h1>
-      <p>涵蓋：2025 全年 28 班實績表、2026 全年 25 班實績表、兩年交叉比對診斷，以及重新修正後之 2027 上半年開班方向（龍和設計已轉線上錄播課）</p>
+      <p>2025 與 2026 兩年度報表已完全統一為相同結構（頂部 6 大指標 ＋ 表一：各課程彙總統計表 ＋ 表二：全校逐班明細表），方便切換垂直比對</p>
     </div>
     <div class="header-actions">
       <button class="btn-action" style="background:var(--primary);" onclick="copyShareLink(this)">🔗 複製公開分享網址</button>
@@ -462,10 +479,10 @@
       1. 2025 vs 2026 對比與 2027 重新規劃方向 <span class="tab-badge">核心決策版</span>
     </button>
     <button class="tab-btn" onclick="switchTab('tab-2025', this)">
-      2. 2025 年度開班數據表 <span class="tab-badge">2025 全年 28 班</span>
+      2. 2025 年度開班數據表 <span class="tab-badge">15 課系彙總 ＋ 28 班明細</span>
     </button>
     <button class="tab-btn" onclick="switchTab('tab-2026', this)">
-      3. 2026 年度開班數據表 <span class="tab-badge">2026 全年 25 班</span>
+      3. 2026 年度開班數據表 <span class="tab-badge">16 課系彙總 ＋ 25 班明細</span>
     </button>
   </div>
 
@@ -789,36 +806,287 @@
   </div>
 
   <!-- ========================================================================= -->
-  <!-- VIEW 2: 2025 FULL STANDALONE REPORT (28 CLASSES)                          -->
+  <!-- VIEW 2: 2025 UNIFIED REPORT (6 KPIs + TABLE 1 SUMMARY + TABLE 2 DETAILS)  -->
   <!-- ========================================================================= -->
   <div id="tab-2025" class="view-panel">
 
-    <div class="kpi-strip">
+    <!-- Unified 6-Column KPI Strip (Identical labels & positions to 2026) -->
+    <div class="kpi-strip-6">
       <div class="kpi-cell">
-        <div class="kpi-label">2025 全年總開班數</div>
+        <div class="kpi-label">1. 全年總開班數</div>
         <div class="kpi-val">28 <span>班</span></div>
-        <div class="kpi-sub">上半年 15 班 ／ 下半年 13 班（含龍和設計 4 班）</div>
+        <div class="kpi-sub">直播 24 班 ／ 龍和 4 班 (轉錄播)</div>
       </div>
       <div class="kpi-cell">
-        <div class="kpi-label">2025 總開班登記 ／ 總消耗人次</div>
+        <div class="kpi-label">2. 總開班登記 ／ 總消耗人次</div>
         <div class="kpi-val">3,095 <span>人</span> / 1,481 <span>人</span></div>
-        <div class="kpi-sub">消耗新生 1,150 人 ＋ 消耗舊生 331 人</div>
+        <div class="kpi-sub">消耗新生 1,150 人 ＋ 舊生 331 人</div>
       </div>
       <div class="kpi-cell">
-        <div class="kpi-label">2025 單班最高登記紀錄</div>
-        <div class="kpi-val" style="color:var(--primary);">285 <span>人 (總登記 318)</span></div>
-        <div class="kpi-sub">商用視覺平面設計｜黃偉勳（均席 115.4 人、消耗 135 人）</div>
+        <div class="kpi-label">3. 單班最高登記紀錄</div>
+        <div class="kpi-val" style="color:var(--primary);">285 <span>人 (總318)</span></div>
+        <div class="kpi-sub">商用視覺平面｜黃偉勳 (均席115.4人)</div>
       </div>
       <div class="kpi-cell">
-        <div class="kpi-label">2025 最高完課率（排除龍和認證班）</div>
+        <div class="kpi-label">4. 全校累積登記最多課系</div>
+        <div class="kpi-val">521 <span>人 (3 班合計)</span></div>
+        <div class="kpi-sub">商用視覺平面 (次高：數位漫畫 510人)</div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">5. 全校完課率冠軍 (排除龍和)</div>
         <div class="kpi-val" style="color:var(--green);">56.4% <span>/ 55.4%</span></div>
-        <div class="kpi-sub">日本amps動漫 (56.4%) ／ 商用平面進階・王仁駿 (55.4%)</div>
+        <div class="kpi-sub">日本amps動漫 ／ 平面進階・王仁駿</div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">6. 首日出席率最高 (排除龍和)</div>
+        <div class="kpi-val" style="color:var(--primary);">76.7% <span>/ 71.9%</span></div>
+        <div class="kpi-sub">日本amps動漫 ／ 數位漫畫・鍾佳穎</div>
       </div>
     </div>
 
+    <!-- Unified Table 1 for 2025: Course Family Summary (Identical columns to 2026 Table 1) -->
     <div class="section-bar">
-      <span>2025 年度全校 28 班學員實際上課狀況明細表（依課程表現與完課率梯度排列）</span>
-      <span class="note">數據來源：DATE線上(日琪) 2025 全年 28 班完整報表｜數字等寬靠右對齊</span>
+      <span>一、【2025 課系彙總表】2025 各課程學員實際上課狀況數據統計表（共 28 班彙總為 15 項核心課程）</span>
+      <span class="note">與 2026 彙總表欄位 100% 相同對齊，可直接切換分頁比對</span>
+    </div>
+    <div class="table-wrap">
+      <table class="grid-table">
+        <colgroup>
+          <col style="width: 8%;">
+          <col style="width: 19%;">
+          <col style="width: 13%;">
+          <col style="width: 8%;">
+          <col style="width: 8%;">
+          <col style="width: 9%;">
+          <col style="width: 9%;">
+          <col style="width: 10%;">
+          <col style="width: 8%;">
+          <col style="width: 8%;">
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="al-c">優先級分級</th>
+            <th class="al-l">課程名稱</th>
+            <th class="al-l">授課講師</th>
+            <th class="al-c">固定堂數</th>
+            <th class="al-c">2025 開班</th>
+            <th class="al-r">累積總登記</th>
+            <th class="al-r">單班最高登記</th>
+            <th class="al-r">最高首日出席(率)</th>
+            <th class="al-r">最高均席</th>
+            <th class="al-r">最高完課率</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="row-group-header">
+            <td colspan="10">【第一梯隊：2025 王牌主力課群】高登記人數、高吞吐量與課綱精簡後高完課率</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
+            <td class="al-l num-strong">商用視覺平面設計</td>
+            <td class="al-l">黃偉勳 / 蔡佩珊 / 詹京龍</td>
+            <td class="al-c">30～38 堂</td>
+            <td class="al-c">3 班</td>
+            <td class="al-r num-strong">521 人</td>
+            <td class="al-r num-strong">285 人</td>
+            <td class="al-r">177 人 (66.9%)</td>
+            <td class="al-r num-hi">115.4 人</td>
+            <td class="al-r num-hi">37.6%</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
+            <td class="al-l num-strong">數位漫畫班</td>
+            <td class="al-l">夏宜嵐(2) / 鍾佳穎(1)</td>
+            <td class="al-c">20～28 堂</td>
+            <td class="al-c">3 班</td>
+            <td class="al-r num-strong">510 人</td>
+            <td class="al-r num-strong">215 人</td>
+            <td class="al-r">137 人 (<span class="num-hi">71.9%</span>)</td>
+            <td class="al-r num-hi">89.3 人</td>
+            <td class="al-r num-hi">40.7%</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
+            <td class="al-l num-strong">Procreate 數位繪畫 (含實作)</td>
+            <td class="al-l">簡佳慧 / 曹育禎 / 周秉逸</td>
+            <td class="al-c">12～32 堂</td>
+            <td class="al-c">4 班</td>
+            <td class="al-r num-strong">375 人</td>
+            <td class="al-r num-strong">110 人</td>
+            <td class="al-r">51 人 (61.4%)</td>
+            <td class="al-r num-blue">39.8 人</td>
+            <td class="al-r num-hi">39.1%</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
+            <td class="al-l num-strong">商用平面設計進階班</td>
+            <td class="al-l">王仁駿(1) / 黃偉勳(1)</td>
+            <td class="al-c">16 堂</td>
+            <td class="al-c">2 班</td>
+            <td class="al-r num-strong">212 人</td>
+            <td class="al-r num-strong">106 人</td>
+            <td class="al-r">74 人 (<span class="num-hi">69.8%</span>)</td>
+            <td class="al-r num-hi">58.3 人</td>
+            <td class="al-r num-hi">55.4%</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
+            <td class="al-l num-strong">數位繪畫班</td>
+            <td class="al-l">賴忠志(1) / 張䕒澤(1)</td>
+            <td class="al-c">28 堂</td>
+            <td class="al-c">2 班</td>
+            <td class="al-r num-strong">237 人</td>
+            <td class="al-r num-strong">145 人</td>
+            <td class="al-r">96 人 (66.2%)</td>
+            <td class="al-r">36.5 人</td>
+            <td class="al-r">24.3%</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
+            <td class="al-l num-strong">After Effects 特效動畫</td>
+            <td class="al-l">石皓瑋(1) / 鄧婕(1)</td>
+            <td class="al-c">20～28 堂</td>
+            <td class="al-c">2 班</td>
+            <td class="al-r num-strong">227 人</td>
+            <td class="al-r num-strong">135 人</td>
+            <td class="al-r">81 人 (60.0%)</td>
+            <td class="al-r">34.4 人</td>
+            <td class="al-r num-blue">36.6%</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
+            <td class="al-l num-strong">Vtuber 線上直播</td>
+            <td class="al-l">黃俊傑</td>
+            <td class="al-c">12 堂</td>
+            <td class="al-c">1 班</td>
+            <td class="al-r num-strong">135 人</td>
+            <td class="al-r num-strong">135 人</td>
+            <td class="al-r">80 人 (59.3%)</td>
+            <td class="al-r num-blue">40.5 人</td>
+            <td class="al-r">29.6%</td>
+          </tr>
+          <tr class="row-group-header">
+            <td colspan="10">【第二梯隊：2025 常規專業課群】單班穩定開課課系</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t2">第二優先</span></td>
+            <td class="al-l num-strong">日本amps動漫創作</td>
+            <td class="al-l">AMPS(4) / 黃俊傑(1)</td>
+            <td class="al-c">4 堂</td>
+            <td class="al-c">1 班</td>
+            <td class="al-r">43 人</td>
+            <td class="al-r">43 人</td>
+            <td class="al-r">33 人 (<span class="num-hi">76.7%</span>)</td>
+            <td class="al-r">24.3 人</td>
+            <td class="al-r num-hi">56.4%</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t2">第二優先</span></td>
+            <td class="al-l">2D 動畫設計班</td>
+            <td class="al-l">張䕒澤</td>
+            <td class="al-c">27 堂</td>
+            <td class="al-c">1 班</td>
+            <td class="al-r">94 人</td>
+            <td class="al-r">94 人</td>
+            <td class="al-r">66 人 (<span class="num-hi">70.2%</span>)</td>
+            <td class="al-r">26.3 人</td>
+            <td class="al-r">26.5%</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t2">第二優先</span></td>
+            <td class="al-l">商用網站架設實務</td>
+            <td class="al-l">林承彥</td>
+            <td class="al-c">36 堂</td>
+            <td class="al-c">1 班</td>
+            <td class="al-r">81 人</td>
+            <td class="al-r">81 人</td>
+            <td class="al-r">53 人 (65.4%)</td>
+            <td class="al-r">17.4 人</td>
+            <td class="al-r">20.8%</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t2">第二優先</span></td>
+            <td class="al-l">Unity App 遊戲設計班(雙軌)</td>
+            <td class="al-l">蘇弋麟</td>
+            <td class="al-c">31 堂</td>
+            <td class="al-c">1 班</td>
+            <td class="al-r">70 人</td>
+            <td class="al-r">70 人</td>
+            <td class="al-r">33 人 (47.1%)</td>
+            <td class="al-r">15.5 人</td>
+            <td class="al-r">20.4%</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t2">第二優先</span></td>
+            <td class="al-l">遊戲角色美術班(雙軌)</td>
+            <td class="al-l">龎士禮</td>
+            <td class="al-c">34 堂</td>
+            <td class="al-c">1 班</td>
+            <td class="al-r">68 人</td>
+            <td class="al-r">68 人</td>
+            <td class="al-r">29 人 (42.6%)</td>
+            <td class="al-r">13.4 人</td>
+            <td class="al-r">18.3%</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t2">第二優先</span></td>
+            <td class="al-l">UI 視覺介面設計班</td>
+            <td class="al-l">沈宇哲</td>
+            <td class="al-c">28 堂</td>
+            <td class="al-c">1 班</td>
+            <td class="al-r">54 人</td>
+            <td class="al-r">54 人</td>
+            <td class="al-r">33 人 (61.1%)</td>
+            <td class="al-r">12.0 人</td>
+            <td class="al-r">21.4%</td>
+          </tr>
+          <tr class="row-group-header">
+            <td colspan="10">【第三梯隊：完課偏低停開 ／ 龍和設計轉線上錄播課】</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-drop">完課偏低</span></td>
+            <td class="al-l">數位手機攝影班</td>
+            <td class="al-l">孫筱瑜</td>
+            <td class="al-c">22 堂</td>
+            <td class="al-c">1 班</td>
+            <td class="al-r">118 人</td>
+            <td class="al-r">118 人</td>
+            <td class="al-r">58 人 (49.2%)</td>
+            <td class="al-r">15.5 人</td>
+            <td class="al-r num-low">12.7%</td>
+          </tr>
+          <tr class="row-vod">
+            <td class="al-c"><span class="badge b-vod">轉線上錄播</span></td>
+            <td class="al-l num-strong">室內乙級 / 裝修乙級 / CAD / SU</td>
+            <td class="al-l">龍和設計工坊有限公司</td>
+            <td class="al-c">14～47 堂</td>
+            <td class="al-c">4 班</td>
+            <td class="al-r">350 人</td>
+            <td class="al-r">116 人</td>
+            <td class="al-r">99 人 (90.3%)</td>
+            <td class="al-r">69.2 人</td>
+            <td class="al-r num-hi">64.3%</td>
+          </tr>
+          <tr class="row-total">
+            <td class="al-c">2025 總計</td>
+            <td class="al-l">15 項核心課程彙總</td>
+            <td class="al-l">全校 18 組師資</td>
+            <td class="al-c">4～47 堂</td>
+            <td class="al-c">28 班</td>
+            <td class="al-r">3,095 人</td>
+            <td class="al-r">最高 285 人</td>
+            <td class="al-r">共 1,932 人 (62.4%)</td>
+            <td class="al-r">均 36.1 人</td>
+            <td class="al-r">均 32.8%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Unified Table 2 for 2025: All 28 Individual Classes (Identical columns to 2026 Table 2) -->
+    <div class="section-bar">
+      <span>二、【2025 逐班明細表】2025 年度全校 28 班開課日、結業日、出席與新舊生消耗明細表</span>
+      <span class="note">與 2026 逐班明細表欄位 100% 相同對齊</span>
     </div>
     <div class="table-wrap">
       <table class="grid-table">
@@ -838,7 +1106,7 @@
           <tr>
             <th class="al-c">表現分級</th>
             <th class="al-c">開課日 ～ 結業日</th>
-            <th class="al-l">2025 班級名稱</th>
+            <th class="al-l">班級名稱</th>
             <th class="al-l">授課講師</th>
             <th class="al-c">固定堂數</th>
             <th class="al-r">開班登記(總)</th>
@@ -1215,49 +1483,62 @@
   </div>
 
   <!-- ========================================================================= -->
-  <!-- VIEW 3: 2026 FULL STANDALONE REPORT (25 CLASSES)                          -->
+  <!-- VIEW 3: 2026 UNIFIED REPORT (6 KPIs + TABLE 1 SUMMARY + TABLE 2 DETAILS)  -->
   <!-- ========================================================================= -->
   <div id="tab-2026" class="view-panel">
 
-    <div class="kpi-strip">
+    <!-- Unified 6-Column KPI Strip (Identical labels & positions to 2025) -->
+    <div class="kpi-strip-6">
       <div class="kpi-cell">
-        <div class="kpi-label">2026 全年總開班數</div>
+        <div class="kpi-label">1. 全年總開班數</div>
         <div class="kpi-val">25 <span>班</span></div>
-        <div class="kpi-sub">直播課 23 班 ／ 龍和設計 2 班（2027 轉錄播）</div>
+        <div class="kpi-sub">直播 23 班 ／ 龍和 2 班 (轉錄播)</div>
       </div>
       <div class="kpi-cell">
-        <div class="kpi-label">2026 全校完課率冠軍課程</div>
-        <div class="kpi-val" style="color:var(--green);">60.9% <span>完課率</span></div>
-        <div class="kpi-sub">V皮角色繪製｜黃俊傑（單班 229 人、均席 140.8 人）</div>
+        <div class="kpi-label">2. 總開班登記 ／ 總消耗人次</div>
+        <div class="kpi-val">2,397 <span>人</span> / 956 <span>人</span></div>
+        <div class="kpi-sub">消耗新生 814 ＋ 舊生 142 (7班在途)</div>
       </div>
       <div class="kpi-cell">
-        <div class="kpi-label">2026 全校首日出席率最高課程</div>
-        <div class="kpi-val" style="color:var(--primary);">84.6% <span>出席率</span></div>
-        <div class="kpi-sub">AI 品牌系統創建｜王仁駿（91 人登記、77 人首日到課）</div>
+        <div class="kpi-label">3. 單班最高登記紀錄</div>
+        <div class="kpi-val" style="color:var(--primary);">229 <span>人 (總234)</span></div>
+        <div class="kpi-sub">V皮角色繪製｜黃俊傑 (均席140.8人)</div>
       </div>
       <div class="kpi-cell">
-        <div class="kpi-label">2026 全校累積登記最多課系</div>
+        <div class="kpi-label">4. 全校累積登記最多課系</div>
         <div class="kpi-val">312 <span>人 (3 班合計)</span></div>
-        <div class="kpi-sub">商用視覺平面設計（單班最高 194 人、舊生消耗第 1）</div>
+        <div class="kpi-sub">商用視覺平面 (次高：Live2D 283人)</div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">5. 全校完課率冠軍 (排除龍和)</div>
+        <div class="kpi-val" style="color:var(--green);">60.9% <span>/ 59.8%</span></div>
+        <div class="kpi-sub">V皮角色繪製 ／ Vtuber全攻略</div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">6. 首日出席率最高 (排除龍和)</div>
+        <div class="kpi-val" style="color:var(--primary);">84.6% <span>/ 77.9%</span></div>
+        <div class="kpi-sub">AI 品牌系統・王仁駿 ／ 日本動畫職人</div>
       </div>
     </div>
 
+    <!-- Unified Table 1 for 2026: Course Family Summary (Identical columns to 2025 Table 1) -->
     <div class="section-bar">
-      <span>2026 各課程學員實際上課狀況數據統計表（共 25 班彙總為 16 項核心課程）</span>
-      <span class="note">單位與對齊標準：人數與百分比統一靠右對齊，固定堂數與開班數置中</span>
+      <span>一、【2026 課系彙總表】2026 各課程學員實際上課狀況數據統計表（共 25 班彙總為 16 項核心課程）</span>
+      <span class="note">與 2025 彙總表欄位 100% 相同對齊，可直接切換分頁比對</span>
     </div>
     <div class="table-wrap">
       <table class="grid-table">
         <colgroup>
+          <col style="width: 8%;">
+          <col style="width: 19%;">
+          <col style="width: 13%;">
+          <col style="width: 8%;">
+          <col style="width: 8%;">
           <col style="width: 9%;">
-          <col style="width: 21%;">
-          <col style="width: 12%;">
           <col style="width: 9%;">
           <col style="width: 10%;">
-          <col style="width: 9%;">
-          <col style="width: 11%;">
-          <col style="width: 9%;">
-          <col style="width: 10%;">
+          <col style="width: 8%;">
+          <col style="width: 8%;">
         </colgroup>
         <thead>
           <tr>
@@ -1266,15 +1547,40 @@
             <th class="al-l">授課講師</th>
             <th class="al-c">固定堂數</th>
             <th class="al-c">2026 開班</th>
+            <th class="al-r">累積總登記</th>
             <th class="al-r">單班最高登記</th>
-            <th class="al-r">首日出席(出席率)</th>
-            <th class="al-r">平均出席</th>
-            <th class="al-r">完課率</th>
+            <th class="al-r">最高首日出席(率)</th>
+            <th class="al-r">最高均席</th>
+            <th class="al-r">最高完課率</th>
           </tr>
         </thead>
         <tbody>
           <tr class="row-group-header">
-            <td colspan="9">【第一梯隊：王牌必開課】高登記、高出席、高完課（2026 主力產出課群）</td>
+            <td colspan="10">【第一梯隊：2026 王牌主力課群】高登記人數、高出席、高完課率</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
+            <td class="al-l num-strong">商用視覺平面設計 (含AI)</td>
+            <td class="al-l">黃偉勳 / 曾國軒 / 黃貴濃</td>
+            <td class="al-c">27～30 堂</td>
+            <td class="al-c">3 班</td>
+            <td class="al-r num-strong">312 人</td>
+            <td class="al-r num-strong">194 人</td>
+            <td class="al-r">114 人 (65.6%)</td>
+            <td class="al-r num-blue">59.3 人</td>
+            <td class="al-r">32.2%</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
+            <td class="al-l num-strong">Live2D 動畫製作</td>
+            <td class="al-l">黃俊傑</td>
+            <td class="al-c">16 堂</td>
+            <td class="al-c">2 班</td>
+            <td class="al-r num-strong">283 人</td>
+            <td class="al-r num-strong">228 人</td>
+            <td class="al-r">158 人 (<span class="num-blue">69.3%</span>)</td>
+            <td class="al-r num-hi">122.7 人</td>
+            <td class="al-r num-hi">54.6%</td>
           </tr>
           <tr>
             <td class="al-c"><span class="badge b-t1">第一優先</span></td>
@@ -1282,6 +1588,7 @@
             <td class="al-l">黃俊傑</td>
             <td class="al-c">16 堂</td>
             <td class="al-c">2 班</td>
+            <td class="al-r num-strong">282 人</td>
             <td class="al-r num-strong">229 人</td>
             <td class="al-r">175 人 (<span class="num-hi">76.4%</span>)</td>
             <td class="al-r num-hi">140.8 人</td>
@@ -1293,6 +1600,7 @@
             <td class="al-l">黃俊傑</td>
             <td class="al-c">8 堂</td>
             <td class="al-c">2 班</td>
+            <td class="al-r num-strong">260 人</td>
             <td class="al-r num-strong">200 人</td>
             <td class="al-r">143 人 (<span class="num-hi">71.5%</span>)</td>
             <td class="al-r num-hi">120.5 人</td>
@@ -1300,43 +1608,11 @@
           </tr>
           <tr>
             <td class="al-c"><span class="badge b-t1">第一優先</span></td>
-            <td class="al-l num-strong">Live2D 動畫製作</td>
-            <td class="al-l">黃俊傑</td>
-            <td class="al-c">16 堂</td>
-            <td class="al-c">2 班</td>
-            <td class="al-r num-strong">228 人</td>
-            <td class="al-r">158 人 (<span class="num-blue">69.3%</span>)</td>
-            <td class="al-r num-hi">122.7 人</td>
-            <td class="al-r num-hi">54.6%</td>
-          </tr>
-          <tr>
-            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
-            <td class="al-l num-strong">商用視覺平面設計 (含AI)</td>
-            <td class="al-l">黃偉勳 / 曾國軒</td>
-            <td class="al-c">27～30 堂</td>
-            <td class="al-c">3 班 (共312人)</td>
-            <td class="al-r num-strong">194 人</td>
-            <td class="al-r">114 人 (65.6%)</td>
-            <td class="al-r num-blue">59.3 人</td>
-            <td class="al-r">32.2%</td>
-          </tr>
-          <tr>
-            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
-            <td class="al-l num-strong">Procreate 數位繪畫</td>
-            <td class="al-l">曹育禎</td>
-            <td class="al-c">24 堂</td>
-            <td class="al-c">1 班</td>
-            <td class="al-r num-strong">121 人</td>
-            <td class="al-r">82 人 (<span class="num-blue">67.8%</span>)</td>
-            <td class="al-r num-blue">52.8 人</td>
-            <td class="al-r num-hi">43.7%</td>
-          </tr>
-          <tr>
-            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
             <td class="al-l num-strong">數位繪畫班</td>
             <td class="al-l">張博涵</td>
             <td class="al-c">20 堂</td>
             <td class="al-c">1 班</td>
+            <td class="al-r num-strong">172 人</td>
             <td class="al-r num-strong">172 人</td>
             <td class="al-r">90 人 (52.3%)</td>
             <td class="al-r num-blue">55.6 人</td>
@@ -1349,23 +1625,25 @@
             <td class="al-c">24 堂</td>
             <td class="al-c">1 班</td>
             <td class="al-r num-strong">160 人</td>
+            <td class="al-r num-strong">160 人</td>
             <td class="al-r">79 人 (49.4%)</td>
             <td class="al-r num-blue">53.0 人</td>
             <td class="al-r">33.4%</td>
           </tr>
-          <tr class="row-group-header">
-            <td colspan="9">【第二梯隊：高出席與高完課口碑課】完課率 40%～47%、首日出席率 73%～84%</td>
-          </tr>
           <tr>
-            <td class="al-c"><span class="badge b-t2">第二優先</span></td>
-            <td class="al-l num-strong">AI 品牌系統創建</td>
-            <td class="al-l">王仁駿</td>
-            <td class="al-c">18 堂</td>
+            <td class="al-c"><span class="badge b-t1">第一優先</span></td>
+            <td class="al-l num-strong">Procreate 數位繪畫</td>
+            <td class="al-l">曹育禎</td>
+            <td class="al-c">24 堂</td>
             <td class="al-c">1 班</td>
-            <td class="al-r">91 人</td>
-            <td class="al-r">77 人 (<span class="num-hi">84.6%</span>)</td>
-            <td class="al-r">36.7 人</td>
-            <td class="al-r num-blue">40.8%</td>
+            <td class="al-r num-strong">121 人</td>
+            <td class="al-r num-strong">121 人</td>
+            <td class="al-r">82 人 (<span class="num-blue">67.8%</span>)</td>
+            <td class="al-r num-blue">52.8 人</td>
+            <td class="al-r num-hi">43.7%</td>
+          </tr>
+          <tr class="row-group-header">
+            <td colspan="10">【第二梯隊：2026 高出席與高完課口碑課群】完課率 40%～47%、首日出席率 73%～84%</td>
           </tr>
           <tr>
             <td class="al-c"><span class="badge b-t2">第二優先</span></td>
@@ -1374,9 +1652,34 @@
             <td class="al-c">16 堂</td>
             <td class="al-c">1 班</td>
             <td class="al-r">97 人</td>
+            <td class="al-r">97 人</td>
             <td class="al-r">56 人 (57.7%)</td>
             <td class="al-r">44.1 人</td>
             <td class="al-r num-hi">45.5%</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t2">第二優先</span></td>
+            <td class="al-l num-strong">AI 品牌系統創建</td>
+            <td class="al-l">王仁駿</td>
+            <td class="al-c">18 堂</td>
+            <td class="al-c">1 班</td>
+            <td class="al-r">91 人</td>
+            <td class="al-r">91 人</td>
+            <td class="al-r">77 人 (<span class="num-hi">84.6%</span>)</td>
+            <td class="al-r">36.7 人</td>
+            <td class="al-r num-blue">40.8%</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t2">第二優先</span></td>
+            <td class="al-l num-strong">數位漫畫班</td>
+            <td class="al-l">羅品傑</td>
+            <td class="al-c">20 堂</td>
+            <td class="al-c">1 班 (跨年)</td>
+            <td class="al-r">71 人</td>
+            <td class="al-r">71 人</td>
+            <td class="al-r">2026/11 開課</td>
+            <td class="al-r">在途班</td>
+            <td class="al-r">01/23 結業</td>
           </tr>
           <tr>
             <td class="al-c"><span class="badge b-t2">第二優先</span></td>
@@ -1384,6 +1687,7 @@
             <td class="al-l">涂國雄 ＋ 邱文美</td>
             <td class="al-c">16 堂</td>
             <td class="al-c">1 班</td>
+            <td class="al-r">68 人</td>
             <td class="al-r">68 人</td>
             <td class="al-r">53 人 (<span class="num-hi">77.9%</span>)</td>
             <td class="al-r">32.6 人</td>
@@ -1396,20 +1700,10 @@
             <td class="al-c">20 堂</td>
             <td class="al-c">1 班</td>
             <td class="al-r">61 人</td>
+            <td class="al-r">61 人</td>
             <td class="al-r">45 人 (<span class="num-hi">73.8%</span>)</td>
             <td class="al-r">25.3 人</td>
             <td class="al-r num-blue">42.2%</td>
-          </tr>
-          <tr>
-            <td class="al-c"><span class="badge b-t2">第二優先</span></td>
-            <td class="al-l num-strong">數位漫畫班</td>
-            <td class="al-l">羅品傑</td>
-            <td class="al-c">20 堂</td>
-            <td class="al-c">1 班 (跨年)</td>
-            <td class="al-r">71 人</td>
-            <td class="al-r">2026/11 開課</td>
-            <td class="al-r">在途班</td>
-            <td class="al-r">01/23 結業</td>
           </tr>
           <tr>
             <td class="al-c"><span class="badge b-t2">第二優先</span></td>
@@ -1418,31 +1712,34 @@
             <td class="al-c">20 堂</td>
             <td class="al-c">1 班 (Q4)</td>
             <td class="al-r">59 人</td>
+            <td class="al-r">59 人</td>
             <td class="al-r">2026/10 開課</td>
             <td class="al-r">在途班</td>
             <td class="al-r">12/19 結業</td>
           </tr>
           <tr class="row-group-header">
-            <td colspan="9">【第三梯隊：觀察候補 ／ 轉為線上錄播課】</td>
+            <td colspan="10">【第三梯隊：觀察候補 ／ 暫緩開班 ／ 龍和設計轉線上錄播課】</td>
           </tr>
           <tr>
             <td class="al-c"><span class="badge b-t3">觀察候補</span></td>
             <td class="al-l">2D動畫 / 網站架設 / 背景美術</td>
             <td class="al-l">Zorion / 林承彥 / 邱文美</td>
             <td class="al-c">14～28 堂</td>
-            <td class="al-c">各 1 班 (共3班)</td>
-            <td class="al-r">47～56 人</td>
-            <td class="al-r">25～30 人 (53.6%)</td>
-            <td class="al-r">16.1～17.8 人</td>
-            <td class="al-r">29.4%～37.6%</td>
+            <td class="al-c">3 班</td>
+            <td class="al-r">153 人</td>
+            <td class="al-r">56 人</td>
+            <td class="al-r">30 人 (61.7%)</td>
+            <td class="al-r">17.8 人</td>
+            <td class="al-r">37.6%</td>
           </tr>
           <tr>
-            <td class="al-c"><span class="badge b-t3">暫緩開班</span></td>
+            <td class="al-c"><span class="badge b-drop">暫緩開班</span></td>
             <td class="al-l">3D Blender / 遊戲角色美術</td>
             <td class="al-l">賀聖倫 / 龎士禮</td>
             <td class="al-c">20～26 堂</td>
-            <td class="al-c">各 1 班 (共2班)</td>
-            <td class="al-r num-warn">19～30 人</td>
+            <td class="al-c">2 班</td>
+            <td class="al-r num-warn">49 人</td>
+            <td class="al-r num-warn">30 人</td>
             <td class="al-r">2026 Q4 開課</td>
             <td class="al-r">在途班</td>
             <td class="al-r">規模未達標</td>
@@ -1451,16 +1748,392 @@
             <td class="al-c"><span class="badge b-vod">轉線上錄播</span></td>
             <td class="al-l num-strong">室內設計乙級 / 裝修工程管理乙級</td>
             <td class="al-l">龍和設計工坊有限公司</td>
-            <td class="al-c">48堂 / 21堂</td>
-            <td class="al-c">2 班 (共158人)</td>
+            <td class="al-c">21～48 堂</td>
+            <td class="al-c">2 班</td>
+            <td class="al-r">158 人</td>
             <td class="al-r">82 人</td>
             <td class="al-r">76 人 (92.7%)</td>
             <td class="al-r">41.4 人</td>
-            <td class="al-r">53.3% (轉錄播)</td>
+            <td class="al-r num-hi">53.3%</td>
+          </tr>
+          <tr class="row-total">
+            <td class="al-c">2026 總計</td>
+            <td class="al-l">16 項核心課程彙總</td>
+            <td class="al-l">全校 16 組師資</td>
+            <td class="al-c">8～48 堂</td>
+            <td class="al-c">25 班</td>
+            <td class="al-r">2,397 人</td>
+            <td class="al-r">最高 229 人</td>
+            <td class="al-r">已開 18 班 (66.1%)</td>
+            <td class="al-r">均 57.5 人</td>
+            <td class="al-r">最高 60.9%</td>
           </tr>
         </tbody>
       </table>
     </div>
+
+    <!-- Unified Table 2 for 2026: All 25 Individual Classes (Identical columns to 2025 Table 2) -->
+    <div class="section-bar">
+      <span>二、【2026 逐班明細表】2026 年度全校 25 班開課日、結業日、出席與新舊生消耗明細表</span>
+      <span class="note">與 2025 逐班明細表欄位 100% 相同對齊</span>
+    </div>
+    <div class="table-wrap">
+      <table class="grid-table">
+        <colgroup>
+          <col style="width: 8%;">
+          <col style="width: 14%;">
+          <col style="width: 20%;">
+          <col style="width: 12%;">
+          <col style="width: 7%;">
+          <col style="width: 9%;">
+          <col style="width: 10%;">
+          <col style="width: 8%;">
+          <col style="width: 6%;">
+          <col style="width: 6%;">
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="al-c">表現分級</th>
+            <th class="al-c">開課日 ～ 結業日</th>
+            <th class="al-l">班級名稱</th>
+            <th class="al-l">授課講師</th>
+            <th class="al-c">固定堂數</th>
+            <th class="al-r">開班登記(總)</th>
+            <th class="al-r">首日出席(出席率)</th>
+            <th class="al-r">平均出席</th>
+            <th class="al-r">完課率</th>
+            <th class="al-r">總消耗</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="row-group-header">
+            <td colspan="10">【A 級：2026 已開課高表現王牌班級（完課率 40%～60.9% 或單班破 160 人）】</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">完課冠軍</span></td>
+            <td class="al-c">2026-03-02 ~ 2026-04-08</td>
+            <td class="al-l num-strong">V皮角色繪製｜線上直播</td>
+            <td class="al-l">黃俊傑</td>
+            <td class="al-c">16 堂</td>
+            <td class="al-r num-strong">229 (234)</td>
+            <td class="al-r">175 人 (<span class="num-hi">76.4%</span>)</td>
+            <td class="al-r num-hi">140.8 人</td>
+            <td class="al-r num-hi">60.9%</td>
+            <td class="al-r num-strong">149 人</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">完課亞軍</span></td>
+            <td class="al-c">2026-01-26 ~ 2026-02-11</td>
+            <td class="al-l num-strong">Vtuber創作全攻略｜線上直播</td>
+            <td class="al-l">黃俊傑</td>
+            <td class="al-c">8 堂</td>
+            <td class="al-r num-strong">200 (206)</td>
+            <td class="al-r">143 人 (<span class="num-hi">71.5%</span>)</td>
+            <td class="al-r num-hi">120.5 人</td>
+            <td class="al-r num-hi">59.8%</td>
+            <td class="al-r num-strong">136 人</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">完課季軍</span></td>
+            <td class="al-c">2026-04-27 ~ 2026-06-05</td>
+            <td class="al-l num-strong">Live2D動畫製作｜線上直播</td>
+            <td class="al-l">黃俊傑</td>
+            <td class="al-c">16 堂</td>
+            <td class="al-r num-strong">228 (228)</td>
+            <td class="al-r">158 人 (<span class="num-blue">69.3%</span>)</td>
+            <td class="al-r num-hi">122.7 人</td>
+            <td class="al-r num-hi">54.6%</td>
+            <td class="al-r num-strong">136 人</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">舊生冠軍</span></td>
+            <td class="al-c">2026-05-25 ~ 2026-08-10</td>
+            <td class="al-l num-strong">商用視覺平面設計｜線上直播</td>
+            <td class="al-l">黃偉勳</td>
+            <td class="al-c">30 堂</td>
+            <td class="al-r num-strong">194 (211)</td>
+            <td class="al-r">114 人 (58.8%)</td>
+            <td class="al-r num-blue">59.3 人</td>
+            <td class="al-r">30.1%</td>
+            <td class="al-r num-strong">76 人</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">百人大班</span></td>
+            <td class="al-c">2026-07-12 ~ 2026-09-20</td>
+            <td class="al-l num-strong">數位繪畫班｜線上直播</td>
+            <td class="al-l">張博涵</td>
+            <td class="al-c">20 堂</td>
+            <td class="al-r num-strong">172 (187)</td>
+            <td class="al-r">90 人 (52.3%)</td>
+            <td class="al-r num-blue">55.6 人</td>
+            <td class="al-r">31.0%</td>
+            <td class="al-r num-strong">72 人</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">轉型爆款</span></td>
+            <td class="al-c">2026-09-07 ~ 2026-11-06</td>
+            <td class="al-l num-strong">AI遊戲設計班｜線上直播</td>
+            <td class="al-l">葉繁晟</td>
+            <td class="al-c">24 堂</td>
+            <td class="al-r num-strong">160 (165)</td>
+            <td class="al-r">79 人 (49.4%)</td>
+            <td class="al-r num-blue">53.0 人</td>
+            <td class="al-r">33.4%</td>
+            <td class="al-r">2 人(在途)</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">高完課率</span></td>
+            <td class="al-c">2026-05-31 ~ 2026-08-30</td>
+            <td class="al-l num-strong">Procreate 數位繪畫｜線上直播</td>
+            <td class="al-l">曹育禎</td>
+            <td class="al-c">24 堂</td>
+            <td class="al-r num-strong">121 (125)</td>
+            <td class="al-r">82 人 (<span class="num-blue">67.8%</span>)</td>
+            <td class="al-r num-blue">52.8 人</td>
+            <td class="al-r num-hi">43.7%</td>
+            <td class="al-r num-strong">67 人</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">高完課率</span></td>
+            <td class="al-c">2026-06-14 ~ 2026-08-02</td>
+            <td class="al-l num-strong">商用平面設計進階班｜線上直播</td>
+            <td class="al-l">王仁駿</td>
+            <td class="al-c">16 堂</td>
+            <td class="al-r">97 (101)</td>
+            <td class="al-r">56 人 (57.7%)</td>
+            <td class="al-r">44.1 人</td>
+            <td class="al-r num-hi">45.5%</td>
+            <td class="al-r">49 人</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">出席冠軍</span></td>
+            <td class="al-c">2026-05-04 ~ 2026-07-06</td>
+            <td class="al-l num-strong">AI品牌系統創建｜線上直播</td>
+            <td class="al-l">王仁駿</td>
+            <td class="al-c">18 堂</td>
+            <td class="al-r">91 (92)</td>
+            <td class="al-r">77 人 (<span class="num-hi">84.6%</span>)</td>
+            <td class="al-r">36.7 人</td>
+            <td class="al-r num-blue">40.8%</td>
+            <td class="al-r">63 人</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">高完課率</span></td>
+            <td class="al-c">2026-04-21 ~ 2026-06-11</td>
+            <td class="al-l num-strong">日本動畫職人養成班｜線上直播</td>
+            <td class="al-l">涂國雄 / 邱文美</td>
+            <td class="al-c">16 堂</td>
+            <td class="al-r">68 (71)</td>
+            <td class="al-r">53 人 (<span class="num-hi">77.9%</span>)</td>
+            <td class="al-r">32.6 人</td>
+            <td class="al-r num-hi">47.1%</td>
+            <td class="al-r">41 人</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">高完課率</span></td>
+            <td class="al-c">2026-04-28 ~ 2026-07-07</td>
+            <td class="al-l num-strong">UI視覺介面設計班｜線上直播</td>
+            <td class="al-l">沈宇哲</td>
+            <td class="al-c">20 堂</td>
+            <td class="al-r">61 (61)</td>
+            <td class="al-r">45 人 (<span class="num-hi">73.8%</span>)</td>
+            <td class="al-r">25.3 人</td>
+            <td class="al-r num-blue">42.2%</td>
+            <td class="al-r">33 人</td>
+          </tr>
+
+          <tr class="row-group-header">
+            <td colspan="10">【B 級：2026 常規班級 ＆ 第四季度開課在途班級】</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t2">常規班</span></td>
+            <td class="al-c">2026-08-22 ~ 2026-12-12</td>
+            <td class="al-l">AI商用視覺平面設計｜線上直播</td>
+            <td class="al-l">曾國軒</td>
+            <td class="al-c">27 堂</td>
+            <td class="al-r">93 (106)</td>
+            <td class="al-r">61 人 (65.6%)</td>
+            <td class="al-r">30.6 人</td>
+            <td class="al-r">32.2%</td>
+            <td class="al-r">15 人(在途)</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t2">二期加開</span></td>
+            <td class="al-c">2026-07-06 ~ 2026-07-29</td>
+            <td class="al-l">Vtuber創作全攻略｜線上直播</td>
+            <td class="al-l">黃俊傑</td>
+            <td class="al-c">8 堂</td>
+            <td class="al-r">60 (67)</td>
+            <td class="al-r">38 人 (63.3%)</td>
+            <td class="al-r">28.8 人</td>
+            <td class="al-r num-hi">46.8%</td>
+            <td class="al-r">35 人</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t3">常規班</span></td>
+            <td class="al-c">2026-09-08 ~ 2026-11-12</td>
+            <td class="al-l">2D動畫設計班｜線上直播</td>
+            <td class="al-l">Zorion</td>
+            <td class="al-c">20 堂</td>
+            <td class="al-r">56 (57)</td>
+            <td class="al-r">30 人 (53.6%)</td>
+            <td class="al-r">16.7 人</td>
+            <td class="al-r">29.4%</td>
+            <td class="al-r">0 人(在途)</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t3">常規班</span></td>
+            <td class="al-c">2026-06-23 ~ 2026-09-29</td>
+            <td class="al-l">商用網站架設實務｜線上直播</td>
+            <td class="al-l">林承彥</td>
+            <td class="al-c">28 堂</td>
+            <td class="al-r">50 (55)</td>
+            <td class="al-r">25 人 (50.0%)</td>
+            <td class="al-r">16.1 人</td>
+            <td class="al-r">30.8%</td>
+            <td class="al-r">20 人</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t3">常規班</span></td>
+            <td class="al-c">2026-09-07 ~ 2026-10-12</td>
+            <td class="al-l">日本動畫職人 - 背景美術</td>
+            <td class="al-l">邱文美</td>
+            <td class="al-c">14 堂</td>
+            <td class="al-r">47 (49)</td>
+            <td class="al-r">29 人 (61.7%)</td>
+            <td class="al-r">17.8 人</td>
+            <td class="al-r">37.6%</td>
+            <td class="al-r">17 人</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t2">跨年在途</span></td>
+            <td class="al-c">2026-11-21 ~ 2027-01-23</td>
+            <td class="al-l num-strong">數位漫畫班｜線上直播</td>
+            <td class="al-l">羅品傑</td>
+            <td class="al-c">20 堂</td>
+            <td class="al-r">71 (71)</td>
+            <td class="al-r">Q4 開課在途</td>
+            <td class="al-r">在途班</td>
+            <td class="al-r">01/23結業</td>
+            <td class="al-r">在途</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t2">Q4 在途</span></td>
+            <td class="al-c">2026-10-17 ~ 2026-12-19</td>
+            <td class="al-l">After Effects 特效動畫｜線上直播</td>
+            <td class="al-l">石皓瑋</td>
+            <td class="al-c">20 堂</td>
+            <td class="al-r">59 (59)</td>
+            <td class="al-r">Q4 開課在途</td>
+            <td class="al-r">在途班</td>
+            <td class="al-r">12/19結業</td>
+            <td class="al-r">在途</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t2">跨年在途</span></td>
+            <td class="al-c">2026-12-21 ~ 2027-01-29</td>
+            <td class="al-l">Live2D動畫製作｜線上直播</td>
+            <td class="al-l">黃俊傑</td>
+            <td class="al-c">16 堂</td>
+            <td class="al-r">55 (55)</td>
+            <td class="al-r">Q4 開課在途</td>
+            <td class="al-r">在途班</td>
+            <td class="al-r">01/29結業</td>
+            <td class="al-r">在途</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t2">Q4 在途</span></td>
+            <td class="al-c">2026-11-09 ~ 2026-12-14</td>
+            <td class="al-l">V皮角色繪製｜線上直播</td>
+            <td class="al-l">黃俊傑</td>
+            <td class="al-c">16 堂</td>
+            <td class="al-r">53 (53)</td>
+            <td class="al-r">Q4 開課在途</td>
+            <td class="al-r">在途班</td>
+            <td class="al-r">12/14結業</td>
+            <td class="al-r">在途</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-drop">規模偏小</span></td>
+            <td class="al-c">2026-10-06 ~ 2026-12-10</td>
+            <td class="al-l">3D 視覺創作設計Blender</td>
+            <td class="al-l">賀聖倫</td>
+            <td class="al-c">20 堂</td>
+            <td class="al-r num-warn">30 (30)</td>
+            <td class="al-r">Q4 開課在途</td>
+            <td class="al-r">在途班</td>
+            <td class="al-r">12/10結業</td>
+            <td class="al-r">在途</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t3">跨年在途</span></td>
+            <td class="al-c">2026-11-24 ~ 2027-03-04</td>
+            <td class="al-l">AI商用視覺平面設計｜線上直播</td>
+            <td class="al-l">黃貴濃</td>
+            <td class="al-c">27 堂</td>
+            <td class="al-r num-warn">25 (25)</td>
+            <td class="al-r">Q4 開課在途</td>
+            <td class="al-r">在途班</td>
+            <td class="al-r">03/04結業</td>
+            <td class="al-r">在途</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-drop">規模偏小</span></td>
+            <td class="al-c">2026-12-15 ~ 2027-03-23</td>
+            <td class="al-l">遊戲角色美術班｜線上直播</td>
+            <td class="al-l">龎士禮</td>
+            <td class="al-c">26 堂</td>
+            <td class="al-r num-warn">19 (19)</td>
+            <td class="al-r">Q4 開課在途</td>
+            <td class="al-r">在途班</td>
+            <td class="al-r">03/23結業</td>
+            <td class="al-r">在途</td>
+          </tr>
+
+          <tr class="row-group-header">
+            <td colspan="10">【C 級：龍和設計工坊（2026 共 2 班）】2027 起正式轉為線上錄播課（VOD）</td>
+          </tr>
+          <tr class="row-vod">
+            <td class="al-c"><span class="badge b-vod">轉錄播課</span></td>
+            <td class="al-c">2026-03-15 ~ 2026-09-13</td>
+            <td class="al-l num-strong">室內設計乙級認證班｜線上直播</td>
+            <td class="al-l">龍和設計工坊</td>
+            <td class="al-c">48 堂</td>
+            <td class="al-r">82 (83)</td>
+            <td class="al-r">76 人 (92.7%)</td>
+            <td class="al-r">38.9 人</td>
+            <td class="al-r num-hi">48.3%</td>
+            <td class="al-r">44 人</td>
+          </tr>
+          <tr class="row-vod">
+            <td class="al-c"><span class="badge b-vod">轉錄播課</span></td>
+            <td class="al-c">2026-08-15 ~ 2027-02-20</td>
+            <td class="al-l num-strong">室內裝修工程管理乙級認證班</td>
+            <td class="al-l">龍和設計工坊</td>
+            <td class="al-c">21 堂</td>
+            <td class="al-r">76 (81)</td>
+            <td class="al-r">54 人 (71.1%)</td>
+            <td class="al-r">41.4 人</td>
+            <td class="al-r num-hi">53.3%</td>
+            <td class="al-r">1 人(在途)</td>
+          </tr>
+
+          <tr class="row-total">
+            <td class="al-c">2026 合計</td>
+            <td class="al-c">全年共 25 班</td>
+            <td class="al-l">直播 23 班 ＋ 龍和錄播轉型 2 班</td>
+            <td class="al-l">16 組師資</td>
+            <td class="al-c">8～48 堂</td>
+            <td class="al-r">2,397 人</td>
+            <td class="al-r">1,385 人 (已開18班)</td>
+            <td class="al-r">57.5 人</td>
+            <td class="al-r">43.1%</td>
+            <td class="al-r">956 人</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
 
 </div>
