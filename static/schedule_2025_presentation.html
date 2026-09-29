@@ -457,10 +457,10 @@
 
   <!-- Tab Navigation -->
   <div class="tab-bar">
-    <button class="tab-btn active" onclick="switchTab('tab-compare', this)">
+    <button class="tab-btn" onclick="switchTab('tab-compare', this)">
       1. 2025 vs 2026 對比與 2027 重新規劃方向 <span class="tab-badge">核心決策版</span>
     </button>
-    <button class="tab-btn" onclick="switchTab('tab-2025', this)">
+    <button class="tab-btn active" onclick="switchTab('tab-2025', this)">
       2. 2025 年度開班數據表 <span class="tab-badge">2025 全年 28 班</span>
     </button>
     <button class="tab-btn" onclick="switchTab('tab-2026', this)">
@@ -471,7 +471,7 @@
   <!-- ========================================================================= -->
   <!-- VIEW 1: 2025 vs 2026 COMPARISON & RE-PLANNED 2027 H1 DIRECTION            -->
   <!-- ========================================================================= -->
-  <div id="tab-compare" class="view-panel active">
+  <div id="tab-compare" class="view-panel">
 
     <!-- KPI Strip: 2025 vs 2026 Comparison -->
     <div class="kpi-strip">
@@ -790,7 +790,7 @@
   <!-- ========================================================================= -->
   <!-- VIEW 2: 2025 FULL STANDALONE REPORT (28 CLASSES)                          -->
   <!-- ========================================================================= -->
-  <div id="tab-2025" class="view-panel">
+  <div id="tab-2025" class="view-panel active">
 
     <div class="kpi-strip">
       <div class="kpi-cell">
