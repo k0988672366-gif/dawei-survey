@@ -448,6 +448,204 @@
     color: var(--text-muted);
   }
 
+
+  /* Interactive Insight Button & Modal Dialog */
+  .cell-insight {
+    cursor: pointer;
+    position: relative;
+    transition: background 0.15s;
+  }
+  .cell-insight:hover {
+    background: #dbeafe !important;
+  }
+  .insight-preview {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+  }
+  .insight-short {
+    font-weight: 600;
+    color: var(--text-main);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+  }
+  .btn-detail {
+    flex-shrink: 0;
+    background: var(--primary);
+    color: #ffffff;
+    border: none;
+    padding: 3px 9px;
+    font-size: 11.5px;
+    font-weight: 700;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 1px 2px rgba(29, 78, 216, 0.2);
+    transition: all 0.15s;
+  }
+  .btn-detail:hover {
+    background: #1e40af;
+    transform: translateY(-1px);
+  }
+  .insight-full-inline {
+    display: none;
+    white-space: normal;
+    line-height: 1.55;
+    padding: 6px 2px;
+    color: var(--text-main);
+    font-size: 12.5px;
+  }
+  table.grid-table.expand-inline tbody tr {
+    height: auto;
+  }
+  table.grid-table.expand-inline td.cell-insight {
+    white-space: normal;
+    overflow: visible;
+  }
+  table.grid-table.expand-inline .insight-preview {
+    display: none;
+  }
+  table.grid-table.expand-inline .insight-full-inline {
+    display: block;
+  }
+
+  /* Modal Overlay & Dialog Box */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(2px);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open {
+    display: flex;
+  }
+  .modal-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 720px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
+    overflow: hidden;
+    animation: modalPop 0.16s ease-out;
+  }
+  @keyframes modalPop {
+    from { opacity: 0; transform: scale(0.96) translateY(6px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal-head {
+    background: var(--header-bg);
+    color: #ffffff;
+    padding: 16px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .modal-title-wrap h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 6px;
+    color: #ffffff;
+  }
+  .modal-meta {
+    font-size: 12.5px;
+    color: #cbd5e1;
+    margin-top: 4px;
+  }
+  .modal-close {
+    background: rgba(255,255,255,0.12);
+    color: #ffffff;
+    border: 1px solid rgba(255,255,255,0.2);
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .modal-close:hover {
+    background: rgba(255,255,255,0.22);
+  }
+  .modal-body {
+    padding: 20px 22px;
+  }
+  .modal-compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .modal-stat-box {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+  }
+  .modal-stat-box .yr-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .modal-stat-box .yr-val {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+  .modal-stat-box .yr-sub {
+    font-size: 12px;
+    color: var(--text-sub);
+    margin-top: 4px;
+  }
+  .modal-section {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .modal-section.plan-sec {
+    border-left-color: var(--green);
+    background: #f0fdf4;
+  }
+  .modal-section h4 {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 6px;
+  }
+  .modal-section p {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: #1e293b;
+  }
+  .modal-foot {
+    background: #f8fafc;
+    border-top: 1px solid var(--border);
+    padding: 12px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-nav-btns {
+    display: flex;
+    gap: 8px;
+  }
+
   @media print {
     body { background: #fff; padding: 0; }
     .sheet { box-shadow: none; border: 1px solid #000; }
@@ -555,11 +753,14 @@
 
     <!-- Table A: 2025 vs 2026 Course-by-Course Comparison & Re-planned 2027 H1 Quotas -->
     <div class="section-bar">
-      <span>二、2025 vs 2026 各課系兩年表現對比 ＆ 2027 上半年重新規劃開班數總表（可直接提報產品部）</span>
-      <span class="note">欄位嚴格對齊｜「★ 修正上調」代表加入 2025 數據後重新調升開班優先級與班數</span>
+      <span>二、2025 vs 2026 各課系兩年表現對比 ＆ 2027 上半年重新規劃開班數總表（點擊最右欄可開啟對話框查看完整結論）</span>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="note">點擊任一課程之「💬 查看結論與規劃」按鈕即可彈出完整分析對話框</span>
+        <button class="btn-action" style="background:#3b82f6;padding:4px 10px;font-size:11.5px;" onclick="toggleInlineInsights(this)">📖 一鍵展開所有結論文字</button>
+      </div>
     </div>
     <div class="table-wrap">
-      <table class="grid-table">
+      <table class="grid-table" id="compareMainTable">
         <colgroup>
           <col style="width: 8%;">
           <col style="width: 17%;">
@@ -594,7 +795,10 @@
             <td class="al-r">3班 / <span class="num-strong">521人</span> / 37.6%</td>
             <td class="al-r">3班 / <span class="num-strong">312人</span> / 32.2%</td>
             <td class="al-c"><span class="quota-pill q-high">必開 2 班</span></td>
-            <td class="al-l">兩年共 833 人全校第一！黃偉勳 25 年單班 285 人；待 03/04 在途結業後接棒</td>
+            <td class="al-l cell-insight" onclick="openCourseModal(0)">
+              <div class="insight-preview"><span class="insight-short">兩年 833 人全校第一！黃偉勳單班 285 人</span><button class="btn-detail">💬 結論與規劃</button></div>
+              <div class="insight-full-inline"><b>【結論】</b>2025(3班521人)＋2026(3班312人)兩年共吸納 833 人居全校之冠！黃偉勳老師 30 堂單班創 285 人登記、均席 115.4 人、消耗 135 人最高紀錄。<br><b>【規劃】</b>2027 H1 必開 2 班（主力指名黃偉勳老師＋1班 AI 平面），注意避開 2027/03/04 黃貴濃在途班結業日。</div>
+            </td>
           </tr>
           <tr>
             <td class="al-c"><span class="badge b-up">★ 修正上調</span></td>
@@ -604,7 +808,10 @@
             <td class="al-r">3班 / <span class="num-up">510人</span> / <span class="num-hi">40.7%</span></td>
             <td class="al-r">1班 / 71人 / 在途</td>
             <td class="al-c"><span class="quota-pill q-up">必開 2 班</span></td>
-            <td class="al-l">25 年 3 班吸納 510 人（夏宜嵐 20 堂單班 215 人），26 年少開！01/23 結業後必開 2 班</td>
+            <td class="al-l cell-insight" onclick="openCourseModal(1)">
+              <div class="insight-preview"><span class="insight-short">25年3班510人，26年僅開1班！產能回補</span><button class="btn-detail">💬 結論與規劃</button></div>
+              <div class="insight-full-inline"><b>【結論】</b>單看 2026 僅 11 月開 1 班(71人)容易低估；加入 2025 數據發現全年開 3 班狂吸 510 人、消耗 251 人！尤其夏宜嵐老師改 20 堂後單班衝 215 人、均席 89.3 人、完課率達 40.7%。<br><b>【規劃】</b>★修正上調：待羅品傑在途班 2027/01/23 結業後，2027 H1 大幅上調為「必開 2 班」（優先邀約夏宜嵐老師）。</div>
+            </td>
           </tr>
           <tr>
             <td class="al-c"><span class="badge b-up">★ 修正上調</span></td>
@@ -614,7 +821,10 @@
             <td class="al-r">4班 / <span class="num-up">375人</span> / 39.1%</td>
             <td class="al-r">1班 / 121人 / <span class="num-hi">43.7%</span></td>
             <td class="al-c"><span class="quota-pill q-up">必開 2 班</span></td>
-            <td class="al-l">32堂縮為24堂後完課率由 17% 飆至 43.7%！25 年證實可容納 4 班，H1 鎖定 2 班</td>
+            <td class="al-l cell-insight" onclick="openCourseModal(2)">
+              <div class="insight-preview"><span class="insight-short">24堂完課率飆至43.7%！25年證實可開4班</span><button class="btn-detail">💬 結論與規劃</button></div>
+              <div class="insight-full-inline"><b>【結論】</b>2025 開 4 班吸納 375 人，但 2026 全年僅開 1 班(121人)供給不足！且堂數由 32 堂精簡為 24 堂後，完課率由 17.6% 翻倍至 43.7%（曹育禎）、39.1%（簡佳慧）。<br><b>【規劃】</b>★修正上調：鎖定 24 堂黃金課綱，2027 H1 明確規劃「必開 2 班」（曹育禎、簡佳慧輪動開課）。</div>
+            </td>
           </tr>
           <tr>
             <td class="al-c"><span class="badge b-up">★ 修正上調</span></td>
@@ -624,7 +834,10 @@
             <td class="al-r">2班 / <span class="num-strong">212人</span> / <span class="num-hi">55.4%</span></td>
             <td class="al-r">1班 / 97人 / <span class="num-hi">45.5%</span></td>
             <td class="al-c"><span class="quota-pill q-up">1 ～ 2 班</span></td>
-            <td class="al-l">連續三期皆破百人（106➔106➔97人），王仁駿完課率達 55.4%，升列第一優先</td>
+            <td class="al-l cell-insight" onclick="openCourseModal(3)">
+              <div class="insight-preview"><span class="insight-short">連三期破百人、完課率55.4%，升第一優先</span><button class="btn-detail">💬 結論與規劃</button></div>
+              <div class="insight-full-inline"><b>【結論】</b>兩年共開 3 期（25年黃偉勳106人、25年王仁駿106人、26年王仁駿97人），期期穩定破百人！王仁駿老師完課率更高達 55.4% 與 45.5%，完美承接基礎平面班結業舊生。<br><b>【規劃】</b>★修正上調：由第二優先升列「第一優先・建議 1～2 班」，直接銜接商用視覺平面設計結業檔期。</div>
+            </td>
           </tr>
           <tr>
             <td class="al-c"><span class="badge b-t1">第一優先</span></td>
@@ -634,7 +847,10 @@
             <td class="al-r">1班 / 135人 / 29.6%</td>
             <td class="al-r">2班 / <span class="num-strong">260人</span> / <span class="num-hi">59.8%</span></td>
             <td class="al-c"><span class="quota-pill q-high">1 ～ 2 班</span></td>
-            <td class="al-l">26 年由 12 堂改為 8 堂引流課後，完課率翻倍至 59.8%，作為上半年首波流量入口</td>
+            <td class="al-l cell-insight" onclick="openCourseModal(4)">
+              <div class="insight-preview"><span class="insight-short">8堂引流完課率翻倍至59.8%，首波流量入口</span><button class="btn-detail">💬 結論與規劃</button></div>
+              <div class="insight-full-inline"><b>【結論】</b>2025 開 12 堂(135人，完課率僅 29.6%)；2026 改為 8 堂短週期引流課後，單班衝上 200 人、平均出席 120.5 人、完課率翻倍至 59.8%，全年消耗 162 名新生！<br><b>【規劃】</b>2027 H1 建議開 1～2 班（固定 8 堂），作為黃俊傑老師三部曲之第 1 棒引流課（建議 2 月率先開出）。</div>
+            </td>
           </tr>
           <tr>
             <td class="al-c"><span class="badge b-t1">第一優先</span></td>
@@ -644,7 +860,10 @@
             <td class="al-r">未獨立拆班 (含於Vtuber)</td>
             <td class="al-r">2班 / <span class="num-strong">282人</span> / <span class="num-hi">60.9%</span></td>
             <td class="al-c"><span class="quota-pill q-high">1 ～ 2 班</span></td>
-            <td class="al-l">26 年獨立拆出後大爆發，單班 229 人、完課率 60.9% 居全校之冠，緊接 Vtuber 後開班</td>
+            <td class="al-l cell-insight" onclick="openCourseModal(5)">
+              <div class="insight-preview"><span class="insight-short">單班229人、完課60.9%全校雙冠王！</span><button class="btn-detail">💬 結論與規劃</button></div>
+              <div class="insight-full-inline"><b>【結論】</b>2026 從 Vtuber 獨立拆出 16 堂專班後大爆發，首班即創下 229 人登記、首日出席 175 人(76.4%)、均席 140.8 人、完課率 60.9% 全校第一紀錄！<br><b>【規劃】</b>2027 H1 建議開 1～2 班（固定 16 堂），排在「Vtuber 創作全攻略」結業後無縫接棒，轉化率最高。</div>
+            </td>
           </tr>
           <tr>
             <td class="al-c"><span class="badge b-t1">第一優先</span></td>
@@ -654,7 +873,10 @@
             <td class="al-r">未獨立拆班 (含於Vtuber)</td>
             <td class="al-r">2班 / <span class="num-strong">283人</span> / <span class="num-hi">54.6%</span></td>
             <td class="al-c"><span class="quota-pill">必開 1 班</span></td>
-            <td class="al-l">在途班 2027/01/29 結業；建議於 Q2 接續 V皮角色繪製結業後開出 1 班</td>
+            <td class="al-l cell-insight" onclick="openCourseModal(6)">
+              <div class="insight-preview"><span class="insight-short">單班228人、完課54.6%，Q2接續V皮開班</span><button class="btn-detail">💬 結論與規劃</button></div>
+              <div class="insight-full-inline"><b>【結論】</b>2026 開設 2 班共 283 人登記，首班 228 人、平均出席 122.7 人、完課率高達 54.6%，為 V皮角色繪製結業學員的標準進階動線。<br><b>【規劃】</b>因跨年在途班於 2027/01/29 結業，2027 H1 建議開「必開 1 班」（固定 16 堂），安排於 Q2 承接 V皮結業學員。</div>
+            </td>
           </tr>
           <tr>
             <td class="al-c"><span class="badge b-t1">第一優先</span></td>
@@ -664,7 +886,10 @@
             <td class="al-r">2班 / <span class="num-strong">237人</span> / 24.3%</td>
             <td class="al-r">1班 / <span class="num-strong">172人</span> / 31.0%</td>
             <td class="al-c"><span class="quota-pill">1 ～ 2 班</span></td>
-            <td class="al-l">26 年由 28 堂改為 20 堂（張博涵），單班人數升至 172 人且完課率提升，與 Procreate 錯開排</td>
+            <td class="al-l cell-insight" onclick="openCourseModal(7)">
+              <div class="insight-preview"><span class="insight-short">28堂改20堂後單班衝172人，與Procreate錯開</span><button class="btn-detail">💬 結論與規劃</button></div>
+              <div class="insight-full-inline"><b>【結論】</b>2025 開 2 班 28 堂（賴忠志145人/完課24.3%、張䕒澤92人/完課18.9%）；2026 張博涵改為 20 堂後，單班躍升至 172 人、均席 55.6 人、完課率提升至 31.0%。<br><b>【規劃】</b>2027 H1 建議開 1～2 班（固定 20 堂），請產品部將開課月份與「Procreate 數位繪畫」錯開 1 個月以上。</div>
+            </td>
           </tr>
           <tr>
             <td class="al-c"><span class="badge b-t1">第一優先</span></td>
@@ -674,7 +899,10 @@
             <td class="al-r">1班 / 70人 / 20.4%</td>
             <td class="al-r">1班 / <span class="num-strong">160人</span> / 33.4%</td>
             <td class="al-c"><span class="quota-pill">必開 1 班</span></td>
-            <td class="al-l">由 25 年傳統 Unity (70人) 轉型 AI 遊戲設計後暴增至 160 人 (+128%)，待 03/23 後開班</td>
+            <td class="al-l cell-insight" onclick="openCourseModal(8)">
+              <div class="insight-preview"><span class="insight-short">Unity轉型AI遊戲後暴增至160人(+128%)</span><button class="btn-detail">💬 結論與規劃</button></div>
+              <div class="insight-full-inline"><b>【結論】</b>2025 傳統 Unity 雙軌班(31堂)僅 70 人登記、完課率 20.4%；2026 升級為葉繁晟老師「AI 遊戲設計班(24堂)」後，單班暴增至 160 人(+128%)、完課率升至 33.4%！<br><b>【規劃】</b>2027 H1 建議「必開 1 班」（固定 24 堂），建議避開遊戲角色美術在途班(2027/03/23 結業)，於 3 月底後開課。</div>
+            </td>
           </tr>
 
           <tr class="row-group-header">
@@ -688,7 +916,10 @@
             <td class="al-r">2026 全新開發課系</td>
             <td class="al-r">1班 / 91人 / <span class="num-hi">40.8%</span></td>
             <td class="al-c"><span class="quota-pill">建議 1 班</span></td>
-            <td class="al-l">首日出席率 84.6% 全校第一、消耗 63 名新生，與王仁駿老師平面進階班錯開月份排課</td>
+            <td class="al-l cell-insight" onclick="openCourseModal(9)">
+              <div class="insight-preview"><span class="insight-short">首日出席率84.6%全校第一！與平面進階錯開</span><button class="btn-detail">💬 結論與規劃</button></div>
+              <div class="insight-full-inline"><b>【結論】</b>2026 新開設即創下 84.6% 全校最高首日出席率（91人登記、77人首日到課），完課率 40.8%，單班消耗高達 63 名純新生，學員黏著度極強。<br><b>【規劃】</b>2027 H1 建議開 1 班（固定 18 堂），因與「商用平面進階班」同為王仁駿老師授課，請產品部將兩班排於一季一班錯開。</div>
+            </td>
           </tr>
           <tr>
             <td class="al-c"><span class="badge b-t2">第二優先</span></td>
@@ -698,7 +929,10 @@
             <td class="al-r">2班 / <span class="num-strong">227人</span> / <span class="num-blue">36.6%</span></td>
             <td class="al-r">1班 / 59人 / 在途</td>
             <td class="al-c"><span class="quota-pill">建議 1 班</span></td>
-            <td class="al-l">25 年開 2 班共 227 人！石皓瑋改 20 堂後完課率由 20.1% 升至 36.6%，H1 穩開 1 班</td>
+            <td class="al-l cell-insight" onclick="openCourseModal(10)">
+              <div class="insight-preview"><span class="insight-short">25年2班227人！改20堂完課率升至36.6%</span><button class="btn-detail">💬 結論與規劃</button></div>
+              <div class="insight-full-inline"><b>【結論】</b>2025 開 2 班共吸納 227 人（鄧婕28堂135人/完課20.1%、石皓瑋20堂92人/完課36.6%）；證實改為 20 堂後完課率大幅提升 +16.5%，且影視特效需求穩定。<br><b>【規劃】</b>2027 H1 建議穩開 1 班（固定 20 堂｜石皓瑋老師），填補動態設計與影視剪輯特效課群需求。</div>
+            </td>
           </tr>
           <tr>
             <td class="al-c"><span class="badge b-t2">第二優先</span></td>
@@ -708,7 +942,10 @@
             <td class="al-r">1班 / 43人 / <span class="num-hi">56.4%</span> (4堂)</td>
             <td class="al-r">1班 / 68人 / <span class="num-hi">47.1%</span></td>
             <td class="al-c"><span class="quota-pill">建議 1 班</span></td>
-            <td class="al-l">雙師綜合班完課率 47.1% 遠勝單一背景美術 (37.6%)，2027 集中開綜合養成班 1 班</td>
+            <td class="al-l cell-insight" onclick="openCourseModal(11)">
+              <div class="insight-preview"><span class="insight-short">雙師綜合班完課率47.1%，遠勝單一背景美術</span><button class="btn-detail">💬 結論與規劃</button></div>
+              <div class="insight-full-inline"><b>【結論】</b>2025 日本amps短期班完課率 56.4%；2026「涂國雄＋邱文美」雙師綜合班(16堂)首日出席率 77.9%、完課率 47.1%，明顯優於單一主題「背景美術(47人/完課37.6%)」。<br><b>【規劃】</b>2027 H1 建議集中資源開立「日本動畫職人養成班(雙師 16 堂)」1 班，不另拆單一背景美術小班。</div>
+            </td>
           </tr>
           <tr>
             <td class="al-c"><span class="badge b-t2">第二優先</span></td>
@@ -718,7 +955,10 @@
             <td class="al-r">1班 / 54人 / 21.4% (28堂)</td>
             <td class="al-r">1班 / 61人 / <span class="num-hi">42.2%</span></td>
             <td class="al-c"><span class="quota-pill">建議 1 班</span></td>
-            <td class="al-l">由 28 堂精簡為 20 堂後，完課率自 21.4% 翻倍至 42.2%、首日出席 73.8%，H1 開 1 班</td>
+            <td class="al-l cell-insight" onclick="openCourseModal(12)">
+              <div class="insight-preview"><span class="insight-short">28堂改20堂後完課率翻倍至42.2%！</span><button class="btn-detail">💬 結論與規劃</button></div>
+              <div class="insight-full-inline"><b>【結論】</b>同為沈宇哲老師授課，2025 開 28 堂時完課率僅 21.4%(54人)；2026 精簡為 20 堂後，首日出席率躍升至 73.8%(61人)、完課率直接翻倍至 42.2%！<br><b>【規劃】</b>2027 H1 建議開 1 班（固定 20 堂｜沈宇哲老師），作為 UI/UX 介面設計領域代表班次。</div>
+            </td>
           </tr>
 
           <tr class="row-group-header">
@@ -732,7 +972,10 @@
             <td class="al-r">3班 / 243人 / 21.9%</td>
             <td class="al-r">3班 / 125人 / 30.1%</td>
             <td class="al-c"><span class="quota-pill" style="background:#f1f5f9;color:#475569;border-color:#cbd5e1;">0 ～ 1 班</span></td>
-            <td class="al-l">兩年人數呈收斂趨勢（網站 81➔50人、2D動畫 94➔56人），僅於老師空檔時擇優候補</td>
+            <td class="al-l cell-insight" onclick="openCourseModal(13)">
+              <div class="insight-preview"><span class="insight-short">兩年人數收斂(81➔50人)，視檔期擇優候補</span><button class="btn-detail">💬 結論與規劃</button></div>
+              <div class="insight-full-inline"><b>【結論】</b>對比兩年數據：商用網站架設由 81人(25年) 降至 50人(26年)，2D動畫由 94人 降至 56人，遊戲角色美術由 68人 降至 19人，整體招生規模呈收斂趨勢。<br><b>【規劃】</b>列為第三優先觀察候補（0～1 班），僅在第一、二優先排滿後仍有檔期空缺時，才擇優開出 1 班。</div>
+            </td>
           </tr>
           <tr>
             <td class="al-c"><span class="badge b-drop">建議停開</span></td>
@@ -742,7 +985,10 @@
             <td class="al-r">1班 / 118人 / <span class="num-low">12.7%</span></td>
             <td class="al-r">1班 / <span class="num-low">30人</span> / 在途</td>
             <td class="al-c"><span class="badge b-drop">0 班 (停開)</span></td>
-            <td class="al-l">手機攝影完課率僅 12.7%（兩年全校最低），Blender 登記僅 30 人，2027 上半年不排入</td>
+            <td class="al-l cell-insight" onclick="openCourseModal(14)">
+              <div class="insight-preview"><span class="insight-short">手機攝影完課僅12.7%全校最低，建議停開</span><button class="btn-detail">💬 結論與規劃</button></div>
+              <div class="insight-full-inline"><b>【結論】</b>2025「數位手機攝影班」雖有 118 人登記，但平均出席僅 15.5 人、完課率僅 12.7%（兩年全校最低）；2026「3D Blender」登記僅 30 人，未達直播經濟規模。<br><b>【規劃】</b>2027 上半年明確建議「停開（0 班）」，將推廣資源與排課檔期全數集中於高完課核心課系。</div>
+            </td>
           </tr>
           <tr class="row-vod">
             <td class="al-c"><span class="badge b-vod">轉線上錄播</span></td>
@@ -752,7 +998,10 @@
             <td class="al-r">4班 / 350人 / 60.9%</td>
             <td class="al-r">2班 / 158人 / 53.3%</td>
             <td class="al-c"><span class="badge b-vod">0 班 (錄播)</span></td>
-            <td class="al-l">改為線上錄播課（VOD），釋出每年 2～4 班直播產能，全數轉投上述第一優先王牌課群</td>
+            <td class="al-l cell-insight" onclick="openCourseModal(15)">
+              <div class="insight-preview"><span class="insight-short">正式轉線上錄播課(VOD)，釋出2～4班直播產能</span><button class="btn-detail">💬 結論與規劃</button></div>
+              <div class="insight-full-inline"><b>【結論】</b>龍和設計系列（室內設計乙級、裝修工程管理乙級、AutoCAD、SketchUp）2025 開 4 班(350人)、2026 開 2 班(158人)，完課率雖高(53%～64%)，但政策已拍板轉為線上錄播課。<br><b>【規劃】</b>在途班「室內裝修乙級」於 2027/02/20 結業後正式轉為錄播（2027 直播排 0 班），所釋出的直播產能剛好補入數位漫畫與 Procreate！</div>
+            </td>
           </tr>
 
           <!-- Grand Summary Row -->
@@ -2182,6 +2431,277 @@
       btn.textContent = '展開全部三張報表（一頁檢視）';
     }
   }
+</script>
+
+
+<!-- Interactive Course Conclusion & Planning Modal Dialog -->
+<div class="modal-overlay" id="courseModal" onclick="if(event.target===this) closeCourseModal()">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div class="modal-title-wrap">
+        <div id="mBadgeWrap"></div>
+        <h3 id="mTitle">課程名稱</h3>
+        <div class="modal-meta" id="mMeta">主力師資｜固定堂數｜2027 H1 建議開班數</div>
+      </div>
+      <button class="modal-close" onclick="closeCourseModal()" title="關閉對話框">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-compare-grid">
+        <div class="modal-stat-box">
+          <div class="yr-label">📅 2025 全年實際開課表現</div>
+          <div class="yr-val" id="mStat2025">-</div>
+          <div class="yr-sub" id="mSub2025">-</div>
+        </div>
+        <div class="modal-stat-box">
+          <div class="yr-label">📅 2026 全年實際開課表現</div>
+          <div class="yr-val" id="mStat2026">-</div>
+          <div class="yr-sub" id="mSub2026">-</div>
+        </div>
+      </div>
+      <div class="modal-section">
+        <h4>📊 兩年數據交叉比對結論（學員上課與完課狀況診斷）</h4>
+        <p id="mConclusion">-</p>
+      </div>
+      <div class="modal-section plan-sec">
+        <h4>🎯 2027 上半年重新規劃開班方向（產品部對接師資與排課指引）</h4>
+        <p id="mDirection">-</p>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <div class="modal-nav-btns">
+        <button class="btn-action secondary" onclick="stepCourseModal(-1)">◀ 上一門課程</button>
+        <button class="btn-action secondary" onclick="stepCourseModal(1)">下一門課程 ▶</button>
+      </div>
+      <button class="btn-action" onclick="closeCourseModal()">關閉視窗</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const COURSE_DATA = [
+    {
+      badge: '<span class="badge b-t1">第一優先</span> <span class="quota-pill q-high" style="margin-left:6px;">必開 2 班</span>',
+      title: '商用視覺平面設計 (含 AI 商用平面)',
+      meta: '主力對接師資：黃偉勳 / 曾國軒｜固定課綱：27 ～ 30 堂（約 3 個月）',
+      stat2025: '3 班合計 521 人登記｜最高完課率 37.6%',
+      sub2025: '黃偉勳 30堂單班 285人(總318)、均席 115.4人、消耗 135人(新77+舊58)',
+      stat2026: '3 班合計 312 人登記｜最高完課率 32.2%',
+      sub2026: '黃偉勳 30堂 194人(均席59.3人)、曾國軒 27堂 93人、黃貴濃 27堂 25人(在途)',
+      conclusion: '2025 與 2026 兩年累計開出 6 班、總登記高達 833 人，穩居全校第一大現金牛課系！其中「黃偉勳老師（30堂）」在 2025 創下單班 285 人、2026 創下 194 人的壓倒性紀錄，且單班舊生消耗高達 33～58 人，是全校消化舊生與新生最穩定的基石。',
+      direction: '【2027 上半年建議：必開 2 班】請產品部優先對接「黃偉勳老師（30堂）」於 Q1 開出第 1 班；另因在途班「黃貴濃（27堂）」將於 2027-03-04 結業，第 2 班（曾國軒老師 AI 商用平面 27 堂）建議排在 3 月中旬以後接棒，避免同課系撞期。'
+    },
+    {
+      badge: '<span class="badge b-up">★ 修正上調</span> <span class="quota-pill q-up" style="margin-left:6px;">必開 2 班</span>',
+      title: '數位漫畫班（★ 加入 2025 數據後重大上調）',
+      meta: '主力對接師資：夏宜嵐 / 羅品傑｜固定課綱：20 堂（約 2.5 個月）',
+      stat2025: '3 班合計 510 人登記｜最高完課率 40.7%',
+      sub2025: '夏宜嵐 20堂單班衝 215人(總224)、首日137人、均席89.3人、消耗103人！',
+      stat2026: '僅開 1 班 71 人登記（2026/11/21 跨年在途）',
+      sub2026: '2026 全年直到 11 月底才開出 1 班（羅品傑 20堂），較 2025 少開 2 班！',
+      conclusion: '這是兩年比對最重要的發現！若只看 2026 會以為漫畫班只有 71 人；但拉出 2025 數據發現，數位漫畫班在 2025 年開 3 班狂吸 510 人登記、消耗 251 人（200 新生＋51 舊生）！尤其 2025/11 夏宜嵐老師由 28 堂精簡為「20 堂」後，單班飆上 215 人、完課率由 21.2% 翻倍至 40.7%。2026 年明顯開班不足！',
+      direction: '【2027 上半年建議：由 1 班上調為「必開 2 班」】目前在途班（羅品傑 20 堂）將於 2027-01-23 結業。建議產品部於 2027 年 2 月及 5 月各排 1 班（共 2 班），並強烈建議優先邀約「夏宜嵐老師」搭配 20 堂高完課課綱，直接補回 400+ 人次的漫畫課吞吐量！'
+    },
+    {
+      badge: '<span class="badge b-up">★ 修正上調</span> <span class="quota-pill q-up" style="margin-left:6px;">必開 2 班</span>',
+      title: 'Procreate 數位繪畫（★ 加入 2025 數據後鎖定 2 班）',
+      meta: '主力對接師資：曹育禎 / 簡佳慧｜固定課綱：24 堂（約 2.5 ～ 3 個月）',
+      stat2025: '4 班合計 375 人登記｜最高完課率 39.1%',
+      sub2025: '含 3 班常規班(劉大維92人/曹育禎83人/簡佳慧90人)＋1 班漫畫故事力實作(110人)',
+      stat2026: '1 班 121 人登記｜完課率飆升至 43.7%',
+      sub2026: '曹育禎 24堂單班 121人、首日出席82人(67.8%)、均席52.8人、消耗67人',
+      conclusion: '兩年數據揭示兩大關鍵：(1) 課綱由 2025 上半年的 32 堂縮短為「24 堂」後，完課率從 17.6%～22.0% 暴增至 39.1%（簡佳慧）與 43.7%（曹育禎），翻了一倍以上！(2) 2025 年市場可輕鬆容納 4 班（375人），但 2026 全年卻只開了 1 班（121人），仍有龐大買氣尚未消化。',
+      direction: '【2027 上半年建議：必開 2 班】全面採用已驗證高完課率的「24 堂固定課綱」，建議產品部對接「曹育禎老師」與「簡佳慧老師」於 2027 上半年各開 1 班（Q1、Q2 各一班），並與「數位繪畫班（張博涵）」錯開開課月份。'
+    },
+    {
+      badge: '<span class="badge b-up">★ 修正上調</span> <span class="quota-pill q-up" style="margin-left:6px;">建議 1 ～ 2 班</span>',
+      title: '商用平面設計進階班（★ 升列第一優先）',
+      meta: '主力對接師資：王仁駿 / 黃偉勳｜固定課綱：16 堂（約 1.5 ～ 2 個月）',
+      stat2025: '2 班合計 212 人登記｜最高完課率 55.4%',
+      sub2025: '03月黃偉勳 106人(完課32.0%)；12月王仁駿 106人(首日69.8%、均席58.3人、完課55.4%！)',
+      stat2026: '1 班 97 人登記｜完課率 45.5%',
+      sub2026: '06月王仁駿 97人(總101)、均席44.1人、完課率45.5%、消耗49人(新33+舊16)',
+      conclusion: '跨年度追蹤發現：商用平面進階班（16堂）連續三期開班人數分別為 106 人 ➔ 106 人 ➔ 97 人，幾乎零波動穩定破百！且由王仁駿老師授課的兩期完課率高達 55.4% 與 45.5%，因為「商用視覺平面基礎班」每年產出超過 300～500 名學員，進階班具備極強的剛性升學需求。',
+      direction: '【2027 上半年建議：由第二優先升為「第一優先・1 ～ 2 班」】固定 16 堂週期短、翻桌快，請產品部配合「商用視覺平面設計」結業檔期排課，優先由王仁駿老師或黃偉勳老師開出 1～2 班。'
+    },
+    {
+      badge: '<span class="badge b-t1">第一優先</span> <span class="quota-pill q-high" style="margin-left:6px;">建議 1 ～ 2 班</span>',
+      title: 'Vtuber 創作全攻略',
+      meta: '主力對接師資：黃俊傑｜固定課綱：8 堂（約 3 ～ 4 週）',
+      stat2025: '1 班 135 人登記（12 堂規格）｜完課率 29.6%',
+      sub2025: '2025/07 開設 12 堂課，首日出席 80人(59.3%)、均席 40.5人、消耗 72人',
+      stat2026: '2 班合計 260 人登記（8 堂規格）｜最高完課率 59.8%',
+      sub2026: '2026/01 首班衝上 200人登記、首日143人(71.5%)、均席120.5人、完課率59.8%！',
+      conclusion: '2025 年原本將 Vtuber 開成 12 堂課（完課率僅 29.6%）；2026 年精準改為「8 堂輕量入門引流課」後，完課率直接翻倍至 59.8%，單班湧入 200 人，全年兩班共消耗高達 162 名純新生，成為全校最強的新生流量漏斗入口！',
+      direction: '【2027 上半年建議：1 ～ 2 班（固定 8 堂）】因為僅 8 堂（約 3 週即可完課），建議產品部在黃俊傑老師在途 Live2D 班（2027-01-29 結業）結束後，於 2 月份率先開出第 1 班，為後續 V皮與 Live2D 蓄水引流。'
+    },
+    {
+      badge: '<span class="badge b-t1">第一優先</span> <span class="quota-pill q-high" style="margin-left:6px;">建議 1 ～ 2 班</span>',
+      title: 'V皮角色繪製',
+      meta: '主力對接師資：黃俊傑｜固定課綱：16 堂（約 1.5 個月）',
+      stat2025: '2025 尚未獨立拆班（包含於舊版 Vtuber 課程內）',
+      sub2025: '2026 起將角色立繪拆分獨立為 16 堂專班後大獲成功',
+      stat2026: '2 班合計 282 人登記｜最高完課率 60.9%（全校第一）',
+      sub2026: '2026/03 首班 229人登記、首日175人(76.4%)、均席140.8人、完課60.9%、消耗149新生',
+      conclusion: '2026 全校表現最驚豔的冠軍課程！單班登記 229 人、平均每堂 140.8 人在線、完課率 60.9% 三項指標全部奪下 2026 全校第一！證明從「Vtuber 全攻略（8堂）」結業後直升「V皮角色繪製（16堂）」的階梯式設計完全命中學員痛點。',
+      direction: '【2027 上半年建議：1 ～ 2 班（固定 16 堂）】請產品部務必將本課排在「Vtuber 創作全攻略」結業後 1～2 週內緊接開課，直接承接剛結業的百名學員。'
+    },
+    {
+      badge: '<span class="badge b-t1">第一優先</span> <span class="quota-pill" style="margin-left:6px;">必開 1 班</span>',
+      title: 'Live2D 動畫製作',
+      meta: '主力對接師資：黃俊傑｜固定課綱：16 堂（約 1.5 個月）',
+      stat2025: '2025 尚未獨立拆班（包含於舊版 Vtuber 課程內）',
+      sub2025: '2026 起作為 V皮繪製後的動態建模進階專班',
+      stat2026: '2 班合計 283 人登記｜最高完課率 54.6%',
+      sub2026: '2026/04 首班 228人登記、首日158人(69.3%)、均席122.7人、完課54.6%、消耗136新生',
+      conclusion: '與「V皮角色繪製」並列全校雙巨頭，2026 年首班高達 228 人登記、完課率 54.6%。學員在畫完 V皮立繪後，有極高比例會繼續報名 Live2D 讓角色動起來。',
+      direction: '【2027 上半年建議：必開 1 班（固定 16 堂）】由於 2026 年底開課的跨年在途班將於 2027-01-29 才結業，2027 上半年不宜在 Q1 連開，建議安排在 Q2（接續 2027 首班 V皮角色繪製結業後）開出 1 班。'
+    },
+    {
+      badge: '<span class="badge b-t1">第一優先</span> <span class="quota-pill" style="margin-left:6px;">建議 1 ～ 2 班</span>',
+      title: '數位繪畫班',
+      meta: '主力對接師資：張博涵 / 賴忠志｜固定課綱：20 堂（約 2.5 個月）',
+      stat2025: '2 班合計 237 人登記（28 堂規格）｜最高完課率 24.3%',
+      sub2025: '賴忠志 28堂 145人(完課24.3%、消耗70人)；張䕒澤 28堂 92人(完課18.9%)',
+      stat2026: '1 班 172 人登記（20 堂規格）｜完課率升至 31.0%',
+      sub2026: '張博涵 20堂單班衝上 172人(總187)、均席55.6人、完課31.0%、消耗72人(新52+舊20)',
+      conclusion: '對比兩年發現：2025 年開 28 堂時，完課率僅 18.9%～24.3%；2026 年由張博涵老師改為「20 堂課綱」後，不僅單班登記人數逆勢衝上 172 人（超越 2025 任一班），平均出席更從 36.5 人升至 55.6 人、完課率提升至 31.0%！',
+      direction: '【2027 上半年建議：1 ～ 2 班（固定 20 堂）】請產品部優先對接張博涵老師開出 1～2 班，且開課時間務必與「Procreate 數位繪畫（曹育禎/簡佳慧）」錯開 3～4 週以上，避免繪畫類學員分流。'
+    },
+    {
+      badge: '<span class="badge b-t1">第一優先</span> <span class="quota-pill" style="margin-left:6px;">必開 1 班</span>',
+      title: 'AI 遊戲設計班（由 2025 Unity 雙軌班成功轉型）',
+      meta: '主力對接師資：葉繁晟｜固定課綱：24 堂（約 2 ～ 2.5 個月）',
+      stat2025: '1 班 70 人登記（Unity 雙軌 31 堂）｜完課率 20.4%',
+      sub2025: '蘇弋麟 31堂 70人登記、首日33人(47.1%)、均席15.5人、完課率20.4%',
+      stat2026: '1 班 160 人登記（AI 遊戲 24 堂）｜完課率升至 33.4%',
+      sub2026: '葉繁晟 24堂單班暴增至 160人(總165，成長+128%)、首日79人、均席53.0人！',
+      conclusion: '這是「AI 題材轉型＋堂數精簡（31堂➔24堂）」最成功的典範！2025 年傳統 Unity 遊戲設計僅 70 人、完課率 20.4%；2026 年改由葉繁晟老師開授「AI 遊戲設計班（24堂）」後，報名人數直接翻倍飆上 160 人（+128%），平均出席更從 15.5 人暴增至 53.0 人！',
+      direction: '【2027 上半年建議：必開 1 班（固定 24 堂）】全面以「AI 遊戲設計班」取代舊版 Unity 課名。因跨年在途班「遊戲角色美術（龎士禮）」至 2027-03-23 結業，建議本班安排於 2027 年 3 月下旬或 Q2 開出。'
+    },
+    {
+      badge: '<span class="badge b-t2">第二優先</span> <span class="quota-pill" style="margin-left:6px;">建議 1 班</span>',
+      title: 'AI 品牌系統創建',
+      meta: '主力對接師資：王仁駿｜固定課綱：18 堂（約 2 個月）',
+      stat2025: '2025 尚未開設（2026 全新開發之 AI 設計應用課系）',
+      sub2025: '因應企業與接案設計師對 AI 品牌識別系統需求而開發',
+      stat2026: '1 班 91 人登記｜首日出席率 84.6%（全校第一）｜完課 40.8%',
+      sub2026: '王仁駿 18堂 91人登記、首日高達 77人出席(84.6%)、均席36.7人、消耗63名純新生',
+      conclusion: '2026 新推出即奪下「全校首日出席率第一名（84.6%）」！91 人登記中有 77 人首日準時上線，且完課率達 40.8%、單班消耗 63 名純新生，證明「AI＋品牌識別系統」對新生極具號召力。',
+      direction: '【2027 上半年建議：穩開 1 班（固定 18 堂）】因為授課講師王仁駿老師同時負責「商用平面設計進階班（16堂，第一優先）」，請產品部與王老師協調，上半年採取「一季開 AI 品牌系統、另一季開商用平面進階」的方式錯開排課。'
+    },
+    {
+      badge: '<span class="badge b-t2">第二優先</span> <span class="quota-pill" style="margin-left:6px;">建議 1 班</span>',
+      title: 'After Effects 特效動畫',
+      meta: '主力對接師資：石皓瑋 / 鄧婕｜固定課綱：20 堂（約 2 個月）',
+      stat2025: '2 班合計 227 人登記｜20 堂規格完課率躍升至 36.6%',
+      sub2025: '05月鄧婕 28堂 135人(完課20.1%)；10月石皓瑋改 20堂 92人(完課飆升至 36.6%！)',
+      stat2026: '1 班 59 人登記（2026/10/17 開課 Q4 在途班）',
+      sub2026: '石皓瑋 20堂 59人登記，於 2026/12/19 結業，無跨年撞期問題',
+      conclusion: '兩年數據清楚證明：2025 年 AE 特效動畫上、下半年各開 1 班，全年合計吸納 227 人登記！且 2025/10 由石皓瑋老師將堂數由 28 堂調整為「20 堂」後，完課率從 20.1% 躍升至 36.6%（+16.5%）。2026 年僅在 10 月開出 1 班，上半年完全空缺。',
+      direction: '【2027 上半年建議：穩開 1 班（固定 20 堂｜石皓瑋老師）】由於 2026 Q4 班次在 2026/12/19 即結業，2027 上半年完全沒有在途撞期問題，建議於 Q1 或 Q2 開出 1 班，填補動態設計與特效剪輯需求。'
+    },
+    {
+      badge: '<span class="badge b-t2">第二優先</span> <span class="quota-pill" style="margin-left:6px;">建議 1 班</span>',
+      title: '日本動畫職人養成班',
+      meta: '主力對接師資：涂國雄 ＋ 邱文美（雙師合開）｜固定課綱：16 堂（約 1.5 ～ 2 個月）',
+      stat2025: '1 班 43 人登記（日本 amps 動漫創作 4 堂短期班）｜完課 56.4%',
+      sub2025: '首日出席率高達 76.7%、完課率 56.4%，驗證日式動漫師資口碑極佳',
+      stat2026: '雙師綜合班 68 人（完課 47.1%）vs 單一背景美術 47 人（完課 37.6%）',
+      sub2026: '涂國雄+邱文美 16堂首日出席 77.9%(全校第2)、完課率 47.1%(全校第4)！',
+      conclusion: '2026 年同時測試了「日本動畫職人養成班（涂國雄+邱文美 16堂）」與「日本動畫職人-背景美術（邱文美 14堂）」。數據顯示雙師合開的「綜合養成班」無論在登記人數（68人 vs 47人）、首日出席率（77.9% vs 61.7%）與完課率（47.1% vs 37.6%）上皆全面勝出！',
+      direction: '【2027 上半年建議：集中開立「綜合養成班（16堂）」1 班】2027 上半年不單獨拆出小眾的「背景美術班」，而是將行銷與學員名單集中於高完課率（47.1%）的「日本動畫職人養成班」開出 1 班。'
+    },
+    {
+      badge: '<span class="badge b-t2">第二優先</span> <span class="quota-pill" style="margin-left:6px;">建議 1 班</span>',
+      title: 'UI 視覺介面設計班',
+      meta: '主力對接師資：沈宇哲｜固定課綱：20 堂（約 2 個月）',
+      stat2025: '1 班 54 人登記（28 堂規格）｜完課率 21.4%',
+      sub2025: '沈宇哲 28堂 54人登記、首日33人(61.1%)、均席12.0人、完課率僅 21.4%',
+      stat2026: '1 班 61 人登記（20 堂規格）｜完課率翻倍至 42.2%',
+      sub2026: '沈宇哲 20堂 61人登記、首日45人(73.8%)、均席25.3人、完課率躍升至 42.2%！',
+      conclusion: '同一門課、同一位老師（沈宇哲），2025 年開 28 堂時完課率僅 21.4%、均席 12.0 人；2026 年改為「20 堂課綱」後，首日出席率衝上 73.8%，平均出席翻倍至 25.3 人，完課率更直接翻倍達到 42.2%！',
+      direction: '【2027 上半年建議：穩開 1 班（固定 20 堂｜沈宇哲老師）】維持 20 堂精實課綱，於 2027 上半年開出 1 班，滿足網頁與 App 介面設計學員需求。'
+    },
+    {
+      badge: '<span class="badge b-t3">視檔期候補</span> <span class="quota-pill" style="background:#f1f5f9;color:#475569;border-color:#cbd5e1;margin-left:6px;">0 ～ 1 班</span>',
+      title: '2D 動畫設計 ／ 商用網站架設 ／ 遊戲角色美術',
+      meta: '對接師資：張䕒澤或Zorion / 林承彥 / 龎士禮｜固定課綱：20 ～ 28 堂',
+      stat2025: '3 班合計 243 人登記｜完課率 18.3% ～ 26.5%',
+      sub2025: '2D動畫(張䕒澤94人/26.5%)、網站架設(林承彥81人/20.8%)、角色美術(龎士禮68人/18.3%)',
+      stat2026: '3 班合計 125 人登記｜人數較 2025 明顯收斂',
+      sub2026: '2D動畫(Zorion 56人/29.4%)、網站架設(林承彥 50人/30.8%)、角色美術(龎士禮 19人跨年在途)',
+      conclusion: '跨兩年比對可見，這三門課雖然在 2026 縮短堂數後完課率有所提升（20%➔30%），但「總報名人數」呈現下滑趨勢：商用網站由 81 人降至 50 人、2D 動畫由 94 人降至 56 人、遊戲角色美術由 68 人降至 19 人（且在途班至 2027/03/23 才結業）。',
+      direction: '【2027 上半年建議：列為第三優先候補（0 ～ 1 班）】不列入上半年必開保障名額；僅在第一、二優先（共 15～16 班）排定後，若特定月份仍有檔期空缺，再就「2D 動畫」或「商用網站架設」擇一開出 1 班。'
+    },
+    {
+      badge: '<span class="badge b-drop">建議停開</span> <span class="badge b-drop" style="margin-left:6px;">0 班 (停開)</span>',
+      title: '數位手機攝影班 ／ 3D 視覺創作 Blender',
+      meta: '師資：孫筱瑜 / 賀聖倫｜固定課綱：20 ～ 22 堂',
+      stat2025: '數位手機攝影班（22堂）：118 人登記，但完課率僅 12.7%（兩年全校最低）',
+      sub2025: '首日出席率僅 49.2%(58人)、平均出席僅 15.5 人，學員中途流失率高達 87%',
+      stat2026: '3D 視覺創作 Blender（20堂）：僅 30 人登記（2026 Q4 在途）',
+      sub2026: '登記人數僅 30 人，遠低於全校直播班平均規模（約 96 人）',
+      conclusion: '兩年數據明確篩選出兩門不適合線上長週期直播的課系：(1)「數位手機攝影班」2025 年完課率僅 12.7% 墊底，屬於典型適合短影音/錄播而非 22 堂直播的題材；(2)「3D Blender」2026 年開班僅 30 人登記，未達直播開班經濟效益。',
+      direction: '【2027 上半年建議：停開（0 班）】淘汰低完課率與低登記量班次，將寶貴的教務與行銷資源 100% 集中於前述第一、二優先高投報課系。'
+    },
+    {
+      badge: '<span class="badge b-vod">轉線上錄播</span> <span class="badge b-vod" style="margin-left:6px;">0 班 (錄播)</span>',
+      title: '室內設計乙級 ／ 室內裝修工程管理乙級 ／ AutoCAD ／ SketchUp',
+      meta: '合作單位：龍和設計工坊有限公司｜課綱：14 ～ 48 堂',
+      stat2025: '4 班合計 350 人登記｜乙級證照班完課率高達 60.9% ～ 64.3%',
+      sub2025: '室內乙級(103人/完課64.3%)、裝修乙級(116人/完課60.9%)、AutoCAD(66人)、SketchUp(65人)',
+      stat2026: '2 班合計 158 人登記｜完課率 48.3% ～ 53.3%',
+      sub2026: '室內乙級(82人/完課48.3%)、裝修乙級(76人/完課53.3%，跨年在途至 2027-02-20 結業)',
+      conclusion: '龍和設計系列在 2025 開 4 班（350人）、2026 開 2 班（158人），雖然證照班出席與完課表現極佳，但依公司最新課程政策，自 2027 年起全面改為「線上錄播課（VOD）」，不再開設線上直播班。',
+      direction: '【2027 上半年建議：直播排 0 班（全面轉錄播）】最後一班跨年在途直播課「室內裝修工程管理乙級」將於 2027-02-20 結業。原本龍和設計佔用的每年 2～4 班直播排課產能釋出後，正好全數回補至今年上調的「數位漫畫班（2班）」與「Procreate（2班）」，確保 2027 總體營收與消耗人次不減反增！'
+    }
+  ];
+
+  let currentModalIdx = 0;
+
+  function openCourseModal(idx) {
+    currentModalIdx = idx;
+    const d = COURSE_DATA[idx];
+    document.getElementById('mBadgeWrap').innerHTML = d.badge;
+    document.getElementById('mTitle').textContent = d.title;
+    document.getElementById('mMeta').textContent = d.meta;
+    document.getElementById('mStat2025').textContent = d.stat2025;
+    document.getElementById('mSub2025').textContent = d.sub2025;
+    document.getElementById('mStat2026').textContent = d.stat2026;
+    document.getElementById('mSub2026').textContent = d.sub2026;
+    document.getElementById('mConclusion').textContent = d.conclusion;
+    document.getElementById('mDirection').textContent = d.direction;
+    document.getElementById('courseModal').classList.add('open');
+  }
+
+  function closeCourseModal() {
+    document.getElementById('courseModal').classList.remove('open');
+  }
+
+  function stepCourseModal(delta) {
+    let next = (currentModalIdx + delta + COURSE_DATA.length) % COURSE_DATA.length;
+    openCourseModal(next);
+  }
+
+  function toggleInlineInsights(btn) {
+    const tbl = document.getElementById('compareMainTable');
+    tbl.classList.toggle('expand-inline');
+    if (tbl.classList.contains('expand-inline')) {
+      btn.textContent = '📐 恢復單行精簡對齊模式';
+      btn.style.background = '#475569';
+    } else {
+      btn.textContent = '📖 一鍵展開所有結論文字';
+      btn.style.background = '#3b82f6';
+    }
+  }
+
+  document.addEventListener('keydown', function(e) {
+    const modal = document.getElementById('courseModal');
+    if (!modal.classList.contains('open')) return;
+    if (e.key === 'Escape') closeCourseModal();
+    if (e.key === 'ArrowLeft') stepCourseModal(-1);
+    if (e.key === 'ArrowRight') stepCourseModal(1);
+  });
 </script>
 
 </body>
