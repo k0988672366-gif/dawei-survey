@@ -1,0 +1,1823 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>實體班補課系統觀看數據分析｜線下班轉「線上直播／錄播課」規劃報告</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f1f5f9;
+    --surface: #ffffff;
+    --border: #cbd5e1;
+    --border-light: #e2e8f0;
+    --text-main: #0f172a;
+    --text-sub: #334155;
+    --text-muted: #64748b;
+    --header-bg: #1e293b;
+    --subhead-bg: #f8fafc;
+    --primary: #1d4ed8;
+    --primary-bg: #eff6ff;
+    --green: #15803d;
+    --green-bg: #f0fdf4;
+    --amber: #b45309;
+    --amber-bg: #fffbeb;
+    --red: #b91c1c;
+    --red-bg: #fef2f2;
+    --purple: #6d28d9;
+    --purple-bg: #f5f3ff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    font-size: 13px;
+    line-height: 1.45;
+    padding: 20px 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .sheet {
+    max-width: 1440px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  }
+
+  .sheet-header {
+    padding: 18px 24px;
+    border-bottom: 2px solid var(--header-bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .sheet-title-group h1 {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: -0.01em;
+  }
+
+  .sheet-title-group p {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tab-bar {
+    display: flex;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    gap: 4px;
+  }
+
+  .tab-btn {
+    padding: 11px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-sub);
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tab-btn:hover { color: var(--primary); background: #f1f5f9; }
+  .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: #ffffff; }
+
+  .tab-badge {
+    font-size: 11px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    background: #e2e8f0;
+    color: #334155;
+    font-weight: 600;
+  }
+
+  .tab-btn.active .tab-badge { background: var(--primary-bg); color: var(--primary); }
+
+  .btn-action {
+    background: var(--header-bg);
+    color: #ffffff;
+    border: none;
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .btn-action.secondary {
+    background: #ffffff;
+    color: var(--text-sub);
+    border: 1px solid var(--border);
+  }
+
+  .view-panel { display: none; }
+  .view-panel.active { display: block; }
+
+  .kpi-strip-6 {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    border-bottom: 1px solid var(--border);
+    background: var(--subhead-bg);
+  }
+
+  .kpi-cell {
+    padding: 12px 16px;
+    border-right: 1px solid var(--border);
+    min-width: 0;
+  }
+  .kpi-cell:last-child { border-right: none; }
+  .kpi-label { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .kpi-val { font-size: 18px; font-weight: 700; color: var(--text-main); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .kpi-val span { font-size: 11.5px; font-weight: 500; color: var(--text-muted); margin-left: 3px; }
+  .kpi-sub { font-size: 11px; color: var(--text-sub); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .section-bar {
+    background: var(--header-bg);
+    color: #ffffff;
+    padding: 9px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    letter-spacing: 0.02em;
+  }
+
+  .section-bar span.note { font-size: 11.5px; font-weight: 400; color: #cbd5e1; }
+
+  .strategy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .strategy-box {
+    padding: 14px 18px;
+    border-right: 1px solid var(--border);
+    background: #ffffff;
+  }
+  .strategy-box:last-child { border-right: none; }
+  .strategy-title { font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
+  .strategy-body { font-size: 12px; color: var(--text-sub); line-height: 1.55; }
+
+  .table-wrap { width: 100%; overflow-x: auto; }
+
+  table.grid-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-variant-numeric: tabular-nums;
+  }
+
+  table.grid-table th, table.grid-table td {
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 10px;
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  table.grid-table th:last-child, table.grid-table td:last-child { border-right: none; }
+  table.grid-table thead th {
+    background: #f1f5f9;
+    color: var(--text-main);
+    font-weight: 700;
+    font-size: 12px;
+    border-bottom: 2px solid #94a3b8;
+    height: 36px;
+  }
+  table.grid-table tbody tr { height: 38px; background: #ffffff; }
+  table.grid-table tbody tr:nth-child(even) { background: #f8fafc; }
+  table.grid-table tbody tr:hover { background: #eff6ff; }
+  table.grid-table tbody tr.row-group-header { background: #e2e8f0; height: 30px; }
+  table.grid-table tbody tr.row-group-header td { font-weight: 700; font-size: 12px; color: #1e293b; padding: 5px 12px; }
+  table.grid-table tbody tr.row-total { background: #f1f5f9; border-top: 2px solid #64748b; font-weight: 700; height: 40px; }
+  table.grid-table tbody tr.row-vod { background: #fffbeb; }
+
+  .al-l { text-align: left; }
+  .al-c { text-align: center; }
+  .al-r { text-align: right; }
+
+  .badge {
+    display: inline-block;
+    width: 96px;
+    text-align: center;
+    padding: 2px 0;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 3px;
+    line-height: 1.3;
+  }
+  .b-t1 { background: var(--green-bg); color: var(--green); border: 1px solid #86efac; }
+  .b-t2 { background: var(--primary-bg); color: var(--primary); border: 1px solid #93c5fd; }
+  .b-up { background: var(--purple-bg); color: var(--purple); border: 1px solid #c4b5fd; }
+  .b-vod { background: var(--amber-bg); color: var(--amber); border: 1px solid #fcd34d; }
+
+  .num-strong { font-weight: 700; color: var(--text-main); }
+  .num-hi { font-weight: 700; color: var(--green); }
+  .num-blue { font-weight: 700; color: var(--primary); }
+  .num-up { font-weight: 700; color: var(--purple); }
+  .num-warn { font-weight: 700; color: var(--amber); }
+  .num-low { font-weight: 600; color: var(--red); }
+
+  /* Interactive Insight Cell & Modal */
+  .cell-insight { cursor: pointer; transition: background 0.15s; }
+  .cell-insight:hover { background: #dbeafe !important; }
+  .insight-preview { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; }
+  .insight-short { font-weight: 600; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+  .btn-detail {
+    flex-shrink: 0; background: var(--primary); color: #ffffff; border: none;
+    padding: 3px 9px; font-size: 11.5px; font-weight: 700; border-radius: 4px; cursor: pointer;
+  }
+  .insight-full-inline { display: none; white-space: normal; line-height: 1.55; padding: 6px 2px; color: var(--text-main); font-size: 12.5px; }
+  table.grid-table.expand-inline tbody tr { height: auto; }
+  table.grid-table.expand-inline td.cell-insight { white-space: normal; overflow: visible; }
+  table.grid-table.expand-inline .insight-preview { display: none; }
+  table.grid-table.expand-inline .insight-full-inline { display: block; }
+
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(2px); z-index: 9999; align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-card {
+    background: #ffffff; width: 100%; max-width: 740px; border-radius: 8px;
+    border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25); overflow: hidden;
+  }
+  .modal-head { background: var(--header-bg); color: #ffffff; padding: 16px 22px; display: flex; justify-content: space-between; align-items: flex-start; }
+  .modal-title-wrap h3 { font-size: 18px; font-weight: 700; margin-top: 6px; color: #ffffff; }
+  .modal-meta { font-size: 12.5px; color: #cbd5e1; margin-top: 4px; }
+  .modal-close { background: rgba(255,255,255,0.12); color: #ffffff; border: 1px solid rgba(255,255,255,0.2); width: 32px; height: 32px; border-radius: 6px; font-size: 16px; cursor: pointer; }
+  .modal-body { padding: 20px 22px; }
+  .modal-compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .modal-stat-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; }
+  .modal-stat-box .yr-label { font-size: 11.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
+  .modal-stat-box .yr-val { font-size: 15px; font-weight: 700; color: var(--text-main); }
+  .modal-stat-box .yr-sub { font-size: 12px; color: var(--text-sub); margin-top: 4px; }
+  .modal-section { background: #ffffff; border: 1px solid var(--border); border-left: 4px solid var(--primary); border-radius: 6px; padding: 14px 16px; margin-bottom: 12px; }
+  .modal-section.plan-sec { border-left-color: var(--green); background: #f0fdf4; }
+  .modal-section h4 { font-size: 13.5px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+  .modal-section p { font-size: 13.5px; line-height: 1.65; color: #1e293b; }
+  .modal-foot { background: #f8fafc; border-top: 1px solid var(--border); padding: 12px 22px; display: flex; justify-content: space-between; align-items: center; }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .sheet { box-shadow: none; border: 1px solid #000; }
+    .header-actions, .tab-bar { display: none; }
+    .view-panel { display: block !important; page-break-after: always; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <div class="sheet-header">
+    <div class="sheet-title-group">
+      <h1>實體班補課系統觀看數據分析｜線下班級轉「線上直播 ／ 線上錄播（VOD）」規劃報告</h1>
+      <p>資料範圍：2026/01/01 ～ 2026/09/29 全校 84 頁補課觀看紀錄（共 1,705 筆登記、1,240 位不重複學員、398 個依開課日期分類之實體班級）</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-action" style="background:var(--primary);" onclick="copyShareLink(this)">🔗 複製此報告分享連結</button>
+      <button class="btn-action secondary" onclick="toggleAllViews()" id="btnExpandAll">展開全部三張報表（一頁檢視）</button>
+      <button class="btn-action" onclick="window.print()">列印 / 匯出 PDF</button>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('tab-strategy', this)">
+      1. 各課系補課統計 ＆ 轉線上直播 / 錄播規劃總表 <span class="tab-badge">核心決策版 (22課系)</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('tab-dated-classes', this)">
+      2. 依開班日期分類：單一實體班補課排行 <span class="tab-badge">Top 50 熱門實體班</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('tab-branch-flow', this)">
+      3. 12 大分校跨區補課流向統計表 <span class="tab-badge">分校外溢診斷</span>
+    </button>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- TAB 1: COURSE SUMMARY & ONLINE LIVE VS VOD TRANSITION STRATEGY            -->
+  <!-- ========================================================================= -->
+  <div id="tab-strategy" class="view-panel active">
+
+    <div class="kpi-strip-6">
+      <div class="kpi-cell">
+        <div class="kpi-label">1. 補課觀看總登記筆數</div>
+        <div class="kpi-val">1,705 <span>筆 (1,712人次)</span></div>
+        <div class="kpi-sub">不重複學員共 1,240 人（人均 1.38 班）</div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">2. 依日期分類之實體班數</div>
+        <div class="kpi-val">398 <span>個實體班</span></div>
+        <div class="kpi-sub">單班最高達 25 人純看補課（站前 CAD）</div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">3. 跨分校遠距補課比例</div>
+        <div class="kpi-val" style="color:var(--primary);">76.6% <span>跨分校觀看</span></div>
+        <div class="kpi-sub">每 4 人就有 3 人不是看自己分校的課！</div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">4. 跨縣市遠距觀看比例</div>
+        <div class="kpi-val" style="color:var(--purple);">42.3% <span>跨縣市遠距</span></div>
+        <div class="kpi-sub">例：中壢/台中/高雄學員掛名看台北班</div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">5. 新生直接當線上課看比例</div>
+        <div class="kpi-val" style="color:var(--green);">77.9% <span>為新生 (1,329筆)</span></div>
+        <div class="kpi-sub">並非臨時請假，而是把補課當線上課上！</div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">6. 最大新發現藍海課群</div>
+        <div class="kpi-val" style="color:var(--amber);">音樂 119筆 <span>/ 室內 173筆</span></div>
+        <div class="kpi-sub">線上原本未開，學員全擠在實體補課系統</div>
+      </div>
+    </div>
+
+    <div class="section-bar">
+      <span>一、從 1,705 筆實體補課觀看數據發現的「三大轉型規劃準則」</span>
+      <span class="note">為什麼這 1,240 位學生報名實體班，卻全程用補課系統看影片？</span>
+    </div>
+    <div class="strategy-grid">
+      <div class="strategy-box">
+        <div class="strategy-title">
+          <span>準則一：轉／增開【線上直播課（Live）】判準</span>
+          <span class="badge b-t1">高互動批改型</span>
+        </div>
+        <div class="strategy-body">
+          • <b>數據特徵</b>：<b>單班補課密度最高（班均 5.9～8.9 人/班）</b>、<b>新生佔比高（75%～100%）</b>，且作品需老師即時看圖批改與講評。<br>
+          • <b>核心課系</b>：<b>數位漫畫（237筆）</b>、<b>數位繪畫（231筆）</b>、<b>商用視覺平面（228筆）</b>、<b>Unity＋角色美術雙軌（159筆）</b>、以及全新挖出的<b>音樂製作/全AI音樂（119筆）</b>与<b>AI室內設計（32筆）</b>！
+        </div>
+      </div>
+      <div class="strategy-box">
+        <div class="strategy-title">
+          <span>準則二：轉為【線上錄播課（VOD）】判準</span>
+          <span class="badge b-vod">軟體指令步驟型</span>
+        </div>
+        <div class="strategy-body">
+          • <b>數據特徵</b>：<b>軟體操作步驟繁複（學員在實體教室跟不上，需在家反覆按暫停倒帶）</b>、<b>跨院率極高（80%～92%）</b>、<b>舊生重看複習佔比高（30%～45%）</b>。<br>
+          • <b>核心課系</b>：<b>AutoCAD（82筆，單班最高25人補課！）</b>、<b>SketchUp 3D（59筆，跨縣市54%）</b>、<b>After Effects（55筆，跨院91%）</b>、<b>C4D/Blender（36筆）</b>、<b>商用網站架設（22筆）</b>。
+        </div>
+      </div>
+      <div class="strategy-box">
+        <div class="strategy-title">
+          <span>準則三：【直播主課 ＋ 錄播技法 VOD】雙軌並行</span>
+          <span class="badge b-up">直播＋錄播雙軌</span>
+        </div>
+        <div class="strategy-body">
+          • <b>數據特徵</b>：既有龐大新生互動需求（80筆新生），同時又有全校最高比例的<b>舊生反覆回看需求（51筆舊生，佔 38.9%！）</b>。<br>
+          • <b>核心課系</b>：<b>Procreate 數位繪畫（131筆）＋ 漫畫故事力實作（6筆）</b>。最完美模式為「24堂常態線上直播班 ＋ 筆刷/上色技法精剪為線上錄播課（VOD）」。
+        </div>
+      </div>
+    </div>
+
+    <div class="section-bar">
+      <span>二、各線下課程補課觀看統計 ＆ 轉「線上直播 vs 線上錄播（VOD）」規劃總表（點擊最右欄開啟對話框看完整數據依據）</span>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="note">點擊任一課程之「💬 轉型規劃」按鈕即可彈出該課系熱門實體班日期與規劃細節</span>
+        <button class="btn-action" style="background:#3b82f6;padding:4px 10px;font-size:11.5px;" onclick="toggleInlineInsights(this)">📖 一鍵展開所有規劃文字</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="grid-table" id="makeupMainTable">
+        <colgroup>
+          <col style="width: 10%;">
+          <col style="width: 17%;">
+          <col style="width: 8%;">
+          <col style="width: 8%;">
+          <col style="width: 8%;">
+          <col style="width: 10%;">
+          <col style="width: 8%;">
+          <col style="width: 8%;">
+          <col style="width: 23%;">
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="al-c">建議轉型模式</th>
+            <th class="al-l">線下實體班課程名稱</th>
+            <th class="al-r">補課總筆數</th>
+            <th class="al-c">涉及實體班數</th>
+            <th class="al-r">單班最高(班均)</th>
+            <th class="al-r">新生筆數(佔比)</th>
+            <th class="al-r">跨分校率</th>
+            <th class="al-r">跨縣市率</th>
+            <th class="al-l">數據診斷結論 ＆ 轉線上直播／錄播具體開課規劃</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="row-group-header">
+            <td colspan="9">🟢 【第一類：強烈建議轉／增開「線上直播課（Live）」】單班補課密度最高、新生佔比 75%～100%、亟需老師即時看圖/批改互動（共 10 大課系）</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+            <td class="al-l num-strong">數位漫畫班 (含漫畫進階)</td>
+            <td class="al-r num-strong">237 筆 (200人)</td>
+            <td class="al-c">30 班</td>
+            <td class="al-r num-hi">22人 (均8.9)</td>
+            <td class="al-r">183 筆 (77.2%)</td>
+            <td class="al-r num-blue">78.5%</td>
+            <td class="al-r">43.5%</td>
+            <td class="al-l cell-insight" onclick="openMakeupModal(0)">
+              <div class="insight-preview"><span class="insight-short">班均8.9人補課全校最高！08/10東區單班22人</span><button class="btn-detail">💬 轉型規劃</button></div>
+              <div class="insight-full-inline"><b>【數據診斷】</b>單班平均高達 8.9 人看補課居全校第 1！08/10 東區(22人)、03/14 東區(20人)、05/18 台中許眙綸(19人)、02/10 館前(18人)皆似小型線上班。<br><b>【轉型規劃】</b>線上直播漫畫課嚴重供不應求！建議直接將許眙綸、許瑞峰、谷春森等實體名師拉上線，每季固定加開線上直播專班。</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+            <td class="al-l num-strong">數位繪畫班</td>
+            <td class="al-r num-strong">231 筆 (196人)</td>
+            <td class="al-c">39 班</td>
+            <td class="al-r num-hi">18人 (均5.9)</td>
+            <td class="al-r">179 筆 (77.5%)</td>
+            <td class="al-r num-blue">74.5%</td>
+            <td class="al-r">39.8%</td>
+            <td class="al-l cell-insight" onclick="openMakeupModal(1)">
+              <div class="insight-preview"><span class="insight-short">總補課231筆全校並列第1！05/10中壢單班18人</span><button class="btn-detail">💬 轉型規劃</button></div>
+              <div class="insight-full-inline"><b>【數據診斷】</b>05/10 中壢(18人)、09/14 台中(18人)、05/31 站二(14人，100%跨院)出現大量跨區新生看補課，集中在線上未開課之月份。<br><b>【轉型規劃】</b>收攏北中南週末實體小班，改為每 2 個月固定開出 1 班全校統一之「數位繪畫線上直播班（20堂）」。</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+            <td class="al-l num-strong">商用視覺平面設計 (含AI平面)</td>
+            <td class="al-r num-strong">228 筆 (199人)</td>
+            <td class="al-c">61 班</td>
+            <td class="al-r num-hi">21人 (均3.7)</td>
+            <td class="al-r">161 筆 (70.6%)</td>
+            <td class="al-r num-blue">75.9%</td>
+            <td class="al-r">37.3%</td>
+            <td class="al-l cell-insight" onclick="openMakeupModal(2)">
+              <div class="insight-preview"><span class="insight-short">03/28中壢單班21人補課！8～9月AI平面急增</span><button class="btn-detail">💬 轉型規劃</button></div>
+              <div class="insight-full-inline"><b>【數據診斷】</b>03/28 中壢(21人)、07/18 中壢(17人)、06/23 中壢(12人)補課人數極高；且 8～9 月「AI 商用視覺平面」補課急增 27 筆。<br><b>【轉型規劃】</b>將桃園/中壢與台中外溢之平面設計需求，直接導流至每季 1～2 班之「AI 商用視覺平面線上直播班」。</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">★ 新開線上直播</span></td>
+            <td class="al-l num-strong">音樂製作 / 全AI音樂 / 詞曲創作</td>
+            <td class="al-r num-up">119 筆 (99人)</td>
+            <td class="al-c">32 班</td>
+            <td class="al-r num-up">12人 (均3.7)</td>
+            <td class="al-r">96 筆 (80.7%)</td>
+            <td class="al-r num-hi">88.2%</td>
+            <td class="al-r num-hi">50.4%</td>
+            <td class="al-l cell-insight" onclick="openMakeupModal(3)">
+              <div class="insight-preview"><span class="insight-short">★最大藍海發現！119筆補課(跨院88%)線上卻0開班</span><button class="btn-detail">💬 轉型規劃</button></div>
+              <div class="insight-full-inline"><b>【數據診斷】</b>音樂製作(70筆)＋全AI音樂(27筆)＋詞曲(17筆)＋K-POP(5筆)合計 119 筆！跨分校高達 88.2%、跨縣市 50.4%，全台學員跨區掛名台中三部與板橋班看補課！<br><b>【轉型規劃】</b>★強烈建議新增「全 AI 音樂創作／數位音樂製作線上直播班（或錄播＋直播講評）」，一開班即可直接吸納百人需求！</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+            <td class="al-l num-strong">Unity App 遊戲設計班(雙軌)</td>
+            <td class="al-r num-strong">90 筆 (76人)</td>
+            <td class="al-c">15 班</td>
+            <td class="al-r num-hi">18人 (均6.0)</td>
+            <td class="al-r">78 筆 (86.7%)</td>
+            <td class="al-r num-blue">78.9%</td>
+            <td class="al-r num-hi">50.0%</td>
+            <td class="al-l cell-insight" onclick="openMakeupModal(4)">
+              <div class="insight-preview"><span class="insight-short">班均6.0人、50%跨縣市！05/03台中單班18人</span><button class="btn-detail">💬 轉型規劃</button></div>
+              <div class="insight-full-inline"><b>【數據診斷】</b>05/03 台中(18人)、03/03 東區(17人)、03/31 東區(11人)全為高密度補課，且 50% 學員為跨縣市遠距觀看、86.7% 為新生。<br><b>【轉型規劃】</b>不必再於各分校開雙軌小班，直接整併轉型為全校統一之「AI 遊戲設計線上直播班」。</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+            <td class="al-l num-strong">日本動畫職人 (養成/人物/背景)</td>
+            <td class="al-r num-strong">94 筆 (74人)</td>
+            <td class="al-c">30 班</td>
+            <td class="al-r num-hi">13人 (均3.1)</td>
+            <td class="al-r">84 筆 (<span class="num-hi">89.4%</span>)</td>
+            <td class="al-r num-blue">80.9%</td>
+            <td class="al-r">44.7%</td>
+            <td class="al-l cell-insight" onclick="openMakeupModal(5)">
+              <div class="insight-preview"><span class="insight-short">06/27中壢單班13人(跨縣市92%)！新生佔89.4%</span><button class="btn-detail">💬 轉型規劃</button></div>
+              <div class="insight-full-inline"><b>【數據診斷】</b>養成班(67筆)＋人物角色(16筆)＋背景美術(11筆)共 94 筆；其中 06/27 中壢三部單班 13 人補課有 92.3% 來自外縣市！<br><b>【轉型規劃】</b>日式動畫師資稀缺，分校開課造成外縣市學員只能看補課帶。應主力集中於「線上直播綜合養成班」。</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+            <td class="al-l num-strong">遊戲角色美術班(雙軌)</td>
+            <td class="al-r num-strong">69 筆 (60人)</td>
+            <td class="al-c">10 班</td>
+            <td class="al-r num-hi">19人 (均6.9)</td>
+            <td class="al-r">59 筆 (85.5%)</td>
+            <td class="al-r num-blue">69.6%</td>
+            <td class="al-r">37.7%</td>
+            <td class="al-l cell-insight" onclick="openMakeupModal(6)">
+              <div class="insight-preview"><span class="insight-short">班均6.9人居全校第2！04/26台中單班19人補課</span><button class="btn-detail">💬 轉型規劃</button></div>
+              <div class="insight-full-inline"><b>【數據診斷】</b>僅 10 個實體班就湧入 69 筆補課（班均 6.9 人全校第 2 高！），且多數與 Unity 遊戲設計成對報名。<br><b>【轉型規劃】</b>建議將實體雙軌班直接轉為「線上直播班（精簡為 20 堂規格）」，與 AI 遊戲設計班配套招收全台學員。</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+            <td class="al-l num-strong">AI 品牌系統創建</td>
+            <td class="al-r">37 筆 (33人)</td>
+            <td class="al-c">10 班</td>
+            <td class="al-r">10人 (均3.7)</td>
+            <td class="al-r num-hi">37 筆 (100%)</td>
+            <td class="al-r num-blue">83.8%</td>
+            <td class="al-r">45.9%</td>
+            <td class="al-l cell-insight" onclick="openMakeupModal(7)">
+              <div class="insight-preview"><span class="insight-short">100%全為新生(37筆全新生)！跨分校高達83.8%</span><button class="btn-detail">💬 轉型規劃</button></div>
+              <div class="insight-full-inline"><b>【數據診斷】</b>37 筆補課登記中「100% 全部是新生」，且 83.8% 跨分校觀看（集中於 07/25 台中二部與 10/04 台中三部）。<br><b>【轉型規劃】</b>驗證線上直播「AI 品牌系統創建（18堂）」首日出席率 84.6% 的爆發力，應持續作為線上直播主力課。</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">★ 新開線上直播</span></td>
+            <td class="al-l num-strong">AI 室內設計系統實戰班</td>
+            <td class="al-r num-up">32 筆 (28人)</td>
+            <td class="al-c">8 班</td>
+            <td class="al-r num-up">16人 (均4.0)</td>
+            <td class="al-r num-hi">30 筆 (93.8%)</td>
+            <td class="al-r">65.6%</td>
+            <td class="al-r">25.0%</td>
+            <td class="al-l cell-insight" onclick="openMakeupModal(8)">
+              <div class="insight-preview"><span class="insight-short">★下半年新爆款！06/27站前二部單班16名新生補課</span><button class="btn-detail">💬 轉型規劃</button></div>
+              <div class="insight-full-inline"><b>【數據診斷】</b>2026 年 5～9 月新出現的「AI 室內設計系統實戰班」，僅 06/27 站前二部單一班就有 16 名純新生用補課系統觀看！<br><b>【轉型規劃】</b>在龍和傳統乙級證照轉錄播後，建議將「AI 室內設計系統實戰班」直接開發為全新【線上直播課】！</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t1">★ 新開線上直播</span></td>
+            <td class="al-l num-strong">IP 角色人物創作班</td>
+            <td class="al-r num-up">30 筆 (25人)</td>
+            <td class="al-c">9 班</td>
+            <td class="al-r">7人 (均3.3)</td>
+            <td class="al-r num-hi">30 筆 (100%)</td>
+            <td class="al-r num-blue">86.7%</td>
+            <td class="al-r">36.7%</td>
+            <td class="al-l cell-insight" onclick="openMakeupModal(9)">
+              <div class="insight-preview"><span class="insight-short">100%全為新生！跨院率86.7%，適合開短期直播班</span><button class="btn-detail">💬 轉型規劃</button></div>
+              <div class="insight-full-inline"><b>【數據診斷】</b>30 筆補課 100% 全是新生，且 86.7% 跨分校觀看（05/28 站前、08/01 東區、09/20 台中三部）。<br><b>【轉型規劃】</b>IP 角色設計極受文創與貼圖市場歡迎，建議規劃為 12～16 堂「線上直播選修專班」。</div>
+            </td>
+          </tr>
+
+          <tr class="row-group-header">
+            <td colspan="9">🟠 【第二類：強烈建議轉為「線上錄播課（VOD）」或「直播＋錄播雙軌」】軟體操作步驟明確、學員需反覆暫停倒帶、舊生複習佔比高（共 6 大課系）</td>
+          </tr>
+          <tr class="row-vod">
+            <td class="al-c"><span class="badge b-up">直播＋錄播雙軌</span></td>
+            <td class="al-l num-strong">Procreate 數位繪畫 (含實作)</td>
+            <td class="al-r num-strong">137 筆 (113人)</td>
+            <td class="al-c">31 班</td>
+            <td class="al-r num-hi">16人 (均4.4)</td>
+            <td class="al-r">86 筆 (舊生37%)</td>
+            <td class="al-r">62.0%</td>
+            <td class="al-r">32.1%</td>
+            <td class="al-l cell-insight" onclick="openMakeupModal(10)">
+              <div class="insight-preview"><span class="insight-short">舊生回看率高達38.9%(51筆)全校第1！雙軌價值最高</span><button class="btn-detail">💬 轉型規劃</button></div>
+              <div class="insight-full-inline"><b>【數據診斷】</b>總補課 137 筆居全校第 4，且高達 51 筆(38.9%)是舊生反覆回看筆刷與圖層操作（03/14 高雄建國 16 筆、06/14 站二 13 筆）。<br><b>【轉型規劃】</b>採取「24 堂常態線上直播班（互動看圖）＋ 軟體筆刷操作模組轉線上錄播課（VOD）」雙軌發行！</div>
+            </td>
+          </tr>
+          <tr class="row-vod">
+            <td class="al-c"><span class="badge b-vod">轉線上錄播 VOD</span></td>
+            <td class="al-l num-strong">AutoCAD 設計實務班</td>
+            <td class="al-r num-strong">82 筆 (65人)</td>
+            <td class="al-c">15 班</td>
+            <td class="al-r num-hi">25人 (全校第1)</td>
+            <td class="al-r">71 筆 (86.6%)</td>
+            <td class="al-r num-blue">79.3%</td>
+            <td class="al-r">46.3%</td>
+            <td class="al-l cell-insight" onclick="openMakeupModal(11)">
+              <div class="insight-preview"><span class="insight-short">03/15站前單班25人補課居全校冠軍！05/12台中17人</span><button class="btn-detail">💬 轉型規劃</button></div>
+              <div class="insight-full-inline"><b>【數據診斷】</b>「03/15 站前 AutoCAD-楊龍威」單班 25 筆補課奪全校單班第 1 名！「05/12 台中二部-祝睿卿」17 筆補課（跨院 94%）。<br><b>【轉型規劃】</b>CAD 繪圖指令標準明確，學員最需要邊看影片邊暫停畫圖。100% 適合由楊龍威／祝睿卿老師錄製成「旗艦線上錄播課（VOD）」！</div>
+            </td>
+          </tr>
+          <tr class="row-vod">
+            <td class="al-c"><span class="badge b-vod">轉線上錄播 VOD</span></td>
+            <td class="al-l num-strong">SketchUp 3D 室內空間設計</td>
+            <td class="al-r num-strong">59 筆 (44人)</td>
+            <td class="al-c">13 班</td>
+            <td class="al-r">11人 (均4.5)</td>
+            <td class="al-r">40 筆 (舊生32%)</td>
+            <td class="al-r num-hi">83.1%</td>
+            <td class="al-r num-hi">54.2%</td>
+            <td class="al-l cell-insight" onclick="openMakeupModal(12)">
+              <div class="insight-preview"><span class="insight-short">跨縣市遠距高達54.2%！舊生複習佔32.2%，轉錄播首選</span><button class="btn-detail">💬 轉型規劃</button></div>
+              <div class="insight-full-inline"><b>【數據診斷】</b>06/07 台中三部-鄧昌君(11筆)、03/17 站前二部-蕭博宇(11筆，100%跨院)，且逾半數(54.2%)是跨縣市遠距觀看。<br><b>【轉型規劃】</b>與 AutoCAD 同步轉為「標準線上錄播課（VOD）」，搭配龍和乙級錄播形成完整室內設計 VOD 產品線。</div>
+            </td>
+          </tr>
+          <tr class="row-vod">
+            <td class="al-c"><span class="badge b-vod">轉線上錄播 VOD</span></td>
+            <td class="al-l num-strong">After Effects 特效動畫</td>
+            <td class="al-r num-strong">55 筆 (49人)</td>
+            <td class="al-c">13 班</td>
+            <td class="al-r">9人 (均4.2)</td>
+            <td class="al-r">36 筆 (舊生35%)</td>
+            <td class="al-r num-hi">90.9%</td>
+            <td class="al-r">45.5%</td>
+            <td class="al-l cell-insight" onclick="openMakeupModal(13)">
+              <div class="insight-preview"><span class="insight-short">跨分校率90.9%全校最高！34.5%為舊生重看特效參數</span><button class="btn-detail">💬 轉型規劃</button></div>
+              <div class="insight-full-inline"><b>【數據診斷】</b>55 筆補課中有 90.9% 為跨分校觀看、34.5% 為舊生重看，因為 AE 特效參數與時間軸操作極需反覆回放練習。<br><b>【轉型規劃】</b>建議將 AE 核心特效模組製作成「線上錄播課（VOD）」，並維持每半年 1 班石皓瑋老師 20 堂線上直播實戰班。</div>
+            </td>
+          </tr>
+          <tr class="row-vod">
+            <td class="al-c"><span class="badge b-vod">轉線上錄播 VOD</span></td>
+            <td class="al-l num-strong">3D Blender (20筆) ＆ C4D (16筆)</td>
+            <td class="al-r">36 筆 (32人)</td>
+            <td class="al-c">15 班</td>
+            <td class="al-r">7人 (均2.4)</td>
+            <td class="al-r">21 筆 (舊生42%)</td>
+            <td class="al-r num-blue">75.0%</td>
+            <td class="al-r">44.4%</td>
+            <td class="al-l cell-insight" onclick="openMakeupModal(14)">
+              <div class="insight-preview"><span class="insight-short">舊生重看率高達41.7%！線上直播僅30人，最適合轉錄播</span><button class="btn-detail">💬 轉型規劃</button></div>
+              <div class="insight-full-inline"><b>【數據診斷】</b>3D 建模快捷鍵與材質節點複雜，舊生回看比例高達 41.7%，且先前 2026 線上直播 Blender 僅 30 人登記。<br><b>【轉型規劃】</b>不再佔用線上直播開班名額，直接將 C4D 與 Blender 轉為「線上錄播課（VOD）」長尾銷售。</div>
+            </td>
+          </tr>
+          <tr class="row-vod">
+            <td class="al-c"><span class="badge b-vod">轉線上錄播 VOD</span></td>
+            <td class="al-l num-strong">商用網站架設實務</td>
+            <td class="al-r">22 筆 (22人)</td>
+            <td class="al-c">7 班</td>
+            <td class="al-r">6人 (均3.1)</td>
+            <td class="al-r">17 筆 (77.3%)</td>
+            <td class="al-r num-hi">86.4%</td>
+            <td class="al-r num-hi">59.1%</td>
+            <td class="al-l cell-insight" onclick="openMakeupModal(15)">
+              <div class="insight-preview"><span class="insight-short">跨縣市遠距率59.1%全校最高！架站步驟適合轉錄播</span><button class="btn-detail">💬 轉型規劃</button></div>
+              <div class="insight-full-inline"><b>【數據診斷】</b>59.1% 學員來自外縣市（如中壢/台中學員看 01/17 與 10/18 站前/館前班），且線上直播班人數由 81 人降至 50 人。<br><b>【轉型規劃】</b>網站架設與 WordPress 操作步驟固定，建議轉型為「線上錄播課（VOD）」，降低直播排課負擔。</div>
+            </td>
+          </tr>
+
+          <tr class="row-group-header">
+            <td colspan="9">🔵 【第三類：線上直播已成熟運作／維持現有線上直播配置課系】（2D動畫、UI介面、V皮、Live2D、Vtuber 等）</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t2">維持線上直播</span></td>
+            <td class="al-l">2D 動畫設計班</td>
+            <td class="al-r">52 筆 (49人)</td>
+            <td class="al-c">13 班</td>
+            <td class="al-r">11人 (均4.0)</td>
+            <td class="al-r">44 筆 (84.6%)</td>
+            <td class="al-r">65.4%</td>
+            <td class="al-r num-hi">53.8%</td>
+            <td class="al-l">06/28 東區(11筆)、02/24 高雄建國(9筆)跨縣市達53.8%，可整合回線上直播班</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t2">維持線上直播</span></td>
+            <td class="al-l">Vtuber / V皮繪製 / Live2D</td>
+            <td class="al-r">53 筆 (52人)</td>
+            <td class="al-c">14 班</td>
+            <td class="al-r">8人 (均3.8)</td>
+            <td class="al-r">49 筆 (92.5%)</td>
+            <td class="al-r num-blue">81.1%</td>
+            <td class="al-r">49.1%</td>
+            <td class="al-l">線上直播已有黃俊傑老師三部曲（單班229人），將實體零星補課學員直接導流線上即可</td>
+          </tr>
+          <tr>
+            <td class="al-c"><span class="badge b-t2">維持線上直播</span></td>
+            <td class="al-l">UI 視覺介面設計班</td>
+            <td class="al-r">31 筆 (27人)</td>
+            <td class="al-c">8 班</td>
+            <td class="al-r">8人 (均3.9)</td>
+            <td class="al-r">23 筆 (74.2%)</td>
+            <td class="al-r">67.7%</td>
+            <td class="al-r">25.8%</td>
+            <td class="al-l">03/21 東區(8筆)、06/14 板橋(7筆)，維持每半年 1 班沈宇哲老師 20 堂線上直播課</td>
+          </tr>
+
+          <tr class="row-total">
+            <td class="al-c">總計</td>
+            <td class="al-l">全校 22 項課程大類完整歸納</td>
+            <td class="al-r">1,712 筆人次</td>
+            <td class="al-c">398 個實體班</td>
+            <td class="al-r">最高 25 人/班</td>
+            <td class="al-r">1,334 筆 (77.9%)</td>
+            <td class="al-r">平均 76.6%</td>
+            <td class="al-r">平均 42.3%</td>
+            <td class="al-l" style="color:var(--primary);">轉線上直播 10 課系（含新挖出之音樂 119 筆、AI 室內 32 筆）＋ 轉線上錄播 VOD 6 課系</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- TAB 2: TOP 50 INDIVIDUAL DATED PHYSICAL CLASSES (SORTED BY MAKEUP COUNT)  -->
+  <!-- ========================================================================= -->
+  <div id="tab-dated-classes" class="view-panel">
+    <div class="section-bar">
+      <span>依「實體班開課日期＋分校」分類：單一班級補課觀看人數排行榜（Top 50 熱門補課實體班級）</span>
+      <span class="note">從 398 個實體班級中篩選出補課人數最多的前 50 班｜單班超過 10 人純看補課即具備直接轉線上開班規模</span>
+    </div>
+    <div class="table-wrap">
+      <table class="grid-table">
+        <colgroup>
+          <col style="width: 6%;">
+          <col style="width: 10%;">
+          <col style="width: 9%;">
+          <col style="width: 21%;">
+          <col style="width: 11%;">
+          <col style="width: 10%;">
+          <col style="width: 7%;">
+          <col style="width: 8%;">
+          <col style="width: 8%;">
+          <col style="width: 10%;">
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="al-c">排行</th>
+            <th class="al-c">實體開班日期</th>
+            <th class="al-c">開課分校</th>
+            <th class="al-l">登記觀看之實體班課程名稱</th>
+            <th class="al-r">補課筆數(人數)</th>
+            <th class="al-r">新生數(佔比)</th>
+            <th class="al-r">舊生數</th>
+            <th class="al-r">跨分校率</th>
+            <th class="al-r">跨縣市率</th>
+            <th class="al-c">建議轉型方向</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="al-c num-strong">#01</td>
+            <td class="al-c num-strong">2026-03-15</td>
+            <td class="al-c">站前學院</td>
+            <td class="al-l num-strong">AutoCAD 設計實務班</td>
+            <td class="al-r num-hi">27 筆 (22人)</td>
+            <td class="al-r">23 人 (85.2%)</td>
+            <td class="al-r">4 人</td>
+            <td class="al-r num-blue">92.6%</td>
+            <td class="al-r">51.9%</td>
+            <td class="al-c"><span class="badge b-vod">轉線上錄播 VOD</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#02</td>
+            <td class="al-c num-strong">2026-08-10</td>
+            <td class="al-c">東區二部</td>
+            <td class="al-l num-strong">數位漫畫班</td>
+            <td class="al-r num-hi">22 筆 (22人)</td>
+            <td class="al-r">16 人 (72.7%)</td>
+            <td class="al-r">6 人</td>
+            <td class="al-r num-blue">86.4%</td>
+            <td class="al-r">54.5%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#03</td>
+            <td class="al-c num-strong">2026-03-28</td>
+            <td class="al-c">中壢學院</td>
+            <td class="al-l num-strong">商用視覺平面設計</td>
+            <td class="al-r num-hi">21 筆 (18人)</td>
+            <td class="al-r">18 人 (85.7%)</td>
+            <td class="al-r">3 人</td>
+            <td class="al-r num-blue">85.7%</td>
+            <td class="al-r">19.0%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#04</td>
+            <td class="al-c num-strong">2026-03-14</td>
+            <td class="al-c">東區二部</td>
+            <td class="al-l num-strong">數位漫畫班</td>
+            <td class="al-r num-hi">20 筆 (19人)</td>
+            <td class="al-r">16 人 (80.0%)</td>
+            <td class="al-r">4 人</td>
+            <td class="al-r num-blue">35.0%</td>
+            <td class="al-r">10.0%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#05</td>
+            <td class="al-c num-strong">2026-05-18</td>
+            <td class="al-c">台中學院</td>
+            <td class="al-l num-strong">數位漫畫班</td>
+            <td class="al-r num-hi">19 筆 (18人)</td>
+            <td class="al-r">17 人 (89.5%)</td>
+            <td class="al-r">2 人</td>
+            <td class="al-r num-blue">94.7%</td>
+            <td class="al-r">52.6%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#06</td>
+            <td class="al-c num-strong">2026-04-26</td>
+            <td class="al-c">台中二部</td>
+            <td class="al-l num-strong">遊戲角色美術班(雙軌)</td>
+            <td class="al-r num-hi">19 筆 (16人)</td>
+            <td class="al-r">14 人 (73.7%)</td>
+            <td class="al-r">5 人</td>
+            <td class="al-r num-blue">89.5%</td>
+            <td class="al-r">47.4%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#07</td>
+            <td class="al-c num-strong">2026-09-14</td>
+            <td class="al-c">台中二部</td>
+            <td class="al-l num-strong">數位繪畫班</td>
+            <td class="al-r num-hi">18 筆 (18人)</td>
+            <td class="al-r">14 人 (77.8%)</td>
+            <td class="al-r">4 人</td>
+            <td class="al-r num-blue">55.6%</td>
+            <td class="al-r">38.9%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#08</td>
+            <td class="al-c num-strong">2026-05-03</td>
+            <td class="al-c">台中二部</td>
+            <td class="al-l num-strong">Unity App 遊戲設計班(雙軌)</td>
+            <td class="al-r num-hi">18 筆 (16人)</td>
+            <td class="al-r">17 人 (94.4%)</td>
+            <td class="al-r">1 人</td>
+            <td class="al-r num-blue">83.3%</td>
+            <td class="al-r">61.1%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#09</td>
+            <td class="al-c num-strong">2026-05-10</td>
+            <td class="al-c">中壢二部</td>
+            <td class="al-l num-strong">數位繪畫班</td>
+            <td class="al-r num-hi">18 筆 (16人)</td>
+            <td class="al-r">16 人 (88.9%)</td>
+            <td class="al-r">2 人</td>
+            <td class="al-r num-blue">77.8%</td>
+            <td class="al-r">44.4%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#10</td>
+            <td class="al-c num-strong">2026-02-10</td>
+            <td class="al-c">館前學院</td>
+            <td class="al-l num-strong">數位漫畫班</td>
+            <td class="al-r num-hi">18 筆 (15人)</td>
+            <td class="al-r">16 人 (88.9%)</td>
+            <td class="al-r">2 人</td>
+            <td class="al-r num-blue">88.9%</td>
+            <td class="al-r">44.4%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#11</td>
+            <td class="al-c num-strong">2026-06-27</td>
+            <td class="al-c">館前學院</td>
+            <td class="al-l num-strong">數位漫畫班</td>
+            <td class="al-r num-hi">18 筆 (14人)</td>
+            <td class="al-r">12 人 (66.7%)</td>
+            <td class="al-r">6 人</td>
+            <td class="al-r num-blue">88.9%</td>
+            <td class="al-r">33.3%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#12</td>
+            <td class="al-c num-strong">2026-07-18</td>
+            <td class="al-c">中壢二部</td>
+            <td class="al-l num-strong">商用視覺平面設計</td>
+            <td class="al-r num-hi">17 筆 (17人)</td>
+            <td class="al-r">13 人 (76.5%)</td>
+            <td class="al-r">4 人</td>
+            <td class="al-r num-blue">70.6%</td>
+            <td class="al-r">58.8%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#13</td>
+            <td class="al-c num-strong">2026-03-03</td>
+            <td class="al-c">東區二部</td>
+            <td class="al-l num-strong">Unity App 遊戲設計班(雙軌)</td>
+            <td class="al-r num-hi">17 筆 (16人)</td>
+            <td class="al-r">15 人 (88.2%)</td>
+            <td class="al-r">2 人</td>
+            <td class="al-r num-blue">64.7%</td>
+            <td class="al-r">41.2%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#14</td>
+            <td class="al-c num-strong">2026-03-07</td>
+            <td class="al-c">站前學院</td>
+            <td class="al-l num-strong">數位漫畫班</td>
+            <td class="al-r num-hi">17 筆 (15人)</td>
+            <td class="al-r">17 人 (100.0%)</td>
+            <td class="al-r">0 人</td>
+            <td class="al-r num-blue">82.4%</td>
+            <td class="al-r">29.4%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#15</td>
+            <td class="al-c num-strong">2026-05-12</td>
+            <td class="al-c">台中二部</td>
+            <td class="al-l num-strong">AutoCAD 設計實務班</td>
+            <td class="al-r num-hi">17 筆 (12人)</td>
+            <td class="al-r">16 人 (94.1%)</td>
+            <td class="al-r">1 人</td>
+            <td class="al-r num-blue">94.1%</td>
+            <td class="al-r">82.4%</td>
+            <td class="al-c"><span class="badge b-vod">轉線上錄播 VOD</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#16</td>
+            <td class="al-c num-strong">2026-06-27</td>
+            <td class="al-c">站前二部</td>
+            <td class="al-l num-strong">AI 室內設計系統實戰班</td>
+            <td class="al-r num-blue">16 筆 (12人)</td>
+            <td class="al-r">16 人 (100.0%)</td>
+            <td class="al-r">0 人</td>
+            <td class="al-r num-blue">68.8%</td>
+            <td class="al-r">25.0%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#17</td>
+            <td class="al-c num-strong">2026-03-28</td>
+            <td class="al-c">高雄建國</td>
+            <td class="al-l num-strong">數位漫畫班</td>
+            <td class="al-r num-blue">16 筆 (11人)</td>
+            <td class="al-r">11 人 (68.8%)</td>
+            <td class="al-r">5 人</td>
+            <td class="al-r num-blue">50.0%</td>
+            <td class="al-r">50.0%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#18</td>
+            <td class="al-c num-strong">2026-03-14</td>
+            <td class="al-c">高雄建國</td>
+            <td class="al-l num-strong">Procreate 數位繪畫</td>
+            <td class="al-r num-blue">16 筆 (9人)</td>
+            <td class="al-r">7 人 (43.8%)</td>
+            <td class="al-r">9 人</td>
+            <td class="al-r num-blue">18.8%</td>
+            <td class="al-r">12.5%</td>
+            <td class="al-c"><span class="badge b-up">直播＋錄播雙軌</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#19</td>
+            <td class="al-c num-strong">2026-04-19</td>
+            <td class="al-c">高雄建國</td>
+            <td class="al-l num-strong">數位繪畫班</td>
+            <td class="al-r num-blue">14 筆 (14人)</td>
+            <td class="al-r">11 人 (78.6%)</td>
+            <td class="al-r">3 人</td>
+            <td class="al-r num-blue">21.4%</td>
+            <td class="al-r">21.4%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#20</td>
+            <td class="al-c num-strong">2026-02-09</td>
+            <td class="al-c">板橋學院</td>
+            <td class="al-l num-strong">數位繪畫班</td>
+            <td class="al-r num-blue">14 筆 (13人)</td>
+            <td class="al-r">10 人 (71.4%)</td>
+            <td class="al-r">4 人</td>
+            <td class="al-r num-blue">78.6%</td>
+            <td class="al-r">42.9%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#21</td>
+            <td class="al-c num-strong">2026-05-31</td>
+            <td class="al-c">站二學院</td>
+            <td class="al-l num-strong">數位繪畫班</td>
+            <td class="al-r num-blue">14 筆 (13人)</td>
+            <td class="al-r">12 人 (85.7%)</td>
+            <td class="al-r">2 人</td>
+            <td class="al-r num-blue">100.0%</td>
+            <td class="al-r">64.3%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#22</td>
+            <td class="al-c num-strong">2026-06-13</td>
+            <td class="al-c">中壢二部</td>
+            <td class="al-l num-strong">數位漫畫班</td>
+            <td class="al-r num-blue">14 筆 (13人)</td>
+            <td class="al-r">11 人 (78.6%)</td>
+            <td class="al-r">3 人</td>
+            <td class="al-r num-blue">92.9%</td>
+            <td class="al-r">64.3%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#23</td>
+            <td class="al-c num-strong">2026-01-31</td>
+            <td class="al-c">中壢二部</td>
+            <td class="al-l num-strong">數位漫畫班</td>
+            <td class="al-r num-blue">14 筆 (11人)</td>
+            <td class="al-r">6 人 (42.9%)</td>
+            <td class="al-r">8 人</td>
+            <td class="al-r num-blue">50.0%</td>
+            <td class="al-r">35.7%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#24</td>
+            <td class="al-c num-strong">2026-02-07</td>
+            <td class="al-c">站前二部</td>
+            <td class="al-l num-strong">數位繪畫班</td>
+            <td class="al-r num-blue">13 筆 (12人)</td>
+            <td class="al-r">10 人 (76.9%)</td>
+            <td class="al-r">3 人</td>
+            <td class="al-r num-blue">100.0%</td>
+            <td class="al-r">69.2%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#25</td>
+            <td class="al-c num-strong">2026-01-11</td>
+            <td class="al-c">台中二部</td>
+            <td class="al-l num-strong">數位繪畫班</td>
+            <td class="al-r num-blue">13 筆 (11人)</td>
+            <td class="al-r">11 人 (84.6%)</td>
+            <td class="al-r">2 人</td>
+            <td class="al-r num-blue">53.8%</td>
+            <td class="al-r">0.0%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#26</td>
+            <td class="al-c num-strong">2026-03-02</td>
+            <td class="al-c">中壢學院</td>
+            <td class="al-l num-strong">數位繪畫班</td>
+            <td class="al-r num-blue">13 筆 (11人)</td>
+            <td class="al-r">11 人 (84.6%)</td>
+            <td class="al-r">2 人</td>
+            <td class="al-r num-blue">92.3%</td>
+            <td class="al-r">61.5%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#27</td>
+            <td class="al-c num-strong">2026-06-14</td>
+            <td class="al-c">站二學院</td>
+            <td class="al-l num-strong">Procreate 數位繪畫</td>
+            <td class="al-r num-blue">13 筆 (10人)</td>
+            <td class="al-r">6 人 (46.2%)</td>
+            <td class="al-r">7 人</td>
+            <td class="al-r num-blue">92.3%</td>
+            <td class="al-r">38.5%</td>
+            <td class="al-c"><span class="badge b-up">直播＋錄播雙軌</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#28</td>
+            <td class="al-c num-strong">2026-03-22</td>
+            <td class="al-c">館前學院</td>
+            <td class="al-l num-strong">遊戲角色美術班(雙軌)</td>
+            <td class="al-r num-blue">13 筆 (9人)</td>
+            <td class="al-r">13 人 (100.0%)</td>
+            <td class="al-r">0 人</td>
+            <td class="al-r num-blue">38.5%</td>
+            <td class="al-r">15.4%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#29</td>
+            <td class="al-c num-strong">2026-06-27</td>
+            <td class="al-c">中壢三部</td>
+            <td class="al-l num-strong">日本動畫職人養成班</td>
+            <td class="al-r num-blue">13 筆 (9人)</td>
+            <td class="al-r">13 人 (100.0%)</td>
+            <td class="al-r">0 人</td>
+            <td class="al-r num-blue">100.0%</td>
+            <td class="al-r">92.3%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#30</td>
+            <td class="al-c num-strong">2026-02-24</td>
+            <td class="al-c">東區二部</td>
+            <td class="al-l num-strong">遊戲角色美術班(雙軌)</td>
+            <td class="al-r num-blue">12 筆 (12人)</td>
+            <td class="al-r">11 人 (91.7%)</td>
+            <td class="al-r">1 人</td>
+            <td class="al-r num-blue">58.3%</td>
+            <td class="al-r">50.0%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#31</td>
+            <td class="al-c num-strong">2026-06-23</td>
+            <td class="al-c">中壢二部</td>
+            <td class="al-l num-strong">商用視覺平面設計</td>
+            <td class="al-r ">12 筆 (12人)</td>
+            <td class="al-r">6 人 (50.0%)</td>
+            <td class="al-r">6 人</td>
+            <td class="al-r num-blue">75.0%</td>
+            <td class="al-r">16.7%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#32</td>
+            <td class="al-c num-strong">2026-04-27</td>
+            <td class="al-c">板橋學院</td>
+            <td class="al-l num-strong">音樂製作人班</td>
+            <td class="al-r ">12 筆 (10人)</td>
+            <td class="al-r">10 人 (83.3%)</td>
+            <td class="al-r">2 人</td>
+            <td class="al-r num-blue">91.7%</td>
+            <td class="al-r">58.3%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#33</td>
+            <td class="al-c num-strong">2026-06-14</td>
+            <td class="al-c">台中三部</td>
+            <td class="al-l num-strong">日本動畫職人 - 人物角色</td>
+            <td class="al-r ">12 筆 (9人)</td>
+            <td class="al-r">11 人 (91.7%)</td>
+            <td class="al-r">1 人</td>
+            <td class="al-r num-blue">91.7%</td>
+            <td class="al-r">41.7%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#34</td>
+            <td class="al-c num-strong">2026-06-07</td>
+            <td class="al-c">台中三部</td>
+            <td class="al-l num-strong">SketchUp 3D 室內空間設計</td>
+            <td class="al-r ">11 筆 (11人)</td>
+            <td class="al-r">7 人 (63.6%)</td>
+            <td class="al-r">4 人</td>
+            <td class="al-r num-blue">81.8%</td>
+            <td class="al-r">63.6%</td>
+            <td class="al-c"><span class="badge b-vod">轉線上錄播 VOD</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#35</td>
+            <td class="al-c num-strong">2026-06-28</td>
+            <td class="al-c">東區二部</td>
+            <td class="al-l num-strong">2D 動畫設計班</td>
+            <td class="al-r ">11 筆 (11人)</td>
+            <td class="al-r">10 人 (90.9%)</td>
+            <td class="al-r">1 人</td>
+            <td class="al-r num-blue">72.7%</td>
+            <td class="al-r">72.7%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#36</td>
+            <td class="al-c num-strong">2026-07-25</td>
+            <td class="al-c">台中二部</td>
+            <td class="al-l num-strong">AI 品牌系統創建</td>
+            <td class="al-r ">11 筆 (11人)</td>
+            <td class="al-r">11 人 (100.0%)</td>
+            <td class="al-r">0 人</td>
+            <td class="al-r num-blue">90.9%</td>
+            <td class="al-r">54.5%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#37</td>
+            <td class="al-c num-strong">2026-07-26</td>
+            <td class="al-c">台中二部</td>
+            <td class="al-l num-strong">商用視覺平面設計</td>
+            <td class="al-r ">11 筆 (11人)</td>
+            <td class="al-r">10 人 (90.9%)</td>
+            <td class="al-r">1 人</td>
+            <td class="al-r num-blue">63.6%</td>
+            <td class="al-r">36.4%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#38</td>
+            <td class="al-c num-strong">2026-08-24</td>
+            <td class="al-c">中壢三部</td>
+            <td class="al-l num-strong">Procreate 數位繪畫</td>
+            <td class="al-r ">11 筆 (11人)</td>
+            <td class="al-r">7 人 (63.6%)</td>
+            <td class="al-r">4 人</td>
+            <td class="al-r num-blue">81.8%</td>
+            <td class="al-r">27.3%</td>
+            <td class="al-c"><span class="badge b-up">直播＋錄播雙軌</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#39</td>
+            <td class="al-c num-strong">2026-03-17</td>
+            <td class="al-c">東區二部</td>
+            <td class="al-l num-strong">數位繪畫班</td>
+            <td class="al-r ">11 筆 (10人)</td>
+            <td class="al-r">10 人 (90.9%)</td>
+            <td class="al-r">1 人</td>
+            <td class="al-r num-blue">90.9%</td>
+            <td class="al-r">18.2%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#40</td>
+            <td class="al-c num-strong">2026-03-31</td>
+            <td class="al-c">東區二部</td>
+            <td class="al-l num-strong">Unity App 遊戲設計班(雙軌)</td>
+            <td class="al-r ">11 筆 (10人)</td>
+            <td class="al-r">8 人 (72.7%)</td>
+            <td class="al-r">3 人</td>
+            <td class="al-r num-blue">81.8%</td>
+            <td class="al-r">27.3%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#41</td>
+            <td class="al-c num-strong">2026-04-14</td>
+            <td class="al-c">中壢二部</td>
+            <td class="al-l num-strong">數位漫畫班</td>
+            <td class="al-r ">11 筆 (10人)</td>
+            <td class="al-r">10 人 (90.9%)</td>
+            <td class="al-r">1 人</td>
+            <td class="al-r num-blue">90.9%</td>
+            <td class="al-r">36.4%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#42</td>
+            <td class="al-c num-strong">2026-04-14</td>
+            <td class="al-c">台中學院</td>
+            <td class="al-l num-strong">數位繪畫班</td>
+            <td class="al-r ">11 筆 (10人)</td>
+            <td class="al-r">7 人 (63.6%)</td>
+            <td class="al-r">4 人</td>
+            <td class="al-r num-blue">81.8%</td>
+            <td class="al-r">0.0%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#43</td>
+            <td class="al-c num-strong">2026-03-14</td>
+            <td class="al-c">台中二部</td>
+            <td class="al-l num-strong">Procreate 數位繪畫</td>
+            <td class="al-r ">11 筆 (9人)</td>
+            <td class="al-r">7 人 (63.6%)</td>
+            <td class="al-r">4 人</td>
+            <td class="al-r num-blue">36.4%</td>
+            <td class="al-r">9.1%</td>
+            <td class="al-c"><span class="badge b-up">直播＋錄播雙軌</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#44</td>
+            <td class="al-c num-strong">2026-03-17</td>
+            <td class="al-c">站前二部</td>
+            <td class="al-l num-strong">SketchUp 3D 室內空間設計</td>
+            <td class="al-r ">11 筆 (8人)</td>
+            <td class="al-r">9 人 (81.8%)</td>
+            <td class="al-r">2 人</td>
+            <td class="al-r num-blue">100.0%</td>
+            <td class="al-r">45.5%</td>
+            <td class="al-c"><span class="badge b-vod">轉線上錄播 VOD</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#45</td>
+            <td class="al-c num-strong">2026-06-07</td>
+            <td class="al-c">站前學院</td>
+            <td class="al-l num-strong">商用視覺平面設計</td>
+            <td class="al-r ">11 筆 (8人)</td>
+            <td class="al-r">10 人 (90.9%)</td>
+            <td class="al-r">1 人</td>
+            <td class="al-r num-blue">100.0%</td>
+            <td class="al-r">45.5%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#46</td>
+            <td class="al-c num-strong">2026-03-31</td>
+            <td class="al-c">站前學院</td>
+            <td class="al-l num-strong">數位繪畫班</td>
+            <td class="al-r ">10 筆 (10人)</td>
+            <td class="al-r">8 人 (80.0%)</td>
+            <td class="al-r">2 人</td>
+            <td class="al-r num-blue">90.0%</td>
+            <td class="al-r">40.0%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#47</td>
+            <td class="al-c num-strong">2026-06-27</td>
+            <td class="al-c">站前學院</td>
+            <td class="al-l num-strong">數位繪畫班</td>
+            <td class="al-r ">10 筆 (8人)</td>
+            <td class="al-r">10 人 (100.0%)</td>
+            <td class="al-r">0 人</td>
+            <td class="al-r num-blue">80.0%</td>
+            <td class="al-r">50.0%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#48</td>
+            <td class="al-c num-strong">2026-01-17</td>
+            <td class="al-c">站前學院</td>
+            <td class="al-l num-strong">商用網站架設實務</td>
+            <td class="al-r ">9 筆 (9人)</td>
+            <td class="al-r">7 人 (77.8%)</td>
+            <td class="al-r">2 人</td>
+            <td class="al-r num-blue">100.0%</td>
+            <td class="al-r">77.8%</td>
+            <td class="al-c"><span class="badge b-vod">轉線上錄播 VOD</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#49</td>
+            <td class="al-c num-strong">2026-02-09</td>
+            <td class="al-c">高雄建國</td>
+            <td class="al-l num-strong">商用視覺平面設計</td>
+            <td class="al-r ">9 筆 (9人)</td>
+            <td class="al-r">6 人 (66.7%)</td>
+            <td class="al-r">3 人</td>
+            <td class="al-r num-blue">88.9%</td>
+            <td class="al-r">88.9%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">#50</td>
+            <td class="al-c num-strong">2026-02-24</td>
+            <td class="al-c">高雄建國</td>
+            <td class="al-l num-strong">2D 動畫設計班</td>
+            <td class="al-r ">9 筆 (9人)</td>
+            <td class="al-r">5 人 (55.6%)</td>
+            <td class="al-r">4 人</td>
+            <td class="al-r num-blue">55.6%</td>
+            <td class="al-r">55.6%</td>
+            <td class="al-c"><span class="badge b-t1">轉線上直播課</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- TAB 3: 12 BRANCH OUTFLOW VS INFLOW ANALYSIS                               -->
+  <!-- ========================================================================= -->
+  <div id="tab-branch-flow" class="view-panel">
+    <div class="section-bar">
+      <span>全校 12 大分校「學員隸屬分校（流出）」vs「登記觀看開課分校（流入）」交叉診斷表</span>
+      <span class="note">佐證：中壢區（598筆）與台中區（372筆）學員大量跨分校/跨縣市借殼看台北與外區實體班補課</span>
+    </div>
+    <div class="table-wrap">
+      <table class="grid-table">
+        <colgroup>
+          <col style="width: 10%;">
+          <col style="width: 12%;">
+          <col style="width: 12%;">
+          <col style="width: 16%;">
+          <col style="width: 10%;">
+          <col style="width: 10%;">
+          <col style="width: 30%;">
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="al-c">分校名稱</th>
+            <th class="al-r">該院學員補課數 (流出)</th>
+            <th class="al-r">被登記觀看數 (流入)</th>
+            <th class="al-r">淨流入 ／ 外溢差額</th>
+            <th class="al-r">跨分校觀看率</th>
+            <th class="al-r">跨縣市觀看率</th>
+            <th class="al-l">該分校學員最常使用補課系統觀看之前三大課程</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="al-c num-strong">中壢二部</td>
+            <td class="al-r num-strong">242 筆</td>
+            <td class="al-r">123 筆</td>
+            <td class="al-r"><span class="num-low">-119 筆 (外溢跨區看課)</span></td>
+            <td class="al-r num-blue">84.3%</td>
+            <td class="al-r">59.9%</td>
+            <td class="al-l">商用視覺平面設計(48筆), 數位繪畫班(33筆), 數位漫畫班(29筆)</td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">中壢學院</td>
+            <td class="al-r num-strong">202 筆</td>
+            <td class="al-r">122 筆</td>
+            <td class="al-r"><span class="num-low">-80 筆 (外溢跨區看課)</span></td>
+            <td class="al-r num-blue">85.1%</td>
+            <td class="al-r">66.8%</td>
+            <td class="al-l">商用視覺平面設計(26筆), 數位漫畫班(18筆), 數位繪畫班(17筆)</td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">台中二部</td>
+            <td class="al-r num-strong">174 筆</td>
+            <td class="al-r">186 筆</td>
+            <td class="al-r"><span class="num-hi">+12 筆 (課程吸納中心)</span></td>
+            <td class="al-r num-blue">67.8%</td>
+            <td class="al-r">39.1%</td>
+            <td class="al-l">數位繪畫班(34筆), 商用視覺平面設計(22筆), Procreate 數位繪畫(18筆)</td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">東區二部</td>
+            <td class="al-r num-strong">166 筆</td>
+            <td class="al-r">211 筆</td>
+            <td class="al-r"><span class="num-hi">+45 筆 (課程吸納中心)</span></td>
+            <td class="al-r num-blue">63.3%</td>
+            <td class="al-r">31.3%</td>
+            <td class="al-l">數位漫畫班(30筆), Unity App 遊戲設計班(雙軌)(17筆), 商用視覺平面設計(16筆)</td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">中壢三部</td>
+            <td class="al-r num-strong">154 筆</td>
+            <td class="al-r">75 筆</td>
+            <td class="al-r"><span class="num-low">-79 筆 (外溢跨區看課)</span></td>
+            <td class="al-r num-blue">90.3%</td>
+            <td class="al-r">61.0%</td>
+            <td class="al-l">商用視覺平面設計(21筆), 數位繪畫班(20筆), 數位漫畫班(18筆)</td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">站前二部</td>
+            <td class="al-r num-strong">120 筆</td>
+            <td class="al-r">120 筆</td>
+            <td class="al-r"><span class="num-low">0 筆 (外溢跨區看課)</span></td>
+            <td class="al-r num-blue">85.0%</td>
+            <td class="al-r">15.0%</td>
+            <td class="al-l">數位漫畫班(22筆), 商用視覺平面設計(13筆), AutoCAD 設計實務班(12筆)</td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">館前學院</td>
+            <td class="al-r num-strong">115 筆</td>
+            <td class="al-r">121 筆</td>
+            <td class="al-r"><span class="num-hi">+6 筆 (課程吸納中心)</span></td>
+            <td class="al-r num-blue">80.9%</td>
+            <td class="al-r">32.2%</td>
+            <td class="al-l">數位漫畫班(20筆), 數位繪畫班(20筆), 遊戲角色美術班(雙軌)(11筆)</td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">台中三部</td>
+            <td class="al-r num-strong">105 筆</td>
+            <td class="al-r">113 筆</td>
+            <td class="al-r"><span class="num-hi">+8 筆 (課程吸納中心)</span></td>
+            <td class="al-r num-blue">82.9%</td>
+            <td class="al-r">35.2%</td>
+            <td class="al-l">數位繪畫班(20筆), 數位漫畫班(12筆), 遊戲角色美術班(雙軌)(7筆)</td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">高雄建國</td>
+            <td class="al-r num-strong">95 筆</td>
+            <td class="al-r">124 筆</td>
+            <td class="al-r"><span class="num-hi">+29 筆 (課程吸納中心)</span></td>
+            <td class="al-r num-blue">38.9%</td>
+            <td class="al-r">38.9%</td>
+            <td class="al-l">數位繪畫班(20筆), Procreate 數位繪畫(20筆), 數位漫畫班(17筆)</td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">台中學院</td>
+            <td class="al-r num-strong">93 筆</td>
+            <td class="al-r">105 筆</td>
+            <td class="al-r"><span class="num-hi">+12 筆 (課程吸納中心)</span></td>
+            <td class="al-r num-blue">68.8%</td>
+            <td class="al-r">33.3%</td>
+            <td class="al-l">Procreate 數位繪畫(18筆), 數位繪畫班(14筆), 商用視覺平面設計(9筆)</td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">站二學院</td>
+            <td class="al-r num-strong">86 筆</td>
+            <td class="al-r">119 筆</td>
+            <td class="al-r"><span class="num-hi">+33 筆 (課程吸納中心)</span></td>
+            <td class="al-r num-blue">82.6%</td>
+            <td class="al-r">26.7%</td>
+            <td class="al-l">商用視覺平面設計(20筆), 數位繪畫班(12筆), Procreate 數位繪畫(12筆)</td>
+          </tr>
+          <tr>
+            <td class="al-c num-strong">板橋學院</td>
+            <td class="al-r num-strong">77 筆</td>
+            <td class="al-r">98 筆</td>
+            <td class="al-r"><span class="num-hi">+21 筆 (課程吸納中心)</span></td>
+            <td class="al-r num-blue">75.3%</td>
+            <td class="al-r">24.7%</td>
+            <td class="al-l">數位漫畫班(15筆), 音樂製作人班(11筆), 數位繪畫班(9筆)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal Dialog -->
+<div class="modal-overlay" id="makeupModal" onclick="if(event.target===this) closeMakeupModal()">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div class="modal-title-wrap">
+        <div id="mmBadge"></div>
+        <h3 id="mmTitle">課程名稱</h3>
+        <div class="modal-meta" id="mmMeta">統計指標</div>
+      </div>
+      <button class="modal-close" onclick="closeMakeupModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-compare-grid">
+        <div class="modal-stat-box">
+          <div class="yr-label">📊 補課觀看規模與單班密度</div>
+          <div class="yr-val" id="mmStat1">-</div>
+          <div class="yr-sub" id="mmSub1">-</div>
+        </div>
+        <div class="modal-stat-box">
+          <div class="yr-label">🌍 跨分校／跨縣市與新舊生結構</div>
+          <div class="yr-val" id="mmStat2">-</div>
+          <div class="yr-sub" id="mmSub2">-</div>
+        </div>
+      </div>
+      <div class="modal-section">
+        <h4>🔍 依開班日期分類之代表性熱門實體班 ＆ 數據診斷</h4>
+        <p id="mmDiag">-</p>
+      </div>
+      <div class="modal-section plan-sec">
+        <h4>🎯 建議轉「線上直播課」或「線上錄播課（VOD）」具體執行方案</h4>
+        <p id="mmPlan">-</p>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <div style="display:flex;gap:8px;">
+        <button class="btn-action secondary" onclick="stepMakeupModal(-1)">◀ 上一項課程</button>
+        <button class="btn-action secondary" onclick="stepMakeupModal(1)">下一項課程 ▶</button>
+      </div>
+      <button class="btn-action" onclick="closeMakeupModal()">關閉視窗</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const MAKEUP_MODAL_DATA = [
+    {
+      badge: '<span class="badge b-t1">轉線上直播課</span>',
+      title: '數位漫畫班（含漫畫進階班）',
+      meta: '總補課：237 筆（200 位不重複學員）｜涉及 30 個實體班次',
+      stat1: '單班最高 22 人補課｜班均 8.9 人（全校第 1）',
+      sub1: '熱門班：08/10東區(22人)、03/14東區(20人)、05/18台中(19人)、02/10館前(18人)',
+      stat2: '跨分校率 78.5%｜跨縣市 43.5%｜新生 77.2%',
+      sub2: '183 筆為新生直接掛名實體班看補課，並非臨時請假！',
+      diag: '全校單班補課密度最高（平均每開一班實體課就有 8.9 人純看補課）！尤其在 2026 年 1～10 月線上漫畫直播課空窗期間，大量中壢、台中、台北學員跨區湧入「東區二部(03/14、08/10)」、「館前(02/10、06/27)」、「台中許眙綸(05/18)」與「高雄許瑞峰(03/28)」看補課影片。',
+      plan: '【轉線上直播課（每季固定開 1～2 班）】漫畫分鏡與骨架極需老師看圖批改，只看補課帶容易半途而廢。強烈建議除線上夏宜嵐/羅品傑老師外，直接將實體高人氣名師（台中許眙綸、高雄許瑞峰、板橋谷春森）拉上線開授「20 堂線上直播專班」，立即吸收這 200+ 名隱性線上學員！'
+    },
+    {
+      badge: '<span class="badge b-t1">轉線上直播課</span>',
+      title: '數位繪畫班',
+      meta: '總補課：231 筆（196 位不重複學員）｜涉及 39 個實體班次',
+      stat1: '單班最高 18 人補課｜班均 5.9 人',
+      sub1: '熱門班：05/10中壢二(18人)、09/14台中二(18人)、05/31站二(14人)、02/09板橋(14人)',
+      stat2: '跨分校率 74.5%｜跨縣市 39.8%｜新生 77.5%',
+      sub2: '05/31 站二學院(14人)與 02/07 站前二部(13人)跨院率高達 100%！',
+      diag: '補課筆數高達 231 筆與數位漫畫並列全校第 1！其中「2026/05/10 中壢二部」與「2026/09/14 台中二部」單班各有 18 人純看補課；「2026/05/31 站二學院」14 位補課生 100% 來自外分校（64.3% 跨縣市）。',
+      plan: '【轉線上直播課（每 2 個月固定開 1 班）】無需在各分校密集開週末小班讓外區學生看補課，建議每兩個月固定開立 1 班全校統一的「數位繪畫線上直播班（20堂）」，將跨院看帶的 196 名學員直接轉為高完課率直播生。'
+    },
+    {
+      badge: '<span class="badge b-t1">轉線上直播課</span>',
+      title: '商用視覺平面設計（含 AI 商用視覺平面設計）',
+      meta: '總補課：228 筆（199 位不重複學員）｜涉及 61 個實體班次',
+      stat1: '單班最高 21 人補課｜AI 平面於 Q3 急增 27 筆',
+      sub1: '熱門班：03/28中壢(21人)、07/18中壢二(17人)、06/23中壢二(12人)、06/07站前(11人)',
+      stat2: '跨分校率 75.9%｜跨縣市 37.3%｜新生 70.6%',
+      sub2: '中壢區學員佔極高比例，且 8～9 月新登記全數轉向「AI 商用視覺平面」',
+      diag: '「2026/03/28 中壢學院」單班高達 21 人看補課、「2026/07/18 中壢二部」單班 17 人看補課（跨縣市 58.8%）。更關鍵的是，自 2026 年 8～9 月起，學員登記的班級名稱大量轉為「AI 商用視覺平面設計（08/17 東區、08/24 中壢、09/12 站前二、09/19 台中二）」。',
+      plan: '【轉線上直播課（每季必開 1～2 班）】全面以「AI 商用視覺平面設計」作為線上直播主力，直接承接桃園中壢與台中地區因時段不合而外溢看補課的每年 200+ 名剛性需求學員。'
+    },
+    {
+      badge: '<span class="badge b-t1">★ 新開線上直播</span>',
+      title: '音樂製作人班 ／ 全 AI 音樂創作 ／ 詞曲創作（★ 全新挖出藍海）',
+      meta: '總補課：119 筆（99 位不重複學員）｜涉及 32 個實體班次',
+      stat1: '單班最高 12 人補課｜原本線上直播開班數：0 班！',
+      sub1: '熱門班：04/27板橋音樂(12人)、08/16台中三全AI音樂(10人)、08/15台中三詞曲/音樂(11人)',
+      stat2: '跨分校率高達 88.2%｜跨縣市高達 50.4%｜新生 80.7%',
+      sub2: '全 AI 音樂創作（27筆）新生佔比高達 92.6%！',
+      diag: '這是整份 84 頁補課報告最具價值的發現！在先前 DATE 線上直播課表中，音樂類課程是「0 班」；但在實體補課系統裡，卻有高達 119 筆（99人）跨分校（88.2%）、甚至一半以上跨縣市（50.4%，如台北/中壢/高雄學生去報台中三部或板橋學院）純看補課影片學音樂製作與全 AI 音樂創作！',
+      plan: '【★ 強烈建議新開「全 AI 音樂創作 ／ 數位音樂製作線上直播班」】因為編曲軟體（DAW）與 AI 生成音樂透過螢幕分享教學的效果極佳（比實體教室看投影幕更清楚！），直接開立線上直播班即可瞬間收割全校每年破百人的跨區音樂課買氣！'
+    },
+    {
+      badge: '<span class="badge b-t1">轉線上直播課</span>',
+      title: 'Unity App 遊戲設計班 (雙軌)',
+      meta: '總補課：90 筆（76 位不重複學員）｜涉及 15 個實體班次',
+      stat1: '單班最高 18 人補課｜班均 6.0 人（高密度）',
+      sub1: '熱門班：05/03台中二(18人)、03/03東區二(17人)、03/31東區二(11人)、03/29館前(8人)',
+      stat2: '跨分校率 78.9%｜跨縣市高達 50.0%｜新生 86.7%',
+      sub2: '剛好一半（50.0%）的學員是跨縣市遠距觀看！',
+      diag: '「05/03 台中二部（18人，跨縣市 61.1%）」與「03/03 東區二部（17人）」單班都有近 20 人在看補課影片，且 86.7% 為新生。這證明各分校開立所謂「雙軌班」，實際上近半數學生根本都在外縣市當成純線上課在看。',
+      plan: '【全面整合為「AI 遊戲設計線上直播專班」】與先前 2026 線上直播「AI 遊戲設計班（葉繁晟，單班 160 人）」完美呼應！將各分校雙軌班遠距學員統一集中至線上直播班，教學品質與完課率遠高於看實體教室側錄補課帶。'
+    },
+    {
+      badge: '<span class="badge b-t1">轉線上直播課</span>',
+      title: '日本動畫職人養成班（含人物角色 ／ 背景美術）',
+      meta: '總補課：94 筆（74 位不重複學員）｜涉及 30 個實體班次',
+      stat1: '單班最高 13 人補課｜06/27 中壢班跨縣市達 92.3%！',
+      sub1: '熱門班：06/27中壢三養成(13人)、06/14台中三人物(11人)、08/11站二養成(9人)',
+      stat2: '跨分校率 80.9%｜跨縣市 44.7%｜新生高達 89.4%',
+      sub2: '幾乎 9 成（89.4%）都是衝著日本動畫職人題材報名的新生',
+      diag: '「2026/06/27 中壢三部日本動畫職人養成班」13 位補課學員中，跨分校率 100%、跨縣市率高達 92.3%（台北、台中、高雄學生因為當地沒開而跨區掛名中壢班看補課）！',
+      plan: '【轉線上直播課（集中開立雙師綜合養成班）】日式原畫與動畫師資全校僅少數幾位老師，在單一分校開實體課會導致外縣市學生只能看補課。直接固定於線上直播開課即可一次服務全國學員。'
+    },
+    {
+      badge: '<span class="badge b-t1">轉線上直播課</span>',
+      title: '遊戲角色美術班 (雙軌)',
+      meta: '總補課：69 筆（60 位不重複學員）｜涉及 10 個實體班次',
+      stat1: '單班最高 19 人補課｜班均 6.9 人（全校第 2 高！）',
+      sub1: '熱門班：04/26台中二(19人)、03/22館前(13人)、02/24東區二(12人)、03/24東區二(10人)',
+      stat2: '跨分校率 69.6%｜跨縣市 37.7%｜新生 85.5%',
+      sub2: '超過 6 成學員同時打包報名「Unity 遊戲設計 ＋ 遊戲角色美術」',
+      diag: '僅 10 個實體開班日就集中了 69 筆補課觀看（班均 6.9 人僅次於數位漫畫班！），其中「04/26 台中二部」單班高達 19 人看補課、「03/22 館前」13 人、「02/24 東區」12 人。',
+      plan: '【轉線上直播課（精簡為 20 堂規格）】為什麼 2026 年底實體雙軌轉線上只有 19 人？因為大量學生在 2～5 月已經先被分流去掛名東區、館前、台中二部的雙軌補課班了！若將這批雙軌補課生統一收攏至線上直播班，單班規模可穩定達 60～80 人。'
+    },
+    {
+      badge: '<span class="badge b-t1">轉線上直播課</span>',
+      title: 'AI 品牌系統創建',
+      meta: '總補課：37 筆（33 位不重複學員）｜涉及 10 個實體班次',
+      stat1: '單班最高 10 人補課｜100% 全部為新生！',
+      sub1: '熱門班：07/25台中二部(10人)、10/04台中三部(7人)、05/16站前二部(6人)',
+      stat2: '跨分校率 83.8%｜跨縣市 45.9%｜新生 100.0%',
+      sub2: '37 筆登記全數為新招收學員，對 AI 商業品牌應用需求極強',
+      diag: '「2026/07/25 台中二部 AI 品牌系統創建」單班有 10 位跨院新生（跨院率 90%）專門用補課系統觀看，證明該課程在全台各分校都有極高的新生詢問度。',
+      plan: '【持續作為線上直播核心課（每半年 1～2 班）】搭配王仁駿老師在線上直播班 84.6% 首日出席率的高口碑，直接將各分校零星報名的學員統一導流至線上直播專班。'
+    },
+    {
+      badge: '<span class="badge b-t1">★ 新開線上直播</span>',
+      title: 'AI 室內設計系統實戰班（★ 2026 下半年新興爆款）',
+      meta: '總補課：32 筆（28 位不重複學員）｜涉及 8 個實體班次',
+      stat1: '單班最高 16 人補課（06/27 站前二部）！',
+      sub1: '熱門班：06/27站前二部(16人)、10/04中壢學院(8人)',
+      stat2: '跨分校率 65.6%｜新生佔比高達 93.8%（30筆新生）',
+      sub2: '5 月底後才開始出現在名單中，短短 4 個月迅速累積 32 筆！',
+      diag: '傳統室內設計（AutoCAD/SketchUp/乙級證照）正在轉向錄播課，但數據顯示 2026 年 6 月開課的「2026/06/27 站前二部 AI 室內設計系統實戰班」單一班級就湧入 16 名純新生用補課觀看！緊接著「10/04 中壢學院」又有 8 人登記。',
+      plan: '【★ 強烈建議新增「AI 室內設計系統實戰班」線上直播課】在龍和設計乙級證照班轉為線上錄播（VOD）後，室內設計領域可以改推這門 16～18 堂的「AI 室內設計系統實戰班」作為線上直播新主力！'
+    },
+    {
+      badge: '<span class="badge b-t1">★ 新開線上直播</span>',
+      title: 'IP 角色人物創作班',
+      meta: '總補課：30 筆（25 位不重複學員）｜涉及 9 個實體班次',
+      stat1: '單班最高 7 人補課｜100% 全部為新生！',
+      sub1: '熱門班：08/01東區二部(7人)、05/28站前學院(7人)、09/20台中三部(7人)',
+      stat2: '跨分校率高達 86.7%｜跨縣市 36.7%｜新生 100.0%',
+      sub2: '幾乎沒有同分校學生，86.7% 都是跨院遠距看補課的新生',
+      diag: '北（站前/東區）、中（台中三部）開班皆有高度跨分校新生登記觀看，且 100% 為新生，顯示文創 IP 與原創角色設計是極佳的新生敲門磚。',
+      plan: '【建議規劃為 12～16 堂「線上直播短期專班」】與數位繪畫班、Procreate 形成互補，集中全國對文創 IP 有興趣的新生於線上開課。'
+    },
+    {
+      badge: '<span class="badge b-up">直播＋錄播雙軌</span>',
+      title: 'Procreate 數位繪畫（含漫畫故事力實作）',
+      meta: '總補課：137 筆（113 位不重複學員）｜涉及 31 個實體班次',
+      stat1: '單班最高 16 人補課｜舊生複習佔比 38.9% 全校第 1！',
+      sub1: '熱門班：03/14高雄建國(16人)、06/14站二(13人)、03/14台中二(11人)、08/24中壢三(11人)',
+      stat2: '新生 86 筆 (62.8%) ＋ 舊生高達 51 筆 (37.2%)',
+      sub2: '多筆備註「要延長觀看期限」，顯示學員極度依賴影片回放練習筆刷',
+      diag: 'Procreate 同時具備兩種強烈需求：(1) 高達 86 筆新生跨區想學 iPad 電繪；(2) 高達 51 筆舊生（全校舊生比例最高！）為了重看老師筆刷設定、圖層混合與上色步驟而重複登記補課。',
+      plan: '【最佳方案：常態線上直播（2班/半年）＋ 技法模組轉線上錄播（VOD）】一方面在 2027 上半年開足 2 班 24 堂線上直播課（曹育禎/簡佳慧）滿足新生批改需求；另一方面將「Procreate 基礎筆刷與上色技法」剪輯為高畫質 VOD 錄播課，供舊生加購或無限次回看！'
+    },
+    {
+      badge: '<span class="badge b-vod">轉線上錄播 VOD</span>',
+      title: 'AutoCAD 設計實務班',
+      meta: '總補課：82 筆（65 位不重複學員）｜涉及 15 個實體班次',
+      stat1: '單班最高 25 人補課（全校單班排行榜第 1 名！）',
+      sub1: '熱門班：03/15站前-楊龍威(25人！)、05/12台中二-祝睿卿(17人！)、04/21中壢-戴旭斌(9人)',
+      stat2: '跨分校率 79.3%｜跨縣市 46.3%｜新生 86.6%',
+      sub2: '05/12 台中二部祝睿卿班跨院率高達 94.1%、跨縣市達 82.4%！',
+      diag: '全校 398 個實體班中，補課人數第 1 名的就是「2026/03/15 站前學院 AutoCAD-楊龍威（25筆補課）」！第 12 名則是「2026/05/12 台中二部 AutoCAD-祝睿卿（17筆補課）」。為什麼一整班有 20 多個人不去教室、全部在家看補課？因為 CAD 畫圖指令一步錯步步錯，在家看影片可以隨時按暫停跟畫！',
+      plan: '【★ 轉線上錄播課（VOD）第一首選】完全不必開直播或讓學員看模糊的實體側錄帶！請產品部直接邀約「楊龍威老師」或「祝睿卿老師」進棚錄製一套高解析度、附完整圖檔練習題的「AutoCAD 線上錄播標準課（VOD）」，全台分校長年熱銷！'
+    },
+    {
+      badge: '<span class="badge b-vod">轉線上錄播 VOD</span>',
+      title: 'SketchUp 3D 室內空間設計',
+      meta: '總補課：59 筆（44 位不重複學員）｜涉及 13 個實體班次',
+      stat1: '單班最高 11 人補課｜跨縣市遠距率高達 54.2%！',
+      sub1: '熱門班：06/07台中三-鄧昌君(11人)、03/17站前二-蕭博宇(11人)、04/19中壢-戴旭斌(9人)',
+      stat2: '跨分校率 83.1%｜跨縣市 54.2%｜舊生複習佔 32.2%',
+      sub2: '超過一半學員來自外縣市，且近 1/3 為舊生重複回看建模步驟',
+      diag: '「06/07 台中三部鄧昌君老師」與「03/17 站前二部蕭博宇老師」單班皆有 11 人看補課，且跨縣市比例高達 54.2%。與 AutoCAD 相同，3D 空間建模屬於高度標準化軟體操作，學員極度依賴暫停與重播。',
+      plan: '【★ 轉線上錄播課（VOD）第二首選】指名「鄧昌君老師」或「蕭博宇老師」錄製成標準「SketchUp 3D 線上錄播課（VOD）」，與 AutoCAD VOD 打包成「室內空間設計雙軟體錄播套課」。'
+    },
+    {
+      badge: '<span class="badge b-vod">轉線上錄播 VOD</span>',
+      title: 'After Effects 特效動畫',
+      meta: '總補課：55 筆（49 位不重複學員）｜涉及 13 個實體班次',
+      stat1: '單班最高 9 人補課｜跨分校率 90.9% 全校最高！',
+      sub1: '熱門班：01/18東區二部(9人)、06/13台中二部(8人)、02/09站前(4人)、05/28館前(4人)',
+      stat2: '跨分校率 90.9%｜跨縣市 45.5%｜舊生複習佔 34.5%',
+      sub2: '10 個看補課的學生裡有 9 個是跨分校，且超過 1/3 是舊生重看！',
+      diag: 'After Effects 補課數據呈現兩個極端特徵：一是跨分校率高達 90.9%（全校最高），二是舊生回看比例高達 34.5%。因為影視特效的關鍵影格（Keyframes）與外掛參數調整極快，實體課聽過一遍很難記住，必須靠影片反覆重看。',
+      plan: '【軟體特效模組轉線上錄播（VOD）＋ 每半年 1 班 20 堂線上直播實戰】將 AE 常用特效技法錄製成 VOD 教材供學員無限回放，同時保留石皓瑋老師每半年 1 班 20 堂直播課負責作品指導。'
+    },
+    {
+      badge: '<span class="badge b-vod">轉線上錄播 VOD</span>',
+      title: '3D 視覺創作 (Blender) ＆ C4D 動態影像設計',
+      meta: '總補課：36 筆（32 位不重複學員）｜涉及 15 個實體班次',
+      stat1: '舊生重看率高達 41.7%（15 筆舊生）！',
+      sub1: '熱門班：09/19館前3D視覺(7人)、04/15東區二部3D視覺(6人)、03/14台中三C4D(4人)',
+      stat2: '跨分校率 75.0%｜跨縣市 44.4%｜舊生 41.7%',
+      sub2: '3D 軟體操作門檻高，逾 4 成補課紀錄為舊生回看複習',
+      diag: '先前 2026 線上直播開立「3D Blender」整班僅 30 人登記，而在實體補課系統中也僅分散為 36 筆（平均每班 2.4 人），但舊生回看率卻高達 41.7%。這代表 3D 軟體不適合頻繁開直播大班，而是典型的「長尾錄播教材」。',
+      plan: '【全面轉為線上錄播課（VOD）】不排入 2027 線上直播課表（省下直播排課產能），直接將 Blender 與 C4D 製作成精緻線上錄播課長賣。'
+    },
+    {
+      badge: '<span class="badge b-vod">轉線上錄播 VOD</span>',
+      title: '商用網站架設實務',
+      meta: '總補課：22 筆（22 位不重複學員）｜涉及 7 個實體班次',
+      stat1: '跨縣市遠距觀看率高達 59.1%（全校第 1）！',
+      sub1: '熱門班：01/17站前學院(6人)、10/18館前學院(6人)、06/14中壢學院(4人)',
+      stat2: '跨分校率 86.4%｜跨縣市 59.1%｜新生 77.3%',
+      sub2: '近 6 成補課學員來自外縣市（中壢/台中學員跨區看台北站前/館前班）',
+      diag: '商用網站架設因為開班分校少（集中在台北站前、館前與中壢），導致台中與桃竹學員只能跨縣市掛名看補課；同時該課在 2025➔2026 線上直播人數也由 81 人收斂至 50 人。',
+      plan: '【轉為線上錄播課（VOD）】網站架設流程（網域、主機、WordPress/Elementor 架站）步驟完全固定，錄製成一套標準線上錄播課即可取代各分校重複開課。'
+    }
+  ];
+
+  let currentMakeupIdx = 0;
+  let allExpanded = false;
+
+  function openMakeupModal(idx) {
+    currentMakeupIdx = idx;
+    const d = MAKEUP_MODAL_DATA[idx];
+    document.getElementById('mmBadge').innerHTML = d.badge;
+    document.getElementById('mmTitle').textContent = d.title;
+    document.getElementById('mmMeta').textContent = d.meta;
+    document.getElementById('mmStat1').textContent = d.stat1;
+    document.getElementById('mmSub1').textContent = d.sub1;
+    document.getElementById('mmStat2').textContent = d.stat2;
+    document.getElementById('mmSub2').textContent = d.sub2;
+    document.getElementById('mmDiag').textContent = d.diag;
+    document.getElementById('mmPlan').textContent = d.plan;
+    document.getElementById('makeupModal').classList.add('open');
+  }
+
+  function closeMakeupModal() {
+    document.getElementById('makeupModal').classList.remove('open');
+  }
+
+  function stepMakeupModal(delta) {
+    let next = (currentMakeupIdx + delta + MAKEUP_MODAL_DATA.length) % MAKEUP_MODAL_DATA.length;
+    openMakeupModal(next);
+  }
+
+  function toggleInlineInsights(btn) {
+    const tbl = document.getElementById('makeupMainTable');
+    tbl.classList.toggle('expand-inline');
+    if (tbl.classList.contains('expand-inline')) {
+      btn.textContent = '📐 恢復單行精簡對齊模式';
+      btn.style.background = '#475569';
+    } else {
+      btn.textContent = '📖 一鍵展開所有規劃文字';
+      btn.style.background = '#3b82f6';
+    }
+  }
+
+  function switchTab(tabId, btn) {
+    allExpanded = false;
+    document.getElementById('btnExpandAll').textContent = '展開全部三張報表（一頁檢視）';
+    document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    if (btn) btn.classList.add('active');
+  }
+
+  function toggleAllViews() {
+    allExpanded = !allExpanded;
+    const panels = document.querySelectorAll('.view-panel');
+    const btn = document.getElementById('btnExpandAll');
+    if (allExpanded) {
+      panels.forEach(p => p.classList.add('active'));
+      btn.textContent = '返回分頁切換模式';
+    } else {
+      panels.forEach((p, idx) => {
+        if (idx === 0) p.classList.add('active');
+        else p.classList.remove('active');
+      });
+      document.querySelectorAll('.tab-btn').forEach((b, idx) => {
+        if (idx === 0) b.classList.add('active');
+        else b.classList.remove('active');
+      });
+      btn.textContent = '展開全部三張報表（一頁檢視）';
+    }
+  }
+
+  function copyShareLink(btn) {
+    const shareUrl = 'https://dawei-survey.onrender.com/static/makeup_to_online_analysis.html';
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      const orig = btn.innerHTML;
+      btn.innerHTML = '✅ 已複製分享網址！';
+      btn.style.background = '#15803d';
+      setTimeout(() => {
+        btn.innerHTML = orig;
+        btn.style.background = 'var(--primary)';
+      }, 2500);
+    });
+  }
+
+  document.addEventListener('keydown', function(e) {
+    const modal = document.getElementById('makeupModal');
+    if (!modal.classList.contains('open')) return;
+    if (e.key === 'Escape') closeMakeupModal();
+    if (e.key === 'ArrowLeft') stepMakeupModal(-1);
+    if (e.key === 'ArrowRight') stepMakeupModal(1);
+  });
+</script>
+
+</body>
+</html>
