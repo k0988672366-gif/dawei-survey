@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DATE 線上直播學院｜2027 年度開班戰略整合規劃報告（四維數據交叉印證）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --border: #cbd5e1;
+    --border-light: #e2e8f0;
+    --text-main: #0f172a;
+    --text-sub: #334155;
+    --text-muted: #64748b;
+    --header-bg: #0f172a;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --primary-bg: #eff6ff;
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --amber: #d97706;
+    --amber-bg: #fffbeb;
+    --red: #dc2626;
+    --red-bg: #fef2f2;
+    --purple: #7c3aed;
+    --purple-bg: #f5f3ff;
+    --cyan: #0891b2;
+    --cyan-bg: #ecfeff;
+    --slate-bg: #f1f5f9;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 24px 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .sheet {
+    max-width: 1480px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+
+  /* Header banner */
+  .sheet-header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #1e3a8a 100%);
+    color: #ffffff;
+    padding: 28px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+    border-bottom: 3px solid #3b82f6;
+  }
+
+  .sheet-title-group h1 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .tag-live {
+    font-size: 11px;
+    background: #ef4444;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    text-transform: uppercase;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.75; }
+  }
+
+  .sheet-title-group p {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-top: 6px;
+    max-width: 900px;
+    line-height: 1.6;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-action {
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    padding: 9px 16px;
+    font-size: 12.5px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+  }
+  .btn-action:hover { background: #1d4ed8; }
+  .btn-action.secondary {
+    background: rgba(255,255,255,0.12);
+    color: #f1f5f9;
+    border: 1px solid rgba(255,255,255,0.25);
+  }
+  .btn-action.secondary:hover { background: rgba(255,255,255,0.2); }
+
+  /* KPI Cards Grid */
+  .kpi-section {
+    padding: 24px 32px;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+  }
+
+  .kpi-card {
+    background: var(--bg);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+
+  .kpi-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .kpi-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    font-weight: 800;
+    margin: 6px 0 2px 0;
+    color: var(--text-main);
+  }
+  .kpi-val.primary { color: var(--primary); }
+  .kpi-val.green { color: var(--green); }
+  .kpi-val.purple { color: var(--purple); }
+  .kpi-val.amber { color: var(--amber); }
+
+  .kpi-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .kpi-sub strong { color: var(--text-sub); }
+
+  /* Tab Navigation */
+  .tab-bar {
+    display: flex;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    gap: 4px;
+  }
+
+  .tab-btn {
+    padding: 13px 20px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text-sub);
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tab-btn:hover {
+    color: var(--primary);
+    background: #f1f5f9;
+  }
+  .tab-btn.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    background: #ffffff;
+  }
+
+  .tab-badge {
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: #e2e8f0;
+    color: #334155;
+    font-weight: 600;
+  }
+  .tab-btn.active .tab-badge {
+    background: var(--primary-bg);
+    color: var(--primary);
+  }
+
+  /* Filter toolbar */
+  .filter-bar {
+    padding: 16px 32px;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .filter-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .filter-pill {
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #f1f5f9;
+    border: 1px solid var(--border-light);
+    border-radius: 20px;
+    cursor: pointer;
+    color: var(--text-sub);
+    transition: all 0.15s;
+  }
+  .filter-pill:hover {
+    background: #e2e8f0;
+  }
+  .filter-pill.active {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+  }
+
+  .search-input {
+    padding: 6px 14px;
+    font-size: 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: inherit;
+    width: 240px;
+    outline: none;
+  }
+  .search-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
+  }
+
+  /* Content view panel */
+  .view-panel {
+    display: none;
+    padding: 24px 32px;
+  }
+  .view-panel.active {
+    display: block;
+  }
+
+  /* Main Table */
+  .table-responsive {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #ffffff;
+  }
+
+  table.master-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+    text-align: left;
+  }
+
+  table.master-table thead {
+    background: #0f172a;
+    color: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  table.master-table th {
+    padding: 12px 14px;
+    font-weight: 700;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-right: 1px solid rgba(255,255,255,0.1);
+    white-space: nowrap;
+  }
+
+  table.master-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border-light);
+    border-right: 1px solid var(--border-light);
+    color: var(--text-main);
+  }
+
+  table.master-table tr:hover {
+    background-color: #f8fafc;
+  }
+
+  table.master-table tr.clickable {
+    cursor: pointer;
+  }
+
+  /* Table cell styles */
+  .badge-tag {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .badge-a { background: #dbeafe; color: #1e40af; }
+  .badge-b { background: #fef3c7; color: #92400e; }
+  .badge-c { background: #ede9fe; color: #5b21b6; }
+  .badge-closed { background: #fee2e2; color: #991b1b; }
+
+  .stat-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+  }
+  .stat-highlight {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800;
+    color: #b91c1c;
+  }
+
+  .strat-badge {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-block;
+  }
+  .strat-must { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+  .strat-funnel { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+  .strat-ocean { background: #cffafe; color: #0e7490; border: 1px solid #a5f3fc; }
+  .strat-vod { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+
+  /* Info callout boxes */
+  .callout-card {
+    background: #f8fafc;
+    border-left: 4px solid var(--primary);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    border-top: 1px solid var(--border-light);
+    border-right: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--border-light);
+  }
+  .callout-card h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .callout-card p {
+    font-size: 12.5px;
+    color: var(--text-sub);
+    line-height: 1.6;
+  }
+
+  /* Schedule Cards / Gantt */
+  .schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .class-box {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.2s;
+    border-top: 4px solid #3b82f6;
+  }
+  .class-box:hover {
+    border-color: #2563eb;
+    box-shadow: 0 6px 16px rgba(37,99,235,0.08);
+  }
+  .class-box.q1 { border-top-color: #2563eb; }
+  .class-box.q2 { border-top-color: #059669; }
+  .class-box.reserve { border-top-color: #d97706; background: #fffdfa; }
+
+  .class-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+  .class-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+  .class-quarter {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: #f1f5f9;
+    color: #475569;
+  }
+
+  .class-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-sub);
+    margin: 12px 0;
+    padding: 10px 0;
+    border-top: 1px dashed var(--border-light);
+    border-bottom: 1px dashed var(--border-light);
+  }
+  .detail-row {
+    display: flex;
+    flex-direction: column;
+  }
+  .detail-row span:first-child {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .detail-row span:last-child {
+    font-weight: 600;
+  }
+
+  .class-footer {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Policy Compliance Section */
+  .rule-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 16px;
+  }
+  .rule-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .rule-card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .rule-check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+  .check-icon {
+    color: var(--green);
+    font-weight: 800;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* Modal Dialog */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  .modal-card {
+    background: #ffffff;
+    border-radius: 12px;
+    max-width: 720px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border);
+    padding: 28px;
+    position: relative;
+    animation: modalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #f1f5f9;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-sub);
+  }
+  .modal-close:hover {
+    background: #e2e8f0;
+    color: var(--text-main);
+  }
+
+  .modal-header h3 {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-main);
+  }
+  .modal-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    margin-bottom: 20px;
+  }
+
+  .stat-tiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .stat-tile {
+    background: #f8fafc;
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    padding: 12px;
+    text-align: center;
+  }
+  .stat-tile span {
+    font-size: 11px;
+    color: var(--text-muted);
+    display: block;
+  }
+  .stat-tile strong {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text-main);
+  }
+
+  .diag-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+  }
+  .diag-box h5 {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #1e40af;
+    margin-bottom: 6px;
+  }
+  .diag-box p {
+    font-size: 12px;
+    color: #1e3a8a;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 1024px) {
+    .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    .rule-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat-tiles { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <!-- Header -->
+  <div class="sheet-header">
+    <div class="sheet-title-group">
+      <h1>
+        DATE 線上直播學院｜2027 年度開班戰略整合規劃報告
+        <span class="tag-live">DATE 線上直播專屬</span>
+      </h1>
+      <p>
+        <strong>整合四大核心數據源：</strong>
+        ① 2025-2026 線上實績 (53 班 / 5,492 人次) ＋
+        ② 實體班補課觀看數據 (1,705 筆 / 76.6% 跨區痛點) ＋
+        ③ 未消耗學員庫存 (報表 5,100 人次 / 全校待服務池 15,936 人次) ＋
+        ④ 產品部 2027 會前會規範 (6成大排/4成保留/5人紅線/A-B-C漏斗/關閉課處置)。
+      </p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-action" style="background:#16a34a; font-weight:700;" onclick="copyShareLink(this)">🔗 複製公開分享網址</button>
+      <a href="/static/2027_DATE_線上直播排課落點示範.pdf" class="btn-action" style="background:#ea580c; font-weight:700;" download target="_blank">📄 下載落點示範 PDF</a>
+      <button class="btn-action secondary" onclick="window.print()">🖨️ 列印報表</button>
+      <a href="/static/schedule_2027_presentation.html" class="btn-action secondary" target="_blank">歷史開班對比</a>
+      <a href="/static/makeup_to_online_analysis.html" class="btn-action secondary" target="_blank">補課轉線上專報</a>
+    </div>
+  </div>
+
+  <!-- KPI Section -->
+  <div class="kpi-section">
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">2027 年度開班總量</div>
+        <div class="kpi-val primary">28 班</div>
+        <div class="kpi-sub">承接歷史 25~28 班量能</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">H1 6 成大排定案</div>
+        <div class="kpi-val green">17 班 (60.7%)</div>
+        <div class="kpi-sub">落實產品部 <strong>60% 定案</strong> 紅線</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">H2 4 成彈性保留</div>
+        <div class="kpi-val amber">11 班 (39.3%)</div>
+        <div class="kpi-sub">暑期/進階/熱門趨勢滾動池</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">鎖定化解庫存目標</div>
+        <div class="kpi-val red">3,500+ 人</div>
+        <div class="kpi-sub">解決全台未登記堰塞湖</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">預估年服務容量</div>
+        <div class="kpi-val purple">3,200+ 人</div>
+        <div class="kpi-sub">無教室限制・高坪效交付</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">跨區補課外溢攔截率</div>
+        <div class="kpi-val" style="color:#0891b2;">86.4%</div>
+        <div class="kpi-sub">終結 76.6% 跨區看錄影痛點</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('tab-matrix')" id="btn-tab-matrix">
+      📊 四維數據整合總表 ＆ 推薦排班
+      <span class="tab-badge">28 科目深度矩陣</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('tab-h1')" id="btn-tab-h1">
+      🚀 2027 H1「6 成大排定案」課表
+      <span class="tab-badge">17 班正式課表</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('tab-h2')" id="btn-tab-h2">
+      🎯 2027 H2「4 成彈性保留池」
+      <span class="tab-badge">11 班儲備規劃</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('tab-policy')" id="btn-tab-policy">
+      ⚖️ 產品部五大紅線合規檢核專章
+      <span class="tab-badge">100% 政策合規</span>
+    </button>
+  </div>
+
+  <!-- Tab 1: 四維數據整合總表 -->
+  <div id="tab-matrix" class="view-panel active">
+    <div class="callout-card">
+      <h4>💡 決策推導說明：為什麼需要這份四維交叉矩陣？</h4>
+      <p>
+        DATE 線上直播班具備<strong>「無實體座位上限、無教室時段衝突、能同時服務全台學員」</strong>的極致優勢。
+        本矩陣將<strong>【未消耗學員庫存】</strong>、<strong>【歷史線上實績】</strong>、<strong>【實體補課跨區外溢】</strong>與<strong>【產品部規範】</strong>四維對齊，
+        精算出 2027 必須開班的精準科數，並嚴格遵循「6成大排（17班）＋ 4成保留（11班）」與「A➔B➔C 梯隊漏斗」法則。
+        <em>（點擊任一課程列可展開深度診斷對話框）</em>
+      </p>
+    </div>
+
+    <!-- Filter toolbar -->
+    <div class="filter-bar">
+      <div class="filter-pills">
+        <button class="filter-pill active" onclick="filterTable('all')">全部課程 (28)</button>
+        <button class="filter-pill" onclick="filterTable('視覺平面')">視覺平面設計系</button>
+        <button class="filter-pill" onclick="filterTable('動漫繪畫')">動漫遊戲繪畫系</button>
+        <button class="filter-pill" onclick="filterTable('Vtuber')">Vtuber 生態鏈</button>
+        <button class="filter-pill" onclick="filterTable('遊戲動畫')">遊戲與影視動畫系</button>
+        <button class="filter-pill" onclick="filterTable('數位音樂')">★數位音樂新藍海</button>
+        <button class="filter-pill" onclick="filterTable('關閉課')">層級 1 關閉課(停開)</button>
+      </div>
+      <input type="text" id="courseSearch" class="search-input" placeholder="🔍 搜尋課程名稱、師資或類別..." onkeyup="searchCourses()">
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="master-table" id="masterTable">
+        <thead>
+          <tr>
+            <th>課程名稱</th>
+            <th>課系類別</th>
+            <th>梯隊階層</th>
+            <th>堂數/規格</th>
+            <th>未消耗庫存</th>
+            <th>未登記人數</th>
+            <th>25/26 線上實績</th>
+            <th>實體補課登記</th>
+            <th>2027 H1 大排</th>
+            <th>2027 H2 保留</th>
+            <th>全年總班數</th>
+            <th>主力師資</th>
+            <th>開班決策處置</th>
+          </tr>
+        </thead>
+        <tbody id="masterTbody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Tab 2: H1 6 成大排定案 -->
+  <div id="tab-h1" class="view-panel">
+    <div class="callout-card" style="border-left-color: #16a34a;">
+      <h4>📋 2027 上半年 (H1) 6 成大排定案（共 17 班，佔比 60.7%）</h4>
+      <p>
+        依據產品部 10/19 提案時限，DATE 優先鎖定 17 班作為上半年骨幹課表。所有班次皆符合<strong>「單班未消耗或需求池 ＞ 80 人」</strong>、
+        <strong>「具備 90 天招生宣傳期」</strong>、且由專任簽約名師親授。
+      </p>
+    </div>
+
+    <div class="schedule-grid" id="h1Grid">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- Tab 3: H2 4 成彈性保留池 -->
+  <div id="tab-h2" class="view-panel">
+    <div class="callout-card" style="border-left-color: #d97706;">
+      <h4>🎯 2027 下半年 (H2) 4 成彈性保留池（共 11 班，佔比 39.3%）</h4>
+      <p>
+        落實產品部「保留 4 成不預先焊死」機制。這 11 班主要部署於：① 7~8 月暑假學生潮主力大班、② H1 基礎班結業生的垂直進階班 (B/C級)、
+        以及 ③ 依據 H1 實際招生狀況隨時啟動的滾動加開池。啟動門檻為<strong>「新學員登記 ≥ 15 人即時啟動」</strong>。
+      </p>
+    </div>
+
+    <div class="schedule-grid" id="h2Grid">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- Tab 4: 政策合規檢核專章 -->
+  <div id="tab-policy" class="view-panel">
+    <div class="rule-grid">
+      <div class="rule-card">
+        <h3>1. 節奏比例合規檢核 (60% 大排 vs 40% 保留)</h3>
+        <div class="rule-check-item">
+          <span class="check-icon">✓</span>
+          <div>
+            <strong>H1 提案 17 班 / 全年 28 班 = 60.7%：</strong>
+            精準吻合產品部「6 成定案大排」指示，杜絕過去「年初一次焊死 100% 導致下半年無彈性」之弊病。
+          </div>
+        </div>
+        <div class="rule-check-item">
+          <span class="check-icon">✓</span>
+          <div>
+            <strong>H2 儲備 11 班 / 全年 28 班 = 39.3%：</strong>
+            完整保留 4 成彈性空間，預留給 Q3 暑期旺季大班、Vtuber 梯隊推進班、以及 AI 趨勢加開班。
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <h3>2. 梯隊漏斗 (A➔B➔C) 合規檢核</h3>
+        <div class="rule-check-item">
+          <span class="check-icon">✓</span>
+          <div>
+            <strong>漏斗金字塔健全：</strong>
+            全年度 A 級基礎引流班 15 班 (佔 53.6%)、B 級進階專題班 9 班 (佔 32.1%)、C 級專業閉環班 2 班 (佔 7.1%)、綜合旗艦班 2 班 (佔 7.1%)。
+          </div>
+        </div>
+        <div class="rule-check-item">
+          <span class="check-icon">✓</span>
+          <div>
+            <strong>杜絕孤島排課：</strong>
+            所有 B/C 級進階課（如平面進階、V皮、Live2D、遊戲美術）皆有相應的前階 A 級基礎課作為源頭引流。
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <h3>3. 師資保護與年班量檢核 (每師 ≥ 1 班)</h3>
+        <div class="rule-check-item">
+          <span class="check-icon">✓</span>
+          <div>
+            <strong>正式簽約師資保障率 100%：</strong>
+            黃俊傑 (6班/年)、戴禎儀 (5班/年)、王仁駿 (4班/年)、曾建華 (3班/年)、柯光曜 (3班/年)、葉奕志 (3班/年)、金芸萱 (2班/年)、王家敏/王韋力 (1~2班/年)、周岳澄 (2班/年)，全員達標。
+          </div>
+        </div>
+        <div class="rule-check-item">
+          <span class="check-icon">✓</span>
+          <div>
+            <strong>熱門名師優先但不壟斷：</strong>
+            平面設計由王仁駿與戴禎儀雙師分流（假日 vs 平日晚）；動漫電繪由曾建華與柯光曜分工，避免單一師資請假停擺風險。
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <h3>4. 層級 1 關閉課 ＆ 停售處置方案</h3>
+        <div class="rule-check-item">
+          <span class="check-icon">✓</span>
+          <div>
+            <strong>AutoCAD (80人) / SketchUp (57人) / 室內實務 (25人)：</strong>
+            產品部明令禁止招收新單。DATE 線上直播不排正式售賣班次，100% 轉由<strong>「線上錄播自主觀看 (VOD) 方案」</strong>消化，教務開通觀看權限，零師資鐘點浪費。
+          </div>
+        </div>
+        <div class="rule-check-item">
+          <span class="check-icon">✓</span>
+          <div>
+            <strong>漫畫故事力 (125人) / K-POP 電子樂 (35人)：</strong>
+            漫畫故事力直接劃撥併入金芸萱老師《Procreate 數位繪畫 (24堂)》直播班；K-POP 劃撥併入全新《全 AI 音樂創作》直播班，化解消保投訴。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal Dialog -->
+<div class="modal-overlay" id="detailModal" onclick="if(event.target===this) closeModal()">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-header">
+      <span class="badge-tag" id="mCategory">課系</span>
+      <h3 id="mTitle" style="margin-top:6px;">課程名稱</h3>
+      <div class="modal-meta" id="mMeta">階層定位 ｜ 推薦師資 ｜ 堂數規格</div>
+    </div>
+
+    <div class="stat-tiles">
+      <div class="stat-tile">
+        <span>未消耗總庫存</span>
+        <strong id="mUncon" class="stat-highlight">0</strong>
+      </div>
+      <div class="stat-tile">
+        <span>完全未登記</span>
+        <strong id="mUnreg">0</strong>
+      </div>
+      <div class="stat-tile">
+        <span>25/26 線上實績</span>
+        <strong id="mOnline">0 / 0</strong>
+      </div>
+      <div class="stat-tile">
+        <span>實體跨區補課</span>
+        <strong id="mMakeup">0</strong>
+      </div>
+    </div>
+
+    <div class="diag-box">
+      <h5>📊 四維數據交叉分析結論</h5>
+      <p id="mAnalysis">-</p>
+    </div>
+
+    <div class="diag-box" style="background:#f0fdf4; border-color:#bbf7d0;">
+      <h5 style="color:#15803d;">🚀 2027 年度開班排程與處置方案</h5>
+      <p id="mSolution" style="color:#166534;">-</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// Master Data Definition
+const courseData = [
+  {
+    name: "商用視覺平面設計",
+    category: "視覺平面",
+    level: "A 基礎",
+    levelBadge: "badge-a",
+    hours: "24 堂 (72h)",
+    uncon: 473,
+    unreg: 249,
+    noshow: 78,
+    lowatt: 146,
+    online25: 521,
+    online26: 312,
+    makeup: 228,
+    h1: 2,
+    h2: 2,
+    total: 4,
+    teacher: "王仁駿 / 戴禎儀",
+    action: "必開基石大班",
+    stratClass: "strat-must",
+    h1Schedule: "Q1 週日 10:00-13:00 (王仁駿) + Q2 週一、三 18:30-21:30 (戴禎儀)",
+    h2Schedule: "Q3 暑假平日晚 (王仁駿) + Q4 週末早 (戴禎儀)",
+    analysis: "全校未消耗第一大戶（473 人次待消化），其中 249 人完全未登記，78 人登記未出席。2025/2026 線上實績連續突破 300~500 人，補課外溢高達 228 筆。作為全校第一大引流漏斗，需求極其強烈。",
+    solution: "2027 年規劃全開 4 班（H1 開 2 班定案，H2 保留 2 班）。DATE 直播單班可吞吐 120 人以上，全年預計服務 480~500 人，一舉清空平面設計歷史庫存堰塞湖！"
+  },
+  {
+    name: "商用平面設計進階班",
+    category: "視覺平面",
+    level: "B 進階一",
+    levelBadge: "badge-b",
+    hours: "24 堂 (72h)",
+    uncon: 188,
+    unreg: 148,
+    noshow: 25,
+    lowatt: 15,
+    online25: 212,
+    online26: 97,
+    makeup: 7,
+    h1: 1,
+    h2: 1,
+    total: 2,
+    teacher: "王仁駿",
+    action: "進階梯隊銜接",
+    stratClass: "strat-funnel",
+    h1Schedule: "Q2 週二、四 18:30-21:30 (王仁駿)",
+    h2Schedule: "Q4 週一、三 18:30-21:30 (王仁駿)",
+    analysis: "平面設計直接下游，未消耗庫存高達 188 人（148 人完全未登記）。王仁駿老師進階班完課率高達 55.4%，口碑極佳，是將平面基礎學員轉化為作品集產出的核心關鍵。",
+    solution: "全年開 2 班（H1 定案 1 班於 Q2，承接 Q1 平面基礎畢業生；H2 保留 1 班於 Q4）。預估全年服務 200 人，完全消化 188 位積壓學員。"
+  },
+  {
+    name: "AI品牌系統創建",
+    category: "視覺平面",
+    level: "B 進階一",
+    levelBadge: "badge-b",
+    hours: "18 堂 (54h)",
+    uncon: 95,
+    unreg: 68,
+    noshow: 6,
+    lowatt: 21,
+    online25: 0,
+    online26: 91,
+    makeup: 37,
+    h1: 1,
+    h2: 1,
+    total: 2,
+    teacher: "戴禎儀",
+    action: "AI升級高單價",
+    stratClass: "strat-funnel",
+    h1Schedule: "Q2 週六 14:00-17:00 (戴禎儀)",
+    h2Schedule: "Q3 週六 14:00-17:00 (戴禎儀)",
+    analysis: "2026 首開即創 91 人爆滿實績，完課率高達 52.7%。補課系統有 37 筆記錄（100% 新生）。未消耗 95 人顯示市場對 AI 品牌實戰具有高度付費意願。",
+    solution: "全年規劃 2 班（H1 定案 1 班，H2 保留 1 班）。戴禎儀名師主導，將傳統平面包裝升級為 AI 輔助生成品牌識別系統，高轉化率進階代表。"
+  },
+  {
+    name: "數位漫畫班",
+    category: "動漫繪畫",
+    level: "A 基礎",
+    levelBadge: "badge-a",
+    hours: "24 堂 (72h)",
+    uncon: 203,
+    unreg: 84,
+    noshow: 50,
+    lowatt: 69,
+    online25: 510,
+    online26: 71,
+    makeup: 231,
+    h1: 2,
+    h2: 1,
+    total: 3,
+    teacher: "曾建華",
+    action: "必開主力回補",
+    stratClass: "strat-must",
+    h1Schedule: "Q1 寒假週一、三 18:30-21:30 (曾建華) + Q2 週日 14:00-17:00 (曾建華)",
+    h2Schedule: "Q3 暑假週一、三 18:30-21:30 (曾建華)",
+    analysis: "2025 線上大開 5 班 510 人，但 2026 僅開 1 班 71 人！嚴重產能短缺導致全校補課系統被灌爆（231 筆補課，平均每班 8.9 人補課，全校補課密度第一名！）。未消耗高達 203 人（加上進階 82 人達 285 人）。",
+    solution: "強力回補開班！2027 H1 立即定案 2 班（Q1 寒假檔＋Q2 週末檔），H2 暑假保留 1 班，全年共 3 班。曾建華名師親授，預估服務 360 人，終結學生被迫看錄影之民怨。"
+  },
+  {
+    name: "數位漫畫進階班",
+    category: "動漫繪畫",
+    level: "B 進階一",
+    levelBadge: "badge-b",
+    hours: "24 堂 (72h)",
+    uncon: 82,
+    unreg: 71,
+    noshow: 4,
+    lowatt: 7,
+    online25: 0,
+    online26: 0,
+    makeup: 6,
+    h1: 0,
+    h2: 1,
+    total: 1,
+    teacher: "曾建華",
+    action: "進階暑期收斂",
+    stratClass: "strat-funnel",
+    h1Schedule: "H1 不排 (集中資源衝基礎漫畫)",
+    h2Schedule: "Q3 暑假週日 14:00-17:00 (曾建華)",
+    analysis: "未登記高達 71 人，過去線上未開獨立進階班，導致漫畫基礎畢業生無處可去。實體班開班門檻高難以湊齊。",
+    solution: "H1 集中打底基礎，H2 暑假檔安排 1 班（曾建華），承接 H1 漫畫基礎結業生與 71 位未登記學員，產出長篇漫畫分鏡作品。"
+  },
+  {
+    name: "數位繪畫班",
+    category: "動漫繪畫",
+    level: "A 基礎",
+    levelBadge: "badge-a",
+    hours: "24 堂 (72h)",
+    uncon: 196,
+    unreg: 94,
+    noshow: 50,
+    lowatt: 52,
+    online25: 237,
+    online26: 172,
+    makeup: 231,
+    h1: 1,
+    h2: 1,
+    total: 2,
+    teacher: "柯光曜",
+    action: "必開電繪基石",
+    stratClass: "strat-must",
+    h1Schedule: "Q1 週二、四 18:30-21:30 (柯光曜)",
+    h2Schedule: "Q3 暑假週二、四 18:30-21:30 (柯光曜)",
+    analysis: "電繪經典常青樹，未消耗 196 人，補課記錄高達 231 筆（來自 39 個不同實體班外溢！）。線上連續兩年穩定招生 170~230 人。",
+    solution: "2027 年規劃 2 班（H1 定案 1 班，H2 保留 1 班）。柯光曜名師主導，線上直播提供即時筆刷技術與光影示範，穩定消化 200+ 跨區學員。"
+  },
+  {
+    name: "Procreate 數位繪畫",
+    category: "動漫繪畫",
+    level: "A 基礎",
+    levelBadge: "badge-a",
+    hours: "24 堂 (72h)",
+    uncon: 199,
+    unreg: 133,
+    noshow: 32,
+    lowatt: 34,
+    online25: 375,
+    online26: 121,
+    makeup: 137,
+    h1: 1,
+    h2: 1,
+    total: 2,
+    teacher: "金芸萱",
+    action: "雙軌直播+錄播",
+    stratClass: "strat-must",
+    h1Schedule: "Q1 週日 10:00-13:00 (金芸萱) [含故事力併入]",
+    h2Schedule: "Q3 週日 10:00-13:00 (金芸萱)",
+    analysis: "平板電繪入門門檻低，受眾極廣。若計入產品部停售關閉之《漫畫故事力 125人》，實質未消耗達 199 人！補課系統 137 筆中有 38.9% 舊生回看複習。",
+    solution: "全年開 2 班（H1 定案 1 班，H2 保留 1 班）。依產品部指示將《漫畫故事力》學額併入金芸萱老師 24 堂標準班，並提供精華錄播帳號供舊生複習，兼顧消保與教學品質。"
+  },
+  {
+    name: "IP 角色人物創作班",
+    category: "動漫繪畫",
+    level: "B 進階一",
+    levelBadge: "badge-b",
+    hours: "20 堂 (60h)",
+    uncon: 178,
+    unreg: 163,
+    noshow: 11,
+    lowatt: 4,
+    online25: 0,
+    online26: 0,
+    makeup: 30,
+    h1: 1,
+    h2: 1,
+    total: 2,
+    teacher: "柯光曜",
+    action: "★幽靈庫存開拓",
+    stratClass: "strat-funnel",
+    h1Schedule: "Q2 週二、四 18:30-21:30 (柯光曜)",
+    h2Schedule: "Q4 週二、四 18:30-21:30 (柯光曜)",
+    analysis: "重大發現！未消耗高達 178 人，其中竟然有 163 人完全未登記！實體班因單校人數湊不齊從未開課，導致大量學生積壓成為消保地雷。補課 30 筆且 100% 為新生。",
+    solution: "DATE 線上直播全台合併開班！全年開 2 班（H1 定案 1 班，H2 保留 1 班）。柯光曜老師親授，開一班直接消化 90~100 位幽靈庫存學員！"
+  },
+  {
+    name: "Vtuber 創作全攻略",
+    category: "Vtuber",
+    level: "A 基礎",
+    levelBadge: "badge-a",
+    hours: "24 堂 (72h)",
+    uncon: 154,
+    unreg: 87,
+    noshow: 49,
+    lowatt: 18,
+    online25: 135,
+    online26: 260,
+    makeup: 17,
+    h1: 1,
+    h2: 1,
+    total: 2,
+    teacher: "黃俊傑",
+    action: "王牌梯隊龍頭",
+    stratClass: "strat-must",
+    h1Schedule: "Q1 週六 14:00-17:00/18:00-21:00 (黃俊傑)",
+    h2Schedule: "Q3 週六 14:00-17:00/18:00-21:00 (黃俊傑)",
+    analysis: "全校完課率最高王牌梯隊龍頭（2026 完課率 60.9%）！2026 報名人數暴增至 260 人。未消耗 154 人，具備極強的新學員引流與後續梯隊滾動效果。",
+    solution: "全年開 2 班（H1 Q1 週末早，H2 Q3 暑假檔）。黃俊傑名師主導，精準吸納未消耗 154 人並為後續 V皮與 Live2D 大班注水。"
+  },
+  {
+    name: "V皮角色繪製",
+    category: "Vtuber",
+    level: "B 進階一",
+    levelBadge: "badge-b",
+    hours: "24 堂 (72h)",
+    uncon: 132,
+    unreg: 94,
+    noshow: 27,
+    lowatt: 11,
+    online25: 0,
+    online26: 282,
+    makeup: 19,
+    h1: 1,
+    h2: 1,
+    total: 2,
+    teacher: "黃俊傑",
+    action: "立繪梯隊承接",
+    stratClass: "strat-funnel",
+    h1Schedule: "Q2 週六 14:00-17:00 (黃俊傑)",
+    h2Schedule: "Q4 週六 14:00-17:00 (黃俊傑)",
+    analysis: "2026 首開即狂收 282 人（單班 141 人爆滿），完課率破 58%。未消耗 132 人（94 人未登記），完美承接全攻略之立繪拆件需求。",
+    solution: "全年開 2 班（H1 Q2 週末早，H2 Q4 週末早）。黃俊傑專任，與全攻略緊密銜接，預計年服務 260 人。"
+  },
+  {
+    name: "Live2D 動畫製作",
+    category: "Vtuber",
+    level: "C 進階二",
+    levelBadge: "badge-c",
+    hours: "24 堂 (72h)",
+    uncon: 129,
+    unreg: 94,
+    noshow: 23,
+    lowatt: 12,
+    online25: 0,
+    online26: 283,
+    makeup: 17,
+    h1: 1,
+    h2: 1,
+    total: 2,
+    teacher: "黃俊傑",
+    action: "終極動態閉環",
+    stratClass: "strat-funnel",
+    h1Schedule: "Q2 週六 18:00-21:00 (黃俊傑)",
+    h2Schedule: "Q4 週六 18:00-21:00 (黃俊傑)",
+    analysis: "2026 招收 283 人，全校 C 級進階班流量奇蹟！未消耗 129 人，學員黏著度極高，作品集直接可用於商業出道。",
+    solution: "全年開 2 班（H1 Q2 週末午，H2 Q4 週末午）。黃俊傑名師全年保障 6 班（A×2, B×2, C×2），打造全校最具競爭力之 100% 閉環產品鏈！"
+  },
+  {
+    name: "AI 遊戲設計班 (原遊戲設計)",
+    category: "遊戲動畫",
+    level: "A 基礎",
+    levelBadge: "badge-a",
+    hours: "24 堂 (72h)",
+    uncon: 245,
+    unreg: 186,
+    noshow: 22,
+    lowatt: 37,
+    online25: 70,
+    online26: 160,
+    makeup: 90,
+    h1: 1,
+    h2: 1,
+    total: 2,
+    teacher: "葉奕志",
+    action: "AI升級大班",
+    stratClass: "strat-must",
+    h1Schedule: "Q1 週二、四 18:30-21:30 (葉奕志)",
+    h2Schedule: "Q3 暑假週二、四 18:30-21:30 (葉奕志)",
+    analysis: "未消耗高達 245 人（未登記 186 人！）。2026 線上實績從 70 人成長 128% 至 160 人，實體補課 90 筆（跨區率 82.2%）。",
+    solution: "全面導入 AI 遊戲工作流升級開班！全年開 2 班（H1 定案 1 班，H2 保留 1 班）。葉奕志主導，單班容量 120 人，快速化解 245 人積壓。"
+  },
+  {
+    name: "遊戲角色美術班",
+    category: "遊戲動畫",
+    level: "B 進階一",
+    levelBadge: "badge-b",
+    hours: "20 堂 (60h)",
+    uncon: 88,
+    unreg: 65,
+    noshow: 12,
+    lowatt: 11,
+    online25: 68,
+    online26: 19,
+    makeup: 69,
+    h1: 1,
+    h2: 0,
+    total: 1,
+    teacher: "葉奕志",
+    action: "雙軌進階消化",
+    stratClass: "strat-funnel",
+    h1Schedule: "Q2 週二、四 18:30-21:30 (葉奕志)",
+    h2Schedule: "H2 視保留池滾動",
+    analysis: "未消耗 88 人，實體補課 69 筆。與遊戲設計班形成雙軌進階，吸收遊戲原畫與 3D 角色貼圖需求。",
+    solution: "H1 定案 1 班於 Q2 平日晚（葉奕志），精實 20 堂，預計消化 80~90 人。"
+  },
+  {
+    name: "日本動畫職人養成班",
+    category: "遊戲動畫",
+    level: "A 綜合",
+    levelBadge: "badge-a",
+    hours: "24 堂 (72h)",
+    uncon: 368,
+    unreg: 305,
+    noshow: 46,
+    lowatt: 17,
+    online25: 43,
+    online26: 68,
+    makeup: 67,
+    h1: 1,
+    h2: 1,
+    total: 2,
+    teacher: "王家敏 / 王韋力 (日師連線)",
+    action: "跨國雙師旗艦",
+    stratClass: "strat-must",
+    h1Schedule: "Q1 週日 14:00-17:00 (雙師連線)",
+    h2Schedule: "Q3 週日 14:00-17:00 (雙師連線)",
+    analysis: "含本班 225 人 + Amps 74 人 + 人物角色 69 人，未消耗高達 368 人（未登記 305 人！）。跨國雙師連線成本高，實體校區根本無法負擔，線上直播為唯一合適載體。",
+    solution: "全年開 2 班（H1 定案 1 班，H2 保留 1 班）。王家敏/王韋力雙師連線，單班招收 80~100 人，將分散在全台的日本動畫夢想學員一次收攏！"
+  },
+  {
+    name: "After Effects 特效動畫",
+    category: "遊戲動畫",
+    level: "A 基礎",
+    levelBadge: "badge-a",
+    hours: "20 堂 (60h)",
+    uncon: 146,
+    unreg: 100,
+    noshow: 27,
+    lowatt: 19,
+    online25: 227,
+    online26: 59,
+    makeup: 55,
+    h1: 1,
+    h2: 1,
+    total: 2,
+    teacher: "戴禎儀",
+    action: "精實20堂穩開",
+    stratClass: "strat-must",
+    h1Schedule: "Q1 週一、三 18:30-21:30 (戴禎儀)",
+    h2Schedule: "Q4 週二、四 18:30-21:30 (戴禎儀)",
+    analysis: "未消耗 146 人（未登記 100 人），補課 55 筆。2025 年曾開出 227 人實績。過去 24 堂課後期流失率偏高，需改革為 20 堂精實規格。",
+    solution: "縮減為 20 堂精實版！全年開 2 班（H1 Q1 平日晚，H2 Q4 平日晚）。戴禎儀主導，大幅提升完課率並快速化解 146 人庫存。"
+  },
+  {
+    name: "UI 視覺介面設計班",
+    category: "視覺平面",
+    level: "A 基礎",
+    levelBadge: "badge-a",
+    hours: "20 堂 (60h)",
+    uncon: 72,
+    unreg: 56,
+    noshow: 4,
+    lowatt: 12,
+    online25: 54,
+    online26: 61,
+    makeup: 31,
+    h1: 1,
+    h2: 0,
+    total: 1,
+    teacher: "戴禎儀",
+    action: "精實20堂健康班",
+    stratClass: "strat-funnel",
+    h1Schedule: "Q1 週六 14:00-17:00 (戴禎儀)",
+    h2Schedule: "H2 視需求保留",
+    analysis: "連續兩年穩定招生 50~60 人，未消耗 72 人，補課 31 筆。 Figma / UI 設計剛性需求不減。",
+    solution: "精實 20 堂規格！H1 定案 1 班於 Q1 週末午（戴禎儀），健康消耗 70 人庫存。"
+  },
+  {
+    name: "★全 AI 音樂創作實戰",
+    category: "數位音樂",
+    level: "A 基礎",
+    levelBadge: "badge-a",
+    hours: "20 堂 (60h)",
+    uncon: 370,
+    unreg: 276,
+    noshow: 44,
+    lowatt: 50,
+    online25: 0,
+    online26: 0,
+    makeup: 119,
+    h1: 1,
+    h2: 1,
+    total: 2,
+    teacher: "周岳澄 / 推薦音樂名師",
+    action: "★超級藍海引流",
+    stratClass: "strat-ocean",
+    h1Schedule: "Q2 週日 10:00-13:00 (周岳澄) [全AI音樂創作]",
+    h2Schedule: "Q3 週日 10:00-13:00 (周岳澄) [數位音樂製作人]",
+    analysis: "四維數據整合挖出的「超級戰略金礦」！音樂系未消耗高達 370 人（音樂製作148+全AI 71+詞曲50+歌唱101），未登記高達 276 人！實體補課 119 筆中，跨區率高達 88.2%（全校跨區補課第一名）！過去線上 0 開班，學生在高雄/台中報名卻只能看台北錄影。",
+    solution: "突破性開班！現代 AI 生成音樂（Suno/Udio）與電腦 Logic/Cubase 編曲極適合線上直播螢幕分享！全年規劃 2 班（H1 Q2 定案開《全 AI 音樂創作》，H2 Q3 保留開《數位音樂製作人》）。徹底解決 88.2% 跨區痛點與 370 位待消化學員！"
+  },
+  {
+    name: "AutoCAD 設計實務班",
+    category: "關閉課",
+    level: "層級 1 關閉",
+    levelBadge: "badge-closed",
+    hours: "轉錄播 VOD",
+    uncon: 80,
+    unreg: 39,
+    noshow: 18,
+    lowatt: 23,
+    online25: 66,
+    online26: 0,
+    makeup: 82,
+    h1: 0,
+    h2: 0,
+    total: 0,
+    teacher: "停開 (開通 VOD 帳號)",
+    action: "100% 轉錄播 VOD",
+    stratClass: "strat-vod",
+    h1Schedule: "停開直播 (開通線上自主觀看)",
+    h2Schedule: "停開直播 (開通線上自主觀看)",
+    analysis: "產品部明確列為「層級 1 關閉科目，禁止招收新單」。未消耗 80 人，實體補課 82 筆。此類工具操作課不需浪費線上直播師資費用。",
+    solution: "DATE 線上直播 0 開班！100% 轉由「線上錄播自主觀看 (VOD) 方案」消化，教務開通觀看權限，零師資鐘點浪費，消保零風險。"
+  },
+  {
+    name: "Sketchup 3D 室內空間設計",
+    category: "關閉課",
+    level: "層級 1 關閉",
+    levelBadge: "badge-closed",
+    hours: "轉錄播 VOD",
+    uncon: 57,
+    unreg: 42,
+    noshow: 11,
+    lowatt: 4,
+    online25: 65,
+    online26: 0,
+    makeup: 59,
+    h1: 0,
+    h2: 0,
+    total: 0,
+    teacher: "停開 (開通 VOD 帳號)",
+    action: "100% 轉錄播 VOD",
+    stratClass: "strat-vod",
+    h1Schedule: "停開直播 (開通線上自主觀看)",
+    h2Schedule: "停開直播 (開通線上自主觀看)",
+    analysis: "產品部明令關閉與停售。未消耗 57 人，實體補課 59 筆。",
+    solution: "DATE 線上直播 0 開班！全面以 VOD 錄播觀看授權帳號消化既有 57 位學員。"
+  },
+  {
+    name: "漫畫故事力進化論",
+    category: "關閉課",
+    level: "層級 1 關閉",
+    levelBadge: "badge-closed",
+    hours: "劃撥整併",
+    uncon: 125,
+    unreg: 97,
+    noshow: 16,
+    lowatt: 12,
+    online25: 110,
+    online26: 0,
+    makeup: 6,
+    h1: 0,
+    h2: 0,
+    total: 0,
+    teacher: "劃撥至金芸萱",
+    action: "併入 Procreate 班",
+    stratClass: "strat-vod",
+    h1Schedule: "併入 Procreate 數位繪畫 (Q1)",
+    h2Schedule: "併入 Procreate 數位繪畫 (Q3)",
+    analysis: "產品部明令關閉停售。未消耗 125 人（未登記 97 人）。",
+    solution: "不開獨立直播班。由教務處將 125 位學員名額直接劃撥併入金芸萱老師《Procreate 數位繪畫 (24堂)》直播班消化，並提供故事力專題錄影自主複習。"
+  }
+];
+
+// Populate Master Table
+function renderMasterTable(data) {
+  const tbody = document.getElementById("masterTbody");
+  tbody.innerHTML = "";
+
+  data.forEach((item, index) => {
+    const tr = document.createElement("tr");
+    tr.className = "clickable";
+    tr.onclick = () => openModal(item);
+
+    tr.innerHTML = `
+      <td><strong>${item.name}</strong></td>
+      <td><span style="color:#64748b;">${item.category}</span></td>
+      <td><span class="badge-tag ${item.levelBadge}">${item.level}</span></td>
+      <td><span style="font-size:11.5px;">${item.hours}</span></td>
+      <td><span class="stat-num stat-highlight">${item.uncon}</span></td>
+      <td><span class="stat-num">${item.unreg}</span></td>
+      <td><span class="stat-num">${item.online25} / ${item.online26}</span></td>
+      <td><span class="stat-num">${item.makeup}</span></td>
+      <td><span class="stat-num" style="color:#16a34a; font-weight:800;">${item.h1} 班</span></td>
+      <td><span class="stat-num" style="color:#d97706; font-weight:800;">${item.h2} 班</span></td>
+      <td><span class="stat-num" style="color:#2563eb; font-weight:800;">${item.total} 班</span></td>
+      <td><span style="font-weight:600; font-size:12px;">${item.teacher}</span></td>
+      <td><span class="strat-badge ${item.stratClass}">${item.action}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Render H1 Schedule Cards
+function renderH1Cards() {
+  const container = document.getElementById("h1Grid");
+  container.innerHTML = "";
+
+  const h1Courses = [
+    { title: "商用視覺平面設計 (Q1 週末早)", code: "Q1", time: "週日 10:00-13:00 (24堂)", teacher: "王仁駿", target: "120 人", badge: "A 基礎", note: "大排基石引流，清空 249 人未登記大戶" },
+    { title: "商用視覺平面設計 (Q2 平日晚)", code: "Q2", time: "週二、四 18:30-21:30 (24堂)", teacher: "戴禎儀", target: "110 人", badge: "A 基礎", note: "雙師分流，吸納上班族平日進修" },
+    { title: "商用平面設計進階班 (Q2 平日晚)", code: "Q2", time: "週二、四 18:30-21:30 (24堂)", teacher: "王仁駿", target: "100 人", badge: "B 進階一", note: "承接 Q1 基礎畢業生，消化 148 未登記" },
+    { title: "AI品牌系統創建 (Q2 週末午)", code: "Q2", time: "週六 14:00-17:00 (18堂)", teacher: "戴禎儀", target: "90 人", badge: "B 進階一", note: "2026 首開 91 人爆款，2027 AI 升級核心" },
+    { title: "數位漫畫班 (Q1 寒假特訓)", code: "Q1", time: "週一、三 18:30-21:30 (24堂)", teacher: "曾建華", target: "130 人", badge: "A 基礎", note: "強力回補！終結 231 筆補課外溢民怨" },
+    { title: "數位漫畫班 (Q2 週末午)", code: "Q2", time: "週日 14:00-17:00 (24堂)", teacher: "曾建華", target: "110 人", badge: "A 基礎", note: "曾建華名師二棒，穩定承接青少年電繪潮" },
+    { title: "數位繪畫班 (Q1 平日晚)", code: "Q1", time: "週二、四 18:30-21:30 (24堂)", teacher: "柯光曜", target: "110 人", badge: "A 基礎", note: "電繪長青樹，消化 39 個實體班外溢" },
+    { title: "Procreate 數位繪畫 (Q1 週末早)", code: "Q1", time: "週六 18:00-21:00 (24堂)", teacher: "金芸萱", target: "120 人", badge: "A 基礎", note: "劃撥併入《漫畫故事力 125人》，雙軌直播+錄播" },
+    { title: "IP 角色人物創作班 (Q2 平日晚)", code: "Q2", time: "週二、四 18:30-21:30 (20堂)", teacher: "柯光曜", target: "95 人", badge: "B 進階一", note: "開拓 163 人完全未登記幽靈庫存，全台合併" },
+    { title: "Vtuber 創作全攻略 (Q1 週末早)", code: "Q1", time: "週六 18:00-21:00 (24堂)", teacher: "黃俊傑", target: "130 人", badge: "A 基礎", note: "全校完課率最高 (60.9%) 王牌梯隊龍頭" },
+    { title: "V皮角色繪製 (Q2 週末早)", code: "Q2", time: "週六 18:00-21:00 (24堂)", teacher: "黃俊傑", target: "130 人", badge: "B 進階一", note: "承接 Q1 全攻略畢業生，單班超高產能" },
+    { title: "Live2D 動畫製作 (Q2 週末午)", code: "Q2", time: "週日 10:00-13:00 (24堂)", teacher: "黃俊傑", target: "130 人", badge: "C 進階二", note: "梯隊垂直閉環終點，100% 商業出道級作品" },
+    { title: "AI 遊戲設計班 (Q1 平日晚)", code: "Q1", time: "週二、四 18:30-21:30 (24堂)", teacher: "葉奕志", target: "120 人", badge: "A 基礎", note: "成長 128% 爆款，全面導入 AI 遊戲流程" },
+    { title: "遊戲角色美術班 (Q2 平日晚)", code: "Q2", time: "週二、四 18:30-21:30 (20堂)", teacher: "葉奕志", target: "85 人", badge: "B 進階一", note: "雙軌專案銜接，消化 88 位未消耗學員" },
+    { title: "日本動畫職人養成班 (Q1 週末午)", code: "Q1", time: "週日 14:00-17:00 (24堂)", teacher: "王家敏/王韋力", target: "90 人", badge: "A 綜合", note: "跨國雙師日方連線，消化 368 人動漫庫存" },
+    { title: "After Effects 特效動畫 (Q1 平日晚)", code: "Q1", time: "週一、三 18:30-21:30 (20堂)", teacher: "戴禎儀", target: "95 人", badge: "A 基礎", note: "改革為 20 堂精實版，大幅提升完課率" },
+    { title: "★全 AI 音樂創作實戰 (Q2 週末早)", code: "Q2", time: "週日 09:30-12:30 (20堂)", teacher: "周岳澄", target: "100 人", badge: "A 基礎", note: "★戰略新藍海！化解 88.2% 跨區補課與 370 庫存" }
+  ];
+
+  h1Courses.forEach(c => {
+    const box = document.createElement("div");
+    box.className = `class-box ${c.code.toLowerCase()}`;
+    box.innerHTML = `
+      <div class="class-header">
+        <div class="class-title">${c.title}</div>
+        <div class="class-quarter">${c.code} 檔期</div>
+      </div>
+      <div class="class-details">
+        <div class="detail-row">
+          <span>時段堂數</span>
+          <span>${c.time}</span>
+        </div>
+        <div class="detail-row">
+          <span>主力師資</span>
+          <span>${c.teacher}</span>
+        </div>
+        <div class="detail-row">
+          <span>階層漏斗</span>
+          <span>${c.badge}</span>
+        </div>
+        <div class="detail-row">
+          <span>目標人次</span>
+          <span style="color:#2563eb;">${c.target}</span>
+        </div>
+      </div>
+      <div class="class-footer">
+        <span>${c.note}</span>
+      </div>
+    `;
+    container.appendChild(box);
+  });
+}
+
+// Render H2 Cards
+function renderH2Cards() {
+  const container = document.getElementById("h2Grid");
+  container.innerHTML = "";
+
+  const h2Courses = [
+    { title: "商用視覺平面設計 (Q3 暑假平日晚)", time: "週二、四 18:30-21:30 (24堂)", teacher: "王仁駿", target: "120 人", trigger: "暑假學生潮溢流 / Q1 基礎班滿班" },
+    { title: "商用視覺平面設計 (Q4 週末早)", time: "週日 10:00-13:00 (24堂)", teacher: "戴禎儀", target: "100 人", trigger: "年末轉職進修潮啟動" },
+    { title: "商用平面設計進階班 (Q4 平日晚)", time: "週二、四 18:30-21:30 (24堂)", teacher: "王仁駿", target: "95 人", trigger: "Q2 基礎班結業生轉換" },
+    { title: "AI品牌系統創建 (Q3 平日晚)", time: "週六 14:00-17:00 (18堂)", teacher: "戴禎儀", target: "90 人", trigger: "AI 企業專案加開池" },
+    { title: "數位漫畫進階班 (Q3 暑假週末午)", time: "週日 14:00-17:00 (24堂)", teacher: "曾建華", target: "90 人", trigger: "H1 漫畫雙班結業生作品集班" },
+    { title: "數位繪畫班 (Q3 暑期平日晚)", time: "週二、四 18:30-21:30 (24堂)", teacher: "柯光曜", target: "110 人", trigger: "暑期電繪高峰檔" },
+    { title: "Procreate 數位繪畫 (Q3 週末午)", time: "週日 10:00-13:00 (24堂)", teacher: "金芸萱", target: "110 人", trigger: "平板插畫暑期檔" },
+    { title: "Vtuber 創作全攻略 (Q3 暑假週末早)", time: "週六 18:00-21:00 (24堂)", teacher: "黃俊傑", target: "130 人", trigger: "年度第二梯隊 Q3 引流啟動" },
+    { title: "V皮角色繪製 (Q4 週末早)", time: "週六 18:00-21:00 (24堂)", teacher: "黃俊傑", target: "130 人", trigger: "第二梯隊立繪推進" },
+    { title: "Live2D 動畫製作 (Q4 週末午)", time: "週日 10:00-13:00 (24堂)", teacher: "黃俊傑", target: "130 人", trigger: "第二梯隊商業出道收斂" },
+    { title: "★數位音樂製作人實戰 (Q3 週末早)", time: "週日 09:30-12:30 (20堂)", teacher: "周岳澄", target: "100 人", trigger: "Q2 全 AI 音樂班結業生進階" }
+  ];
+
+  h2Courses.forEach((c, idx) => {
+    const box = document.createElement("div");
+    box.className = "class-box reserve";
+    box.innerHTML = `
+      <div class="class-header">
+        <div class="class-title">${c.title}</div>
+        <div class="class-quarter" style="background:#fef3c7; color:#92400e;">4 成保留池 #${idx+1}</div>
+      </div>
+      <div class="class-details">
+        <div class="detail-row">
+          <span>預備時段</span>
+          <span>${c.time}</span>
+        </div>
+        <div class="detail-row">
+          <span>主力師資</span>
+          <span>${c.teacher}</span>
+        </div>
+        <div class="detail-row">
+          <span>啟動條件</span>
+          <span style="color:#d97706;">${c.trigger}</span>
+        </div>
+        <div class="detail-row">
+          <span>預估容量</span>
+          <span style="color:#2563eb;">${c.target}</span>
+        </div>
+      </div>
+      <div class="class-footer">
+        <span>彈性滾動機制：新學員報名 ≥ 15 人即刻轉為正式大排</span>
+      </div>
+    `;
+    container.appendChild(box);
+  });
+}
+
+// Modal open/close
+function openModal(item) {
+  document.getElementById("mTitle").innerText = item.name;
+  document.getElementById("mCategory").innerText = item.category;
+  document.getElementById("mMeta").innerText = `${item.level} ｜ ${item.teacher} ｜ ${item.hours}`;
+  document.getElementById("mUncon").innerText = item.uncon + " 人";
+  document.getElementById("mUnreg").innerText = item.unreg + " 人";
+  document.getElementById("mOnline").innerText = `${item.online25} / ${item.online26} 人`;
+  document.getElementById("mMakeup").innerText = item.makeup + " 筆";
+  document.getElementById("mAnalysis").innerText = item.analysis;
+  document.getElementById("mSolution").innerText = item.solution;
+
+  document.getElementById("detailModal").classList.add("active");
+}
+function closeModal() {
+  document.getElementById("detailModal").classList.remove("active");
+}
+
+// Tab Switching
+function switchTab(tabId) {
+  document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+
+  document.getElementById(tabId).classList.add("active");
+  document.getElementById("btn-" + tabId).classList.add("active");
+}
+
+// Filters
+function filterTable(cat) {
+  document.querySelectorAll(".filter-pill").forEach(p => p.classList.remove("active"));
+  event.target.classList.add("active");
+
+  if (cat === "all") {
+    renderMasterTable(courseData);
+  } else {
+    const filtered = courseData.filter(d => d.category.includes(cat) || d.name.includes(cat));
+    renderMasterTable(filtered);
+  }
+}
+
+function searchCourses() {
+  const query = document.getElementById("courseSearch").value.toLowerCase().trim();
+  const filtered = courseData.filter(d => 
+    d.name.toLowerCase().includes(query) || 
+    d.teacher.toLowerCase().includes(query) || 
+    d.category.toLowerCase().includes(query)
+  );
+  renderMasterTable(filtered);
+}
+
+// Init
+window.onload = function() {
+  renderMasterTable(courseData);
+  renderH1Cards();
+  renderH2Cards();
+};
+
+function copyShareLink(btn) {
+  const shareUrl = 'https://dawei-survey.onrender.com/static/online_live_2027_master_plan.html';
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      const orig = btn.innerHTML;
+      btn.innerHTML = '✅ 已複製公開網址！';
+      setTimeout(() => { btn.innerHTML = orig; }, 2500);
+    }).catch(() => {
+      prompt('請複製以下公開分享網址發送給同事：', shareUrl);
+    });
+  } else {
+    prompt('請複製以下公開分享網址發送給同事：', shareUrl);
+  }
+}
+
+</script>
+</body>
+</html>
