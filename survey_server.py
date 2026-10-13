@@ -332,7 +332,14 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 except Exception as err:
                     print(f"[CloudSync Warning] 本機提交同步至雲端失敗: {err}", flush=True)
 
-            msg = "感謝您的寶貴回饋！問卷已成功送出。" if is_pure_feedback else "感謝您的回饋！單元課兌換申請已受理。"
+            if is_pure_feedback:
+                if data.get("phone") or data.get("line_id"):
+                    msg = "感謝您的回饋！開課通知與舊生早鳥優惠預約已受理。"
+                else:
+                    msg = "感謝您的寶貴回饋！問卷已成功送出。"
+            else:
+                msg = "感謝您的回饋！單元課兌換申請已受理。"
+
             self.send_json(200, {
                 "status": "success",
                 "message": msg,

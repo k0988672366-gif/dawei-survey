@@ -266,6 +266,11 @@ async function loadClassConfig() {
             `;
             topicsContainer.appendChild(lbl);
           });
+
+          // 綁定 12 主題選擇變更事件以智能動態控制個資區塊
+          topicsContainer.querySelectorAll('input[name="followup_interest_topic"]').forEach(r => {
+            r.addEventListener('change', updateDynamicContactVisibility);
+          });
         }
       }
     }
@@ -312,6 +317,9 @@ async function loadClassConfig() {
         rewardStepNum.textContent = String(currentStep).padStart(2, '0');
       }
     }
+
+    // 智能動態聯絡資料顯隱與必填規則初始化
+    updateDynamicContactVisibility();
   } catch (e) {
     console.log('Using default class configuration');
   }
@@ -337,6 +345,9 @@ function initScheduleCheckboxEvents() {
     }
     if (hiddenInput) {
       hiddenInput.value = selected.join(" 、 ");
+    }
+    if (typeof updateDynamicContactVisibility === 'function') {
+      updateDynamicContactVisibility();
     }
   }
 
@@ -475,136 +486,173 @@ function initTagSelectors() {
   }
 }
 
-// 根據後台好禮設定套用顯隱邏輯
-function applyGiftVisibility() {
+// 全域動態聯絡資訊與序號排版控制器 (智能模式)
+function updateDynamicContactVisibility() {
   const isGiftEnabled = (window.isGiftEnabled === true);
   const giftBanner = document.getElementById('heroGiftBanner');
   const q11 = document.getElementById('q11WantsRewardContainer');
   const rewardSection = document.getElementById('rewardRedemptionSection');
+  const contactSection = document.getElementById('contactInfoSection');
+  const contactTitle = document.getElementById('contactSectionTitle');
+  const contactReminder = document.getElementById('contactSectionReminder');
   const submitBtn = document.getElementById('submitBtn');
   const secNote = document.getElementById('securityNoteText');
 
-  if (!isGiftEnabled) {
-    if (giftBanner) giftBanner.style.display = 'none';
-    if (q11) q11.style.display = 'none';
-    if (rewardSection) rewardSection.style.display = 'none';
+  const studentNameInput = document.getElementById('studentNameInput');
+  const studentPhoneInput = document.getElementById('studentPhoneInput');
+  const studentLineInput = document.getElementById('studentLineInput');
+  const privacyAgreeCheckbox = document.getElementById('privacyAgreeCheckbox');
+  const nameReqMark = document.getElementById('nameReqMark');
+  const phoneReqMark = document.getElementById('phoneReqMark');
+  const lineReqMark = document.getElementById('lineReqMark');
 
-    // 自動勾選無需兌換好禮
-    const noRadio = document.querySelector('input[name="wants_reward"][value="no"]');
-    if (noRadio) noRadio.checked = true;
+  // 1. 好禮橫幅與 Q11 意願按鈕顯隱
+  if (giftBanner) giftBanner.style.display = isGiftEnabled ? 'flex' : 'none';
+  if (q11) q11.style.display = isGiftEnabled ? 'block' : 'none';
 
-    // 移除第 05 區所有必填限制
-    if (rewardSection) {
-      const requiredFields = [
-        'input[name="student_name"]',
-        'input[name="phone"]',
-        'input[name="privacy_agree"]'
-      ];
-      requiredFields.forEach(sel => {
-        const el = rewardSection.querySelector(sel);
-        if (el) el.removeAttribute('required');
-      });
-      const courseRadios = rewardSection.querySelectorAll('input[name="selected_reward_course"]');
-      courseRadios.forEach(r => r.removeAttribute('required'));
-    }
+  // 2. 好禮單元課清單顯隱
+  const wantsRewardVal = isGiftEnabled ? (document.querySelector('input[name="wants_reward"]:checked')?.value || 'yes') : 'no';
+  const hasRewardInterest = isGiftEnabled && (wantsRewardVal !== 'no');
+  if (rewardSection) {
+    rewardSection.style.display = hasRewardInterest ? 'block' : 'none';
+    const courseRadios = rewardSection.querySelectorAll('input[name="selected_reward_course"]');
+    courseRadios.forEach(r => {
+      if (hasRewardInterest) r.setAttribute('required', 'required');
+      else r.removeAttribute('required');
+    });
+  }
 
-    if (submitBtn) {
-      submitBtn.innerHTML = '<span>🚀 送出匿名結業回饋</span>';
-    }
-    if (secNote) {
-      secNote.textContent = '🔒 我們嚴格保護您的回饋，資訊僅用於教學檢討與持續優化課程品質';
-    }
-  } else {
-    if (giftBanner) giftBanner.style.display = 'flex';
-    if (q11) q11.style.display = 'block';
-
-    const wantsVal = document.querySelector('input[name="wants_reward"]:checked')?.value || 'yes';
-    if (rewardSection) {
-      rewardSection.style.display = (wantsVal === 'no') ? 'none' : 'block';
-    }
-    if (submitBtn) {
-      submitBtn.innerHTML = (wantsVal === 'no') 
-        ? '<span>🚀 送出結業回饋問卷</span>' 
-        : '<span>🎁 登記兌換 ＆ 送出結業問卷</span>';
-    }
-    if (secNote) {
-      secNote.textContent = '🔒 我們嚴格保護您的個資，資訊僅用於教學檢討與本次單元課兌換聯繫';
+  // 3. 判斷 12. 延伸進階主題是否有選 (且不是暫無規劃)
+  let hasTopicInterest = false;
+  if (window.isFollowupTopicEnabled) {
+    const checkedTopicRadio = document.querySelector('input[name="followup_interest_topic"]:checked');
+    if (checkedTopicRadio && checkedTopicRadio.value && checkedTopicRadio.value !== '暫無規劃（先吸收本次內容為主）') {
+      hasTopicInterest = true;
     }
   }
+
+  // 4. 判斷 13. 開課課表梯次與早鳥優惠是否有勾選 (且不是暫不需要)
+  let hasScheduleInterest = false;
+  if (window.isFollowupScheduleEnabled) {
+    const checkedSchedules = document.querySelectorAll('.schedule-checkbox:checked');
+    const offerAllChk = document.getElementById('followupOfferAllCheckbox');
+    if ((checkedSchedules && checkedSchedules.length > 0) || (offerAllChk && offerAllChk.checked)) {
+      hasScheduleInterest = true;
+    }
+  }
+
+  // 5. 綜合判斷是否需要留下個人資料
+  const isContactRequired = hasRewardInterest || hasTopicInterest || hasScheduleInterest;
+  window.isContactRequired = isContactRequired;
+
+  if (contactSection) {
+    if (isContactRequired) {
+      contactSection.style.display = 'block';
+
+      // 設置必填 (姓名、手機、LINE、個資同意)
+      if (studentNameInput) studentNameInput.setAttribute('required', 'required');
+      if (studentPhoneInput) studentPhoneInput.setAttribute('required', 'required');
+      if (studentLineInput) studentLineInput.setAttribute('required', 'required');
+      if (privacyAgreeCheckbox) privacyAgreeCheckbox.setAttribute('required', 'required');
+
+      if (nameReqMark) nameReqMark.style.display = 'inline';
+      if (phoneReqMark) phoneReqMark.style.display = 'inline';
+      if (lineReqMark) lineReqMark.style.display = 'inline';
+
+      // 依情境切換文案與提交按鈕
+      if (hasRewardInterest) {
+        if (contactTitle) contactTitle.innerHTML = '🎁 登記單元課兌換 ＆ 領取開課通知：學員聯絡資訊';
+        if (contactReminder) {
+          contactReminder.innerHTML = '📞 <strong>開通通知與專屬優惠</strong>：請填寫正確的手機號碼與 LINE ID，專員將於 1~2 工作天內主動聯繫為您開通所選線上單元課，並優先傳送最新開課梯次通知與早鳥折價券！';
+        }
+        if (submitBtn) submitBtn.innerHTML = '<span>🎁 登記兌換 ＆ 送出結業問卷</span>';
+      } else {
+        if (contactTitle) contactTitle.innerHTML = '📮 接收開課通知 ＆ 領取舊生早鳥優惠：學員聯絡資訊';
+        if (contactReminder) {
+          contactReminder.innerHTML = '📞 <strong>早鳥優惠碼與梯次通知</strong>：請填寫正確的手機號碼與 LINE ID，開課前專員將在第一時間優先透過 LINE / 簡訊為您傳送【最新課綱大綱、開課梯次通知與舊生專屬早鳥優惠碼】！';
+        }
+        if (submitBtn) submitBtn.innerHTML = '<span>🚀 預約開課優惠 ＆ 送出結業問卷</span>';
+      }
+      if (secNote) {
+        secNote.textContent = '🔒 我們嚴格保護您的個資，資訊僅用於教學檢討、開課通知與專屬早鳥優惠發送';
+      }
+    } else {
+      contactSection.style.display = 'none';
+
+      // 移除必填限制
+      if (studentNameInput) studentNameInput.removeAttribute('required');
+      if (studentPhoneInput) studentPhoneInput.removeAttribute('required');
+      if (studentLineInput) studentLineInput.removeAttribute('required');
+      if (privacyAgreeCheckbox) privacyAgreeCheckbox.removeAttribute('required');
+
+      if (submitBtn) submitBtn.innerHTML = '<span>🚀 送出匿名結業回饋</span>';
+      if (secNote) {
+        secNote.textContent = '🔒 我們嚴格保護您的回饋，資訊僅用於教學檢討與持續優化課程品質';
+      }
+    }
+  }
+
+  // 6. 動態自適應更新所有區塊之 step-num 序號
+  updateAllSectionStepNumbers();
+}
+
+function updateAllSectionStepNumbers() {
+  let step = 5;
+  const topicSec = document.getElementById('followupTopicSection');
+  if (topicSec && topicSec.style.display !== 'none') {
+    const el = document.getElementById('followupTopicStepNum');
+    if (el) el.textContent = String(step++).padStart(2, '0');
+  }
+
+  const schSec = document.getElementById('followupScheduleSection');
+  if (schSec && schSec.style.display !== 'none') {
+    const el = document.getElementById('followupScheduleStepNum');
+    if (el) el.textContent = String(step++).padStart(2, '0');
+  }
+
+  const rewardSec = document.getElementById('rewardRedemptionSection');
+  if (rewardSec && rewardSec.style.display !== 'none') {
+    const el = document.getElementById('rewardStepNum') || rewardSec.querySelector('.step-num');
+    if (el) el.textContent = String(step++).padStart(2, '0');
+  }
+
+  const contactSec = document.getElementById('contactInfoSection');
+  if (contactSec && contactSec.style.display !== 'none') {
+    const el = document.getElementById('contactStepNum');
+    if (el) el.textContent = String(step++).padStart(2, '0');
+  }
+}
+
+// 根據後台好禮設定套用顯隱邏輯
+function applyGiftVisibility() {
+  updateDynamicContactVisibility();
 }
 
 // 初始化是否兌換好禮之動態展開/折疊
 function initRewardToggle() {
   const wantsRadios = document.querySelectorAll('input[name="wants_reward"]');
-  const rewardSection = document.getElementById('rewardRedemptionSection');
-  const submitBtn = document.getElementById('submitBtn');
   const yesLabel = document.getElementById('wantsYesLabel');
   const noLabel = document.getElementById('wantsNoLabel');
   
-  if (!wantsRadios.length || !rewardSection) return;
+  if (!wantsRadios.length) return;
 
-  const requiredFields = [
-    'input[name="student_name"]',
-    'input[name="phone"]',
-    'input[name="privacy_agree"]'
-  ];
-
-  function updateVisibility() {
-    if (window.isGiftEnabled === false) {
-      applyGiftVisibility();
-      return;
-    }
-
+  function updateCardsStyle() {
     const selectedVal = document.querySelector('input[name="wants_reward"]:checked')?.value || 'yes';
-    if (selectedVal === 'no') {
-      rewardSection.style.display = 'none';
-      if (yesLabel) {
-        yesLabel.style.borderColor = 'var(--border-color)';
-        yesLabel.style.background = '#ffffff';
-      }
-      if (noLabel) {
-        noLabel.style.borderColor = 'var(--accent-primary)';
-        noLabel.style.background = 'var(--accent-soft)';
-      }
-      // 移除必填限制
-      requiredFields.forEach(sel => {
-        const el = rewardSection.querySelector(sel);
-        if (el) el.removeAttribute('required');
-      });
-      const courseRadios = rewardSection.querySelectorAll('input[name="selected_reward_course"]');
-      courseRadios.forEach(r => r.removeAttribute('required'));
-
-      if (submitBtn) {
-        submitBtn.innerHTML = '<span>🚀 送出結業回饋問卷</span>';
-      }
-    } else {
-      rewardSection.style.display = 'block';
-      if (yesLabel) {
-        yesLabel.style.borderColor = 'var(--gold)';
-        yesLabel.style.background = 'var(--gold-soft)';
-      }
-      if (noLabel) {
-        noLabel.style.borderColor = 'var(--border-color)';
-        noLabel.style.background = '#ffffff';
-      }
-      // 恢復必填限制 (姓名、電話、個資同意；LINE 與 Email 保持選填)
-      requiredFields.forEach(sel => {
-        const el = rewardSection.querySelector(sel);
-        if (el) el.setAttribute('required', 'required');
-      });
-      const courseRadios = rewardSection.querySelectorAll('input[name="selected_reward_course"]');
-      courseRadios.forEach(r => r.setAttribute('required', 'required'));
-
-      if (submitBtn) {
-        submitBtn.innerHTML = '<span>🎁 登記兌換 ＆ 送出結業問卷</span>';
-      }
+    if (yesLabel) {
+      yesLabel.style.borderColor = (selectedVal === 'yes') ? 'var(--gold)' : 'var(--border-color)';
+      yesLabel.style.background = (selectedVal === 'yes') ? 'var(--gold-soft)' : '#ffffff';
     }
+    if (noLabel) {
+      noLabel.style.borderColor = (selectedVal === 'no') ? 'var(--accent-primary)' : 'var(--border-color)';
+      noLabel.style.background = (selectedVal === 'no') ? 'var(--accent-soft)' : '#ffffff';
+    }
+    updateDynamicContactVisibility();
   }
 
   wantsRadios.forEach(r => {
-    r.addEventListener('change', updateVisibility);
+    r.addEventListener('change', updateCardsStyle);
   });
-  updateVisibility();
+  updateCardsStyle();
 }
 
 // 初始化學習吃力/卡關「其他」自訂輸入框切換
@@ -670,15 +718,25 @@ function initFormSubmit() {
       }
     }
 
-    const isGiftEnabled = window.isGiftEnabled !== false;
+    const isGiftEnabled = window.isGiftEnabled === true;
     const wantsReward = isGiftEnabled && (data.wants_reward !== 'no');
+    const isContactRequired = window.isContactRequired === true;
+
     if (!wantsReward) {
       data.wants_reward = 'no';
-      data.student_name = data.student_name || '匿名學員';
       data.selected_reward_course = isGiftEnabled ? '無需兌換好禮' : '未開放兌換 (純回饋模式)';
+    }
+
+    if (!isContactRequired) {
+      data.student_name = data.student_name ? data.student_name.trim() : '匿名學員';
       data.phone = '';
       data.line_id = '';
       data.email = '';
+    } else {
+      data.student_name = data.student_name ? data.student_name.trim() : '學員';
+      data.phone = data.phone ? data.phone.trim() : '';
+      data.line_id = data.line_id ? data.line_id.trim() : '';
+      data.email = data.email ? data.email.trim() : '';
     }
 
     if (!window.isFollowupTopicEnabled) {
@@ -696,7 +754,7 @@ function initFormSubmit() {
     submitBtn.disabled = true;
     submitBtn.innerHTML = wantsReward 
       ? '<span>🚀 兌換申請送出中...</span>' 
-      : '<span>🚀 問卷送出中...</span>';
+      : (isContactRequired ? '<span>🚀 預約優惠送出中...</span>' : '<span>🚀 問卷送出中...</span>');
 
     try {
       const response = await fetch('/api/submit', {
@@ -716,28 +774,39 @@ function initFormSubmit() {
         const completedGiftBox = document.getElementById('completedGiftBox');
         const completedRewardCourseName = document.getElementById('completedRewardCourseName');
 
-        if (!wantsReward) {
-          if (modalTitle) modalTitle.textContent = '🎉 問卷回饋已成功送出！';
-          if (modalSub) modalSub.textContent = '非常感謝您撥冗填寫寶貴意見，您的回饋將幫助教學團隊持續打磨更好的學習體驗 ✨';
-          if (modalGiftBox) modalGiftBox.style.display = 'none';
-
-          if (completedTitle) completedTitle.textContent = '🎉 問卷回饋已成功送出！';
-          if (completedSub) completedSub.textContent = '非常感謝您撥冗填寫寶貴意見，您的回饋將幫助教學團隊持續打磨更好的學習體驗 ✨';
-          if (completedGiftBox) completedGiftBox.style.display = 'none';
-        } else {
-          if (modalTitle) modalTitle.textContent = '🎉 問卷回饋與兌換申請已受理！';
-          if (modalSub) modalSub.textContent = '感謝您的認真填寫，您的寶貴意見將幫助教學團隊持續打磨更好的學習體驗 ✨';
+        if (wantsReward) {
+          const t = '🎉 問卷回饋與兌換申請已受理！';
+          const s = '感謝您的認真填寫，您的寶貴意見將幫助教學團隊持續打磨更好的學習體驗 ✨';
+          if (modalTitle) modalTitle.textContent = t;
+          if (modalSub) modalSub.textContent = s;
           if (modalGiftBox) modalGiftBox.style.display = 'block';
           if (modalRewardCourseName && data.selected_reward_course) {
             modalRewardCourseName.textContent = data.selected_reward_course;
           }
-
-          if (completedTitle) completedTitle.textContent = '🎉 問卷回饋與兌換申請已受理！';
-          if (completedSub) completedSub.textContent = '感謝您的認真填寫，您的寶貴意見將幫助教學團隊持續打磨更好的學習體驗 ✨';
+          if (completedTitle) completedTitle.textContent = t;
+          if (completedSub) completedSub.textContent = s;
           if (completedGiftBox) completedGiftBox.style.display = 'block';
           if (completedRewardCourseName && data.selected_reward_course) {
             completedRewardCourseName.textContent = data.selected_reward_course;
           }
+        } else if (isContactRequired) {
+          const t = '🎉 問卷回饋與開課早鳥優惠預約已受理！';
+          const s = '感謝您的認真填寫！專員將在開課前優先以 LINE / 簡訊為您傳送最新開課通知與專屬早鳥優惠碼 ✨';
+          if (modalTitle) modalTitle.textContent = t;
+          if (modalSub) modalSub.textContent = s;
+          if (modalGiftBox) modalGiftBox.style.display = 'none';
+          if (completedTitle) completedTitle.textContent = t;
+          if (completedSub) completedSub.textContent = s;
+          if (completedGiftBox) completedGiftBox.style.display = 'none';
+        } else {
+          const t = '🎉 問卷回饋已成功送出！';
+          const s = '非常感謝您撥冗填寫寶貴意見，您的回饋將幫助教學團隊持續打磨更好的學習體驗 ✨';
+          if (modalTitle) modalTitle.textContent = t;
+          if (modalSub) modalSub.textContent = s;
+          if (modalGiftBox) modalGiftBox.style.display = 'none';
+          if (completedTitle) completedTitle.textContent = t;
+          if (completedSub) completedSub.textContent = s;
+          if (completedGiftBox) completedGiftBox.style.display = 'none';
         }
 
         if (completedCard) {

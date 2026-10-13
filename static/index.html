@@ -380,27 +380,35 @@
             </label>
           </div>
         </div>
+      </section>
 
-        <div class="gift-reminder" style="margin-top: 18px;">
-          📞 <strong>開通通知聯絡資訊</strong>：請填寫正確的手機號碼，以便聯繫您通知兌換與開通線上單元課（LINE ID 與 Email 為選填）。
+      <!-- 區塊: 學員聯絡資訊 (智能連動：有選延伸主題/課表/早鳥/好禮時自動展開並設為必填) -->
+      <section class="form-section" id="contactInfoSection" style="display: none;">
+        <div class="section-title">
+          <span class="step-num" id="contactStepNum">06</span>
+          <h3 id="contactSectionTitle">📮 領取開課優惠 ＆ 學員聯絡資訊</h3>
+        </div>
+
+        <div class="gift-reminder" id="contactSectionReminder" style="margin-bottom: 18px;">
+          📞 <strong>專屬開課通知與早鳥優惠領取</strong>：請填寫正確的聯繫方式，開課前專員將以 LINE / 簡訊優先為您傳送【最新課綱大綱、開課梯次通知與舊生專屬早鳥優惠碼】！
         </div>
 
         <div class="input-grid">
           <div class="question-group">
-            <label class="question-label">您的稱呼／姓名 <span class="req">*</span></label>
-            <input type="text" name="student_name" class="text-input" placeholder="例如：陳小艾、Tom" required>
+            <label class="question-label">您的稱呼／姓名 <span class="req" id="nameReqMark">*</span></label>
+            <input type="text" name="student_name" id="studentNameInput" class="text-input" placeholder="例如：陳小艾、Tom">
           </div>
           <div class="question-group">
-            <label class="question-label">手機號碼 (電話/簡訊通知) <span class="req">*</span></label>
-            <input type="tel" name="phone" class="text-input" placeholder="例如：0912-345-678" required>
+            <label class="question-label">手機號碼 (接收簡訊早鳥碼與開課通知) <span class="req" id="phoneReqMark">*</span></label>
+            <input type="tel" name="phone" id="studentPhoneInput" class="text-input" placeholder="例如：0912-345-678">
           </div>
           <div class="question-group">
-            <label class="question-label">LINE ID (選填，方便私訊聯繫)</label>
-            <input type="text" name="line_id" class="text-input" placeholder="例如：line_user123">
+            <label class="question-label">LINE ID (方便專員傳送課表與一對一客服) <span class="req" id="lineReqMark">*</span></label>
+            <input type="text" name="line_id" id="studentLineInput" class="text-input" placeholder="例如：line_user123 (若無可填手機)">
           </div>
           <div class="question-group">
             <label class="question-label">Email 電子信箱 (選填，寄送開通信件)</label>
-            <input type="email" name="email" class="text-input" placeholder="例如：name@example.com">
+            <input type="email" name="email" id="studentEmailInput" class="text-input" placeholder="例如：name@example.com">
           </div>
         </div>
 
@@ -410,11 +418,11 @@
             🛡️ 個人資料蒐集與隱私保護告知（符合個人資料保護法規定）
           </div>
           <p class="privacy-notice-text">
-            依據《個人資料保護法》第八條規定，本問卷所蒐集之個人資料（姓名、電話、LINE ID、Email），僅供主辦單位進行本次教學滿意度分析、以及後台專員聯繫開通您所勾選之免費線上單元課使用。本單位嚴格遵循資訊安全與隱私規範，絕不向第三方洩漏或移作未授權之推銷用途，請安心填寫。
+            依據《個人資料保護法》第八條規定，本問卷所蒐集之個人資料（姓名、電話、LINE ID、Email），僅供主辦單位進行本次教學滿意度分析、以及後台專員優先為您傳送開課通知、舊生早鳥優惠碼或單元課兌換開通使用。本單位嚴格遵循資訊安全與隱私規範，絕不向第三方洩漏或移作未授權之推銷用途，請安心填寫。
           </p>
           <label class="privacy-notice-agree">
-            <input type="checkbox" name="privacy_agree" id="privacyAgreeCheckbox" checked required style="accent-color: var(--accent-primary); width: 16px; height: 16px;">
-            <span>我已詳細閱讀並同意上述個人資料蒐集與單元課兌換聯繫條款 <span class="req">*</span></span>
+            <input type="checkbox" name="privacy_agree" id="privacyAgreeCheckbox" checked style="accent-color: var(--accent-primary); width: 16px; height: 16px;">
+            <span id="privacyAgreeText">我已詳細閱讀並同意上述個人資料蒐集與優惠聯繫條款 <span class="req">*</span></span>
           </label>
         </div>
       </section>

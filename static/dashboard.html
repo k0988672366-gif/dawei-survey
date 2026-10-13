@@ -1634,13 +1634,19 @@
       data.forEach((row, i) => {
         const tr = document.createElement('tr');
         const wants = row.wants_reward !== 'no';
-        const course = wants ? (row.selected_reward_course || '單元課') : '無需兌換 (純回饋)';
-        const phone = wants ? (row.phone || '-') : '-';
-        const line = wants ? (row.line_id || '-') : '-';
-        const name = row.student_name || (wants ? '學員' : '匿名學員');
-        const statusBadge = wants 
-          ? '<span class="status-badge">待通知開通</span>' 
-          : '<span class="status-badge" style="background:rgba(148,163,184,0.2); color:#94a3b8; border-color:rgba(148,163,184,0.3);">純意見回饋</span>';
+        const hasContact = Boolean((row.phone && row.phone !== '-') || (row.line_id && row.line_id !== '-'));
+        const course = wants ? (row.selected_reward_course || '單元課') : (hasContact ? '預約延伸課表/早鳥' : '無需兌換 (純回饋)');
+        const phone = row.phone || '-';
+        const line = row.line_id || '-';
+        const name = row.student_name || (hasContact ? '學員' : '匿名學員');
+        let statusBadge = '';
+        if (wants) {
+          statusBadge = '<span class="status-badge">待通知開通</span>';
+        } else if (hasContact) {
+          statusBadge = '<span class="status-badge" style="background:rgba(56,189,248,0.2); color:#38bdf8; border-color:rgba(56,189,248,0.3);">預約推課/早鳥</span>';
+        } else {
+          statusBadge = '<span class="status-badge" style="background:rgba(148,163,184,0.2); color:#94a3b8; border-color:rgba(148,163,184,0.3);">純意見回饋</span>';
+        }
         
         tr.innerHTML = `
           <td style="color:#94a3b8; font-size:0.8rem;">${row.timestamp || '2026-09-04 12:00'}</td>
@@ -1648,7 +1654,7 @@
           <td style="color:#38bdf8;">${phone}</td>
           <td style="color:#a5b4fc;">${line}</td>
           <td style="color:#94a3b8;">${row.email || '-'}</td>
-          <td><span class="badge-course" style="${!wants ? 'background:rgba(148,163,184,0.1); color:#94a3b8;' : ''}">${course}</span></td>
+          <td><span class="badge-course" style="${!wants ? (hasContact ? 'background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.3);' : 'background:rgba(148,163,184,0.1); color:#94a3b8;') : ''}">${course}</span></td>
           <td>${statusBadge}</td>
         `;
         tbody.appendChild(tr);
