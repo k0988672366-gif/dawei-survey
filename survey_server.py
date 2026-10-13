@@ -1,6 +1,7 @@
 import os
 import json
 import csv
+import io
 import mimetypes
 import base64
 import urllib.request
@@ -198,6 +199,35 @@ class SurveyHandler(BaseHTTPRequestHandler):
             responses = self.get_all_responses(class_id=cid)
             self.send_json(200, {"count": len(responses), "data": responses})
             return
+
+        # 8.1 API: 匯出問卷完整填答 CSV (/api/export-responses-csv?class_id=...) (需要管理員密碼保護！)
+        if path == "/api/export-responses-csv":
+            if not self.check_auth():
+                return
+            cid = query_params.get("class_id", [None])[0]
+            if cid == "":
+                cid = None
+            responses = self.get_all_responses(class_id=cid)
+            output = io.StringIO()
+            fieldnames = [
+                "timestamp", "class_id", "student_name", "phone", "line_id", "email",
+                "prior_experience", "key_progress", "struggle_point", "instructor_rating", 
+                "instructor_comment", "course_rating", "ta_rating", "ta_comment", 
+                "platform_experience", "nps_score", "selected_reward_course", "wants_reward"
+            ]
+            writer = csv.DictWriter(output, fieldnames=fieldnames, extrasaction="ignore")
+            writer.writeheader()
+            writer.writerows(responses)
+            csv_bytes = ("\ufeff" + output.getvalue()).encode("utf-8-sig")
+            filename = f"responses_{cid or 'all'}.csv"
+            self.send_response(200)
+            self.send_header("Content-Type", "text/csv; charset=utf-8")
+            self.send_header("Content-Disposition", f'attachment; filename="{filename}"')
+            self.send_header("Content-Length", str(len(csv_bytes)))
+            self.end_headers()
+            self.wfile.write(csv_bytes)
+            return
+
         self.send_error(404, "Not Found")
 
     def do_HEAD(self):
@@ -410,6 +440,70 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 })
             except Exception as e:
                 self.send_json(500, {"status": "error", "message": f"刪除處理異常: {str(e)}"})
+            return
+
+        # 刪除指定學員填答回覆 API (/api/delete-response) (需要管理員密碼保護！)
+        if parsed.path == "/api/delete-response":
+            if not self.check_auth():
+                return
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length).decode("utf-8")
+            try:
+                payload = json.loads(body)
+                target_timestamp = payload.get("timestamp")
+                target_class_id = payload.get("class_id")
+                target_student_name = payload.get("student_name")
+
+                if not target_timestamp and not target_student_name:
+                    self.send_json(400, {"status": "error", "message": "未提供欲刪除的回覆識別資訊"})
+                    return
+
+                if not config.RESPONSES_CSV_PATH.exists():
+                    self.send_json(404, {"status": "error", "message": "問卷資料庫不存在"})
+                    return
+
+                all_rows = []
+                deleted = False
+                fieldnames = None
+                with open(config.RESPONSES_CSV_PATH, mode="r", encoding="utf-8-sig") as f:
+                    reader = csv.DictReader(f)
+                    fieldnames = reader.fieldnames
+                    for row in reader:
+                        match = True
+                        if target_timestamp and row.get("timestamp") != target_timestamp:
+                            match = False
+                        if target_class_id and row.get("class_id") != target_class_id:
+                            match = False
+                        if target_student_name and row.get("student_name") != target_student_name:
+                            match = False
+
+                        if match and not deleted:
+                            deleted = True
+                            continue  # 移除此筆記錄
+                        all_rows.append(row)
+
+                if deleted and fieldnames:
+                    with open(config.RESPONSES_CSV_PATH, mode="w", encoding="utf-8-sig", newline="") as f:
+                        writer = csv.DictWriter(f, fieldnames=fieldnames)
+                        writer.writeheader()
+                        writer.writerows(all_rows)
+
+                    try:
+                        current_state.df = pd.read_csv(config.RESPONSES_CSV_PATH)
+                    except:
+                        current_state.df = pd.DataFrame(all_rows)
+
+                    self.send_json(200, {
+                        "status": "success",
+                        "message": "已成功刪除該筆學員回覆記錄！"
+                    })
+                else:
+                    self.send_json(404, {
+                        "status": "error",
+                        "message": "找不到符合條件的回覆記錄，或已被刪除"
+                    })
+            except Exception as e:
+                self.send_json(500, {"status": "error", "message": f"刪除失敗: {str(e)}"})
             return
 
         # 同步雲端回饋資料到本機 (/api/sync-cloud) (需要管理員密碼保護！)

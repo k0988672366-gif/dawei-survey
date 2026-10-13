@@ -442,11 +442,11 @@
         <span id="headerGiftStatusBadge" style="font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; font-weight: 600; background: var(--success-bg); color: #166534; border: 1px solid var(--success-border);">已啟用 (行銷模式)</span>
       </div>
       <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-        <span style="font-size: 0.82rem; color: var(--text-muted);">學員填答網址：</span>
+        <span style="font-size: 0.82rem; color: var(--text-muted);">學員填答網址 (雲端公開，支援縮網址)：</span>
         <code id="activeClassUrlDisplay" style="background: #f1f5f9; padding: 4px 10px; border-radius: 6px; color: var(--text); font-family: monospace; font-size: 0.85rem; border: 1px solid var(--card-border);">載入中...</code>
-        <button id="bannerCopyLinkBtn" class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.82rem; border-color: var(--primary-accent); color: var(--primary-accent);">📋 點此複製</button>
-        <a id="bannerOpenLinkBtn" href="/?class=class_1791862849" target="_blank" class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.82rem;">📱 開啟填答端</a>
-        <button id="bannerCopyCloudBtn" class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.82rem; border-color: #a855f7; color: #a855f7;" title="複製當前班級正式學員問卷網址">🌐 複製學員網址</button>
+        <button id="bannerCopyLinkBtn" class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.82rem; border-color: var(--primary-accent); color: var(--primary-accent);" title="複製雲端公開網址，可直接貼入 reurl.cc 縮短網址">📋 複製雲端網址 (可縮網址)</button>
+        <a id="bannerOpenLinkBtn" href="/?class=class_1791862849" target="_blank" class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.82rem;">📱 本機預覽</a>
+        <a id="bannerOpenCloudBtn" href="https://dawei-survey.onrender.com/?class=class_1791862849" target="_blank" class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.82rem; border-color: #a855f7; color: #a855f7;">🌐 開啟雲端公開頁</a>
       </div>
     </div>
 
@@ -480,7 +480,7 @@
       <button class="tab-btn" onclick="switchTab('redemptionTab')">🎁 單元課兌換專員聯繫名單 (待處理)</button>
       <button class="tab-btn" onclick="switchTab('syllabusAiTab')" style="background: rgba(99, 102, 241, 0.16); border: 1px solid rgba(99, 102, 241, 0.45); color: #a5b4fc;">📄 課綱 AI 一鍵生成問卷</button>
       <button class="tab-btn" onclick="switchTab('editClassTab')">⚙️ 班級與問卷文案自訂編輯</button>
-      <button class="tab-btn" onclick="switchTab('advisorTab')">💡 AI 問卷即席諮詢顧問</button>
+      <button class="tab-btn" onclick="switchTab('responsesTab')">📋 學員填寫回覆順序列表</button>
     </div>
 
     <!-- TAB 1: 數據診斷與圖表 -->
@@ -851,18 +851,45 @@
       </div>
     </div>
 
-    <!-- TAB 3: AI 即席問卷顧問 -->
-    <div id="advisorTab" class="tab-content">
-      <div class="chat-card">
-        <h3>💡 Agent 7: 問卷即席諮詢顧問</h3>
-        <p style="font-size: 0.85rem; color: var(--text-muted);">
-          您可以詢問任何問卷細節，例如：「哪一門線上單元課最受學員歡迎？」、「零基礎學員主要卡關在哪裡？」、「助教的批改速度滿意嗎？」
-        </p>
-        <div class="chat-input-row">
-          <input type="text" id="chatQuestion" class="chat-input" placeholder="輸入您的問題，例如：哪一門單元課兌換人數最多？">
-          <button id="askBtn" class="btn btn-primary">向顧問提問</button>
+    <!-- TAB 5: 學員填寫回覆順序列表 -->
+    <div id="responsesTab" class="tab-content">
+      <div class="table-card">
+        <div class="table-header-row">
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <h2 style="font-size: 1.2rem; color: #0f172a; margin: 0;">📋 學員填寫回覆順序列表 (依時間倒序排列)</h2>
+              <span id="responsesCountBadge" class="status-badge" style="background: #eff6ff; color: #2563eb; border-color: #bfdbfe; font-size: 0.8rem; padding: 2px 10px;">0 筆回覆</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">最新回覆顯示於最上方。可即時檢視個別學員心得、評分與痛點；若遇無效或測試資料，可點擊「刪除」即時自資料庫移除並重新計算所有數據指標。</p>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <input type="text" id="responseSearchInput" class="chat-input" placeholder="🔍 搜尋學員、留言或痛點..." style="width: 240px; padding: 8px 12px; font-size: 0.85rem;" oninput="filterResponsesTable()">
+            <button class="btn btn-secondary" onclick="exportResponsesCsv()" title="匯出完整學員回覆為 CSV 檔案">📥 匯出完整回覆 (CSV)</button>
+            <button class="btn btn-secondary" onclick="autoSyncAndRefresh()" title="重新載入填答資料">🔄 重新整理</button>
+          </div>
         </div>
-        <div class="chat-response-box" id="chatResponse"></div>
+
+        <div style="overflow-x: auto;">
+          <table class="redemption-table" id="responsesListTable">
+            <thead>
+              <tr>
+                <th style="width: 48px; text-align: center;">#</th>
+                <th style="min-width: 140px;">填答時間</th>
+                <th style="min-width: 150px;">學員稱呼 / 聯絡資訊</th>
+                <th style="min-width: 100px;">起點背景</th>
+                <th style="min-width: 140px;">綜合評分 (NPS / 星級)</th>
+                <th style="min-width: 150px;">學習卡關痛點</th>
+                <th style="min-width: 160px;">核心進步收穫</th>
+                <th style="min-width: 220px;">學員原聲留言</th>
+                <th style="min-width: 140px;">加碼單元課兌換</th>
+                <th style="width: 90px; text-align: center;">操作</th>
+              </tr>
+            </thead>
+            <tbody id="responsesListTbody">
+              <!-- JS 動態渲染 -->
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -918,14 +945,15 @@
       }
     }
 
+    const CLOUD_BASE_URL = 'https://dawei-survey.onrender.com';
+
     function copyClassLink(classId, courseName) {
-      const fullUrl = `${window.location.origin}/?class=${classId}`;
-      copyTextToClipboard(fullUrl, `🎉 已成功複製【${courseName}】學員問卷連結！\n\n${fullUrl}`);
+      const cloudUrl = `${CLOUD_BASE_URL}/?class=${classId}`;
+      copyTextToClipboard(cloudUrl, `🎉 已成功複製【${courseName}】學員問卷雲端公開連結！\n\n👉 此為公開網址，可直接貼進 reurl.cc 縮短網址後發給同學！\n\n${cloudUrl}`);
     }
 
     function copyCloudClassLink(classId, courseName) {
-      const fullUrl = `${window.location.origin}/?class=${classId}`;
-      copyTextToClipboard(fullUrl, `🌐 已成功複製【${courseName}】學員問卷正式填答網址！\n\n${fullUrl}`);
+      copyClassLink(classId, courseName);
     }
 
     function updateGiftToggleUI(enableGift) {
@@ -1138,16 +1166,19 @@
 
       // 2. 更新學員問卷網址
       const targetSurveyUrl = `/?class=${classId}`;
-      const fullSurveyUrl = `${window.location.origin}/?class=${classId}`;
+      const cloudSurveyUrl = `${CLOUD_BASE_URL}/?class=${classId}`;
       const urlDisp = document.getElementById('activeClassUrlDisplay');
-      if (urlDisp) urlDisp.textContent = fullSurveyUrl;
+      if (urlDisp) urlDisp.textContent = cloudSurveyUrl;
 
-      // 統一所有「開啟學員問卷 / 開啟填答端 / 預覽問卷」按鈕的連結與行為，保證開啟完全一致的目標網頁！
+      // 統一所有「開啟學員問卷 / 開啟填答端 / 預覽問卷」按鈕的連結與行為
       const surveyLink = document.getElementById('studentSurveyLink');
       if (surveyLink) surveyLink.href = targetSurveyUrl;
 
       const bannerOpenBtn = document.getElementById('bannerOpenLinkBtn');
       if (bannerOpenBtn) bannerOpenBtn.href = targetSurveyUrl;
+
+      const bannerOpenCloud = document.getElementById('bannerOpenCloudBtn');
+      if (bannerOpenCloud) bannerOpenCloud.href = cloudSurveyUrl;
 
       const testLink = document.getElementById('testSurveyLink');
       if (testLink) testLink.href = targetSurveyUrl;
@@ -1301,6 +1332,7 @@
         const json = await res.json();
         allResponsesData = json.data || [];
         renderRedemptionTable(allResponsesData);
+        renderResponsesListTable(allResponsesData);
         
         // 更新有效兌換登記數 KPI
         const rewardCount = allResponsesData.filter(r => r.selected_reward_course && r.selected_reward_course !== '無需兌換好禮').length;
@@ -1523,6 +1555,257 @@
         `;
         tbody.appendChild(tr);
       });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    let currentSortedResponses = [];
+
+    function renderResponsesListTable(data) {
+      const badge = document.getElementById('responsesCountBadge');
+      if (!data || data.length === 0) {
+        currentSortedResponses = [];
+        if (badge) badge.textContent = '0 筆回覆';
+        renderResponsesListRows([]);
+        return;
+      }
+
+      // 依填寫時間由新到舊倒序排序 (最新填寫在最前)
+      currentSortedResponses = [...data].sort((a, b) => {
+        const timeA = a.timestamp || '';
+        const timeB = b.timestamp || '';
+        return timeB.localeCompare(timeA);
+      });
+
+      if (badge) badge.textContent = `共 ${currentSortedResponses.length} 筆回覆`;
+
+      // 若搜尋框有文字，依照搜尋過濾
+      const searchInput = document.getElementById('responseSearchInput');
+      const keyword = searchInput ? searchInput.value.trim().toLowerCase() : '';
+      if (keyword) {
+        filterResponsesTable();
+      } else {
+        renderResponsesListRows(currentSortedResponses);
+      }
+    }
+
+    function renderResponsesListRows(rows) {
+      const tbody = document.getElementById('responsesListTbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      if (!rows || rows.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="10" style="text-align: center; color: #94a3b8; padding: 36px 16px;">
+              <div style="font-size: 2rem; margin-bottom: 8px;">📋</div>
+              <div style="font-weight: 600; color: #475569; font-size: 1rem;">目前尚無學員回覆記錄</div>
+              <div style="font-size: 0.82rem; color: #94a3b8; margin-top: 4px;">學員填寫問卷送出後，系統將自動依填寫時間呈現於此清單中。</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      rows.forEach((row, index) => {
+        const tr = document.createElement('tr');
+        tr.style.transition = 'background 0.2s';
+        tr.onmouseover = () => { tr.style.background = '#f8fafc'; };
+        tr.onmouseout = () => { tr.style.background = ''; };
+
+        const wants = row.wants_reward !== 'no';
+        const hasReward = wants && row.selected_reward_course && !['無需兌換好禮', '無需兌換 (純回饋)', '未開放兌換 (純回饋)', '活動未開放'].includes(row.selected_reward_course);
+        const rewardText = hasReward ? row.selected_reward_course : '無需兌換 (純回饋)';
+        const name = row.student_name || (wants ? '學員' : '匿名學員');
+        const phone = row.phone || '';
+        const line = row.line_id || '';
+        const email = row.email || '';
+
+        // NPS 評分徽章顏色
+        const npsVal = parseFloat(row.nps_score || 0);
+        let npsBadgeStyle = 'background: #f1f5f9; color: #475569; border-color: #cbd5e1;';
+        if (npsVal >= 9) {
+          npsBadgeStyle = 'background: #dcfce7; color: #15803d; border-color: #86efac;';
+        } else if (npsVal >= 7) {
+          npsBadgeStyle = 'background: #fef9c3; color: #a16207; border-color: #fde047;';
+        } else if (npsVal > 0) {
+          npsBadgeStyle = 'background: #fee2e2; color: #b91c1c; border-color: #fca5a5;';
+        }
+
+        const instRating = row.instructor_rating ? `${row.instructor_rating} ★` : '-';
+        const courseRating = row.course_rating ? `${row.course_rating} ★` : '-';
+        const taRating = row.ta_rating ? `${row.ta_rating} ★` : '-';
+
+        // 聯絡方式資訊列
+        let contactHtml = `<div style="font-weight: 600; color: #0f172a; font-size: 0.92rem;">${escapeHtml(name)}</div>`;
+        if (phone || line || email) {
+          contactHtml += `<div style="font-size: 0.76rem; color: #64748b; margin-top: 2px;">`;
+          if (phone) contactHtml += `📞 ${escapeHtml(phone)} `;
+          if (line) contactHtml += `💬 LINE: ${escapeHtml(line)} `;
+          if (email) contactHtml += `✉️ ${escapeHtml(email)}`;
+          contactHtml += `</div>`;
+        }
+
+        // 原聲留言
+        let commentsHtml = '';
+        if (row.instructor_comment) {
+          commentsHtml += `<div style="font-size: 0.85rem; color: #1e293b; line-height: 1.45;">「${escapeHtml(row.instructor_comment)}」</div>`;
+        }
+        if (row.ta_comment && row.ta_comment.trim() && !['無', 'none', '沒有', '-'].includes(row.ta_comment.trim().toLowerCase())) {
+          commentsHtml += `<div style="font-size: 0.78rem; color: #64748b; margin-top: 4px; padding-left: 6px; border-left: 2px solid #cbd5e1;">助教反饋: ${escapeHtml(row.ta_comment)}</div>`;
+        }
+        if (!commentsHtml) {
+          commentsHtml = `<span style="color: #94a3b8; font-size: 0.82rem;">(無文字回饋)</span>`;
+        }
+
+        // 痛點與收穫
+        const struggleHtml = row.struggle_point 
+          ? `<span style="font-size: 0.84rem; color: #475569;">${escapeHtml(row.struggle_point)}</span>`
+          : `<span style="color: #94a3b8; font-size: 0.82rem;">-</span>`;
+
+        const progressHtml = row.key_progress
+          ? `<span style="font-size: 0.84rem; color: #166534; font-weight: 500;">${escapeHtml(row.key_progress)}</span>`
+          : `<span style="color: #94a3b8; font-size: 0.82rem;">-</span>`;
+
+        // 兌換狀態
+        const rewardHtml = hasReward
+          ? `<span class="badge-course" style="font-size: 0.76rem;">🎁 ${escapeHtml(rewardText)}</span>`
+          : `<span style="font-size: 0.76rem; color: #94a3b8;">${escapeHtml(rewardText)}</span>`;
+
+        tr.innerHTML = `
+          <td style="text-align: center; color: #64748b; font-weight: 600; font-size: 0.82rem;">${index + 1}</td>
+          <td style="color: #475569; font-size: 0.8rem; white-space: nowrap;">${escapeHtml(row.timestamp || '-')}</td>
+          <td>${contactHtml}</td>
+          <td><span class="status-badge" style="background:#f1f5f9; color:#475569; border-color:#cbd5e1; font-size:0.75rem;">${escapeHtml(row.prior_experience || '未填寫')}</span></td>
+          <td>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span class="status-badge" style="${npsBadgeStyle} font-size: 0.74rem; display: inline-block; width: fit-content;">NPS: ${row.nps_score || 0} 分</span>
+              <span style="font-size: 0.78rem; color: #d97706; font-weight: 600;">講師: ${instRating}</span>
+              <span style="font-size: 0.72rem; color: #64748b;">課程: ${courseRating} | 助教: ${taRating}</span>
+            </div>
+          </td>
+          <td>${struggleHtml}</td>
+          <td>${progressHtml}</td>
+          <td>${commentsHtml}</td>
+          <td>${rewardHtml}</td>
+          <td style="text-align: center;">
+            <button type="button" class="btn" style="background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; padding: 4px 10px; font-size: 0.78rem; border-radius: 6px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 3px;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fef2f2'" data-timestamp="${encodeURIComponent(row.timestamp || '')}" data-class-id="${encodeURIComponent(row.class_id || currentClassId)}" data-student-name="${encodeURIComponent(row.student_name || '')}" onclick="handleDeleteResponseClick(this)" title="從資料庫刪除此筆填答">
+              🗑️ 刪除
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterResponsesTable() {
+      const searchInput = document.getElementById('responseSearchInput');
+      const keyword = searchInput ? searchInput.value.trim().toLowerCase() : '';
+      if (!keyword) {
+        renderResponsesListRows(currentSortedResponses);
+        const badge = document.getElementById('responsesCountBadge');
+        if (badge) badge.textContent = `共 ${currentSortedResponses.length} 筆回覆`;
+        return;
+      }
+
+      const filtered = currentSortedResponses.filter(r => {
+        const textToSearch = [
+          r.student_name,
+          r.phone,
+          r.line_id,
+          r.email,
+          r.prior_experience,
+          r.instructor_comment,
+          r.ta_comment,
+          r.struggle_point,
+          r.key_progress,
+          r.selected_reward_course,
+          r.timestamp
+        ].filter(Boolean).join(' ').toLowerCase();
+        return textToSearch.includes(keyword);
+      });
+
+      renderResponsesListRows(filtered);
+      const badge = document.getElementById('responsesCountBadge');
+      if (badge) badge.textContent = `篩選出 ${filtered.length} / ${currentSortedResponses.length} 筆`;
+    }
+
+    function handleDeleteResponseClick(btn) {
+      const timestamp = decodeURIComponent(btn.dataset.timestamp || '');
+      const classId = decodeURIComponent(btn.dataset.classId || '');
+      const studentName = decodeURIComponent(btn.dataset.studentName || '');
+      deleteResponseItem(timestamp, classId, studentName);
+    }
+
+    async function deleteResponseItem(timestamp, classId, studentName) {
+      const displayName = studentName || '匿名學員';
+      const displayTime = timestamp || '未知時間';
+      const confirmed = confirm(`⚠️ 確定要刪除學員【${displayName}】於【${displayTime}】填寫的回覆記錄嗎？\n\n【注意】此操作將直接從資料庫徹底移除該筆回覆，並重新計算：\n1. 有效填答數與各項評分指標\n2. 淨推薦值 (NPS) 與講師均分\n3. 卡關痛點圖表與金句牆\n4. 單元課兌換聯繫名冊\n\n此操作無法復原，您確定要繼續刪除嗎？`);
+      if (!confirmed) return;
+
+      try {
+        const res = await fetch('/api/delete-response', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            timestamp: timestamp,
+            class_id: classId || currentClassId,
+            student_name: studentName
+          })
+        });
+        const result = await res.json();
+        if (res.ok && result.status === 'success') {
+          alert(`✅ ${result.message || '已成功刪除該筆學員回覆記錄！'}`);
+          // 即時重新同步刷新全站儀表板數據與所有圖表
+          await autoSyncAndRefresh();
+        } else {
+          alert(`❌ 刪除失敗：${result.message || '未知錯誤'}`);
+        }
+      } catch (err) {
+        alert(`❌ 刪除請求發生網路異常：${err.message}`);
+      }
+    }
+
+    function exportResponsesCsv() {
+      if (!allResponsesData || allResponsesData.length === 0) {
+        alert('目前無可匯出的回覆資料！');
+        return;
+      }
+      let csvContent = "\uFEFF填答時間,班級代碼,學員姓名,手機號碼,LINE ID,Email,起點背景,核心進步收穫,主要卡關點,講師授課評分,講師原聲評語,整體課程評分,助教支援評分,助教反饋評語,直播平台體驗,淨推薦值(NPS),勾選兌換之線上單元課,是否有意願兌換\n";
+      allResponsesData.forEach(r => {
+        const time = (r.timestamp || '').replace(/"/g, '""');
+        const cid = (r.class_id || '').replace(/"/g, '""');
+        const name = (r.student_name || '匿名學員').replace(/"/g, '""');
+        const phone = (r.phone || '').replace(/"/g, '""');
+        const line = (r.line_id || '').replace(/"/g, '""');
+        const email = (r.email || '').replace(/"/g, '""');
+        const exp = (r.prior_experience || '').replace(/"/g, '""');
+        const prog = (r.key_progress || '').replace(/"/g, '""');
+        const strug = (r.struggle_point || '').replace(/"/g, '""');
+        const instR = (r.instructor_rating || '').replace(/"/g, '""');
+        const instC = (r.instructor_comment || '').replace(/"/g, '""');
+        const crsR = (r.course_rating || '').replace(/"/g, '""');
+        const taR = (r.ta_rating || '').replace(/"/g, '""');
+        const taC = (r.ta_comment || '').replace(/"/g, '""');
+        const plat = (r.platform_experience || '').replace(/"/g, '""');
+        const nps = (r.nps_score || '').replace(/"/g, '""');
+        const rew = (r.selected_reward_course || '').replace(/"/g, '""');
+        const wants = (r.wants_reward || '').replace(/"/g, '""');
+        csvContent += `"${time}","${cid}","${name}","${phone}","${line}","${email}","${exp}","${prog}","${strug}","${instR}","${instC}","${crsR}","${taR}","${taC}","${plat}","${nps}","${rew}","${wants}"\n`;
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `學員結業問卷完整填答名冊_${currentClassId}_${new Date().toISOString().slice(0, 10)}.csv`;
+      link.click();
     }
 
     function updateAllCharts(data) {
@@ -1940,34 +2223,7 @@
         }
       });
 
-      // 問答顧問提問
-      const askBtn = document.getElementById('askBtn');
-      const chatInput = document.getElementById('chatQuestion');
-      const chatBox = document.getElementById('chatResponse');
 
-      askBtn.addEventListener('click', async () => {
-        const q = chatInput.value.trim();
-        if (!q) return;
-        askBtn.disabled = true;
-        askBtn.textContent = '思考中...';
-        chatBox.style.display = 'block';
-        chatBox.textContent = '🤖 顧問代理人正在調閱本班問卷數據思考中...';
-
-        try {
-          const res = await fetch('/api/ask', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ question: q, class_id: currentClassId })
-          });
-          const data = await res.json();
-          chatBox.textContent = data.answer || '分析完成。';
-        } catch (e) {
-          chatBox.textContent = '諮詢時發生連線錯誤，請稍後重試。';
-        } finally {
-          askBtn.disabled = false;
-          askBtn.textContent = '向顧問提問';
-        }
-      });
 
       // ==========================================
       // 課綱 PDF 智慧研讀與問卷 AI 自動生成模組
@@ -2233,6 +2489,14 @@
       link.download = `線上單元課兌換聯繫名冊_${new Date().toISOString().slice(0,10)}.csv`;
       link.click();
     }
+
+    window.exportRedemptionCsv = exportRedemptionCsv;
+    window.exportResponsesCsv = exportResponsesCsv;
+    window.filterResponsesTable = filterResponsesTable;
+    window.handleDeleteResponseClick = handleDeleteResponseClick;
+    window.deleteResponseItem = deleteResponseItem;
+    window.renderResponsesListTable = renderResponsesListTable;
+    window.autoSyncAndRefresh = autoSyncAndRefresh;
   </script>
 </body>
 </html>
