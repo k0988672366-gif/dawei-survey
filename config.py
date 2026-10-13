@@ -66,6 +66,20 @@ def get_class_info(class_id: str = None) -> dict:
         }
     if "enable_gift" not in info:
         info["enable_gift"] = True
+    if "enable_followup" not in info:
+        info["enable_followup"] = True
+    if "followup_topics" not in info:
+        info["followup_topics"] = [
+            "進階 A：商業場景氛圍光影 ✕ 概念美術完稿實戰班",
+            "進階 B：日系動畫 Layout 分鏡 ✕ 鏡頭空間透視大師班",
+            "進階 C：數位繪畫商業接案與作品集專案指導班"
+        ]
+    if "followup_schedules" not in info:
+        info["followup_schedules"] = [
+            "🏛️【實體講座】11/15 (六) 14:00 - 16:00 台北站（實體面對面交流）",
+            "🎨【實體單元課】11/22 (日) 13:30 - 16:30 台中教室精實班",
+            "💻【線上直播班】12/01 起 每週三晚間 19:30 - 21:30"
+        ]
     return info
 
 _default_info = get_class_info()

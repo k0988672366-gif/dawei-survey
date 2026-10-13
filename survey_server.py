@@ -9,7 +9,7 @@ import ssl
 from datetime import datetime
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs, unquote
 import pandas as pd
 
 import config
@@ -100,7 +100,7 @@ class SurveyHandler(BaseHTTPRequestHandler):
 
         # 4. 靜態檔案 (/static/...) (公開)
         if path.startswith("/static/"):
-            rel_path = path[len("/static/"):]
+            rel_path = unquote(path[len("/static/"):])
             file_path = config.STATIC_DIR / rel_path
             mime_type, _ = mimetypes.guess_type(str(file_path))
             if not mime_type:
@@ -217,7 +217,8 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 "timestamp", "class_id", "student_name", "phone", "line_id", "email",
                 "prior_experience", "key_progress", "struggle_point", "instructor_rating", 
                 "instructor_comment", "course_rating", "ta_rating", "ta_comment", 
-                "platform_experience", "nps_score", "selected_reward_course", "wants_reward"
+                "platform_experience", "nps_score", "selected_reward_course", "wants_reward",
+                "followup_interest_topic", "followup_schedules_selected"
             ]
             writer = csv.DictWriter(output, fieldnames=fieldnames, extrasaction="ignore")
             writer.writeheader()
@@ -262,7 +263,8 @@ class SurveyHandler(BaseHTTPRequestHandler):
                     "timestamp", "class_id", "student_name", "phone", "line_id", "email",
                     "prior_experience", "key_progress", "struggle_point", "instructor_rating",
                     "instructor_comment", "course_rating", "ta_rating", "ta_comment",
-                    "platform_experience", "nps_score", "selected_reward_course", "wants_reward"
+                    "platform_experience", "nps_score", "selected_reward_course", "wants_reward",
+                    "followup_interest_topic", "followup_schedules_selected"
                 ]
                 with open(config.RESPONSES_CSV_PATH, "w", newline="", encoding="utf-8-sig") as f:
                     writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
@@ -393,6 +395,10 @@ class SurveyHandler(BaseHTTPRequestHandler):
                     existing["enable_gift"] = bool(payload["enable_gift"])
                 elif "enable_gift" not in existing:
                     existing["enable_gift"] = True
+                if "enable_followup" in payload:
+                    existing["enable_followup"] = bool(payload["enable_followup"])
+                elif "enable_followup" not in existing:
+                    existing["enable_followup"] = True
                 cfg["classes"][cid] = existing
                 cfg["active_class_id"] = cid
 
@@ -756,7 +762,8 @@ class SurveyHandler(BaseHTTPRequestHandler):
             "timestamp", "class_id", "student_name", "phone", "line_id", "email",
             "prior_experience", "key_progress", "struggle_point", "instructor_rating", 
             "instructor_comment", "course_rating", "ta_rating", "ta_comment", 
-            "platform_experience", "nps_score", "selected_reward_course", "wants_reward"
+            "platform_experience", "nps_score", "selected_reward_course", "wants_reward",
+            "followup_interest_topic", "followup_schedules_selected"
         ]
         file_exists = file_path.exists()
         
@@ -796,7 +803,8 @@ class SurveyHandler(BaseHTTPRequestHandler):
                     "timestamp", "class_id", "student_name", "phone", "line_id", "email",
                     "prior_experience", "key_progress", "struggle_point", "instructor_rating",
                     "instructor_comment", "course_rating", "ta_rating", "ta_comment",
-                    "platform_experience", "nps_score", "selected_reward_course", "wants_reward"
+                    "platform_experience", "nps_score", "selected_reward_course", "wants_reward",
+                    "followup_interest_topic", "followup_schedules_selected"
                 ]
 
                 local_rows = []

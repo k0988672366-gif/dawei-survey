@@ -192,8 +192,154 @@ async function loadClassConfig() {
         initStruggleOtherToggle();
       }
     }
+
+    // 動態載入延伸課程與開課課表意願 (區塊: 學員成長下一步)
+    const isFollowupEnabled = (data.enable_followup !== false);
+    window.isFollowupEnabled = isFollowupEnabled;
+    const followupSection = document.getElementById('followupSection');
+    const followupStepNum = document.getElementById('followupStepNum');
+    const rewardSection = document.getElementById('rewardRedemptionSection');
+    const rewardStepNum = rewardSection ? rewardSection.querySelector('.step-num') : null;
+
+    if (followupSection) {
+      if (!isFollowupEnabled) {
+        followupSection.style.display = 'none';
+        if (rewardStepNum) rewardStepNum.textContent = '05';
+      } else {
+        followupSection.style.display = 'block';
+        if (rewardStepNum) rewardStepNum.textContent = '06';
+
+        // 題目文字更新講師姓名
+        const topicQuestionLabel = document.getElementById('followupTopicQuestionLabel');
+        const teacherName = data.teacher_name || '講師';
+        if (topicQuestionLabel) {
+          topicQuestionLabel.innerHTML = `未來若由【${teacherName}老師】開設進階主題，您最希望深入挑戰的方向是？ <small class="hint">（可協助教學團隊為大家規劃下梯次進階大綱）</small>`;
+        }
+
+        // 動態渲染延伸進階主題選項 (單選)
+        const topicsContainer = document.getElementById('followupTopicsContainer');
+        if (topicsContainer) {
+          topicsContainer.innerHTML = '';
+          const topics = (data.followup_topics && data.followup_topics.length > 0)
+            ? data.followup_topics
+            : [
+                "進階 A：商業場景氛圍光影 ✕ 概念美術完稿實戰班",
+                "進階 B：日系動畫 Layout 分鏡 ✕ 鏡頭空間透視大師班",
+                "進階 C：數位繪畫商業接案與作品集專案指導班"
+              ];
+
+          topics.forEach((top, idx) => {
+            const lbl = document.createElement('label');
+            lbl.className = 'radio-card compact';
+            lbl.innerHTML = `
+              <input type="radio" name="followup_interest_topic" value="${top}">
+              <div class="card-body">
+                <span class="emoji">🎨</span>
+                <strong>${top}</strong>
+              </div>
+            `;
+            topicsContainer.appendChild(lbl);
+          });
+
+          // 複訓與暫無規劃
+          const extraOptions = [
+            { val: "同一門課複習梯次（想再聽一次或推薦朋友）", emoji: "🔄" },
+            { val: "暫無規劃（先吸收本次內容為主）", emoji: "🌱" }
+          ];
+          extraOptions.forEach(opt => {
+            const lbl = document.createElement('label');
+            lbl.className = 'radio-card compact';
+            lbl.innerHTML = `
+              <input type="radio" name="followup_interest_topic" value="${opt.val}">
+              <div class="card-body">
+                <span class="emoji">${opt.emoji}</span>
+                <strong>${opt.val}</strong>
+              </div>
+            `;
+            topicsContainer.appendChild(lbl);
+          });
+        }
+
+        // 動態渲染開課時段／課表晶片 (多選)
+        const schedulesContainer = document.getElementById('followupSchedulesContainer');
+        if (schedulesContainer) {
+          schedulesContainer.innerHTML = '';
+          const schedules = (data.followup_schedules && data.followup_schedules.length > 0)
+            ? data.followup_schedules
+            : [
+                "🏛️【實體講座】11/15 (六) 14:00 - 16:00 台北站（實體面對面交流）",
+                "🎨【實體單元課】11/22 (日) 13:30 - 16:30 台中教室精實班",
+                "💻【線上直播班】12/01 起 每週三晚間 19:30 - 21:30"
+              ];
+
+          schedules.forEach(sch => {
+            const item = document.createElement('label');
+            item.className = 'radio-item';
+            item.innerHTML = `
+              <input type="checkbox" class="schedule-checkbox" value="${sch}" style="accent-color: var(--accent-primary); width: 17px; height: 17px;">
+              <span style="font-size: 0.92rem; color: var(--text-primary); font-weight: 500;">${sch}</span>
+            `;
+            schedulesContainer.appendChild(item);
+          });
+
+          initScheduleCheckboxEvents();
+        }
+      }
+    }
   } catch (e) {
     console.log('Using default class configuration');
+  }
+}
+
+// 課表多選與舊生早鳥折價券勾選互動邏輯
+function initScheduleCheckboxEvents() {
+  const scheduleCheckboxes = document.querySelectorAll('.schedule-checkbox');
+  const offerAllChk = document.getElementById('followupOfferAllCheckbox');
+  const notNeededChk = document.getElementById('followupNotNeededCheckbox');
+  const hiddenInput = document.getElementById('followupSchedulesInput');
+
+  function updateFollowupHiddenInput() {
+    const selected = [];
+    scheduleCheckboxes.forEach(cb => {
+      if (cb.checked) selected.push(cb.value);
+    });
+    if (offerAllChk && offerAllChk.checked) {
+      selected.push("🔥 願意接收舊生專屬早鳥優惠與開課通知");
+    }
+    if (notNeededChk && notNeededChk.checked) {
+      selected.push("暫不需要");
+    }
+    if (hiddenInput) {
+      hiddenInput.value = selected.join(" 、 ");
+    }
+  }
+
+  scheduleCheckboxes.forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (cb.checked && notNeededChk) {
+        notNeededChk.checked = false;
+      }
+      updateFollowupHiddenInput();
+    });
+  });
+
+  if (offerAllChk) {
+    offerAllChk.addEventListener('change', () => {
+      if (offerAllChk.checked && notNeededChk) {
+        notNeededChk.checked = false;
+      }
+      updateFollowupHiddenInput();
+    });
+  }
+
+  if (notNeededChk) {
+    notNeededChk.addEventListener('change', () => {
+      if (notNeededChk.checked) {
+        scheduleCheckboxes.forEach(cb => { cb.checked = false; });
+        if (offerAllChk) offerAllChk.checked = false;
+      }
+      updateFollowupHiddenInput();
+    });
   }
 }
 
@@ -507,6 +653,14 @@ function initFormSubmit() {
       data.phone = '';
       data.line_id = '';
       data.email = '';
+    }
+
+    if (!window.isFollowupEnabled) {
+      data.followup_interest_topic = "未開啟此項調查";
+      data.followup_schedules_selected = "未開啟此項調查";
+    } else {
+      data.followup_interest_topic = data.followup_interest_topic || "未填寫";
+      data.followup_schedules_selected = data.followup_schedules_selected || "未勾選時段";
     }
 
     submitBtn.disabled = true;
