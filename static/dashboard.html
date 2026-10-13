@@ -234,8 +234,10 @@
       border-radius: 6px;
       font-size: 0.78rem;
       font-weight: 500;
+      white-space: nowrap;
     }
     .status-badge {
+      display: inline-block;
       padding: 3px 8px;
       border-radius: 12px;
       font-size: 0.72rem;
@@ -243,6 +245,49 @@
       background: var(--success-bg);
       border: 1px solid var(--success-border);
       color: #166534;
+      white-space: nowrap;
+    }
+
+    /* 學員回饋卡片與視圖切換器樣式 */
+    .view-toggle-group {
+      display: inline-flex;
+      background: #f1f5f9;
+      padding: 3px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      gap: 2px;
+    }
+    .view-toggle-btn {
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+    .view-toggle-btn.active {
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    .response-feedback-card {
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 18px 22px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .response-feedback-card:hover {
+      border-color: var(--card-border-hover);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
     /* 金句牆與行動矩陣 */
@@ -854,41 +899,54 @@
 
     <!-- TAB 5: 學員填寫回覆順序列表 -->
     <div id="responsesTab" class="tab-content">
-      <div class="table-card">
-        <div class="table-header-row">
+      <div class="table-card" style="padding: 22px 24px;">
+        <div class="table-header-row" style="margin-bottom: 20px;">
           <div>
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <h2 style="font-size: 1.2rem; color: #0f172a; margin: 0;">📋 學員填寫回覆順序列表 (依時間倒序排列)</h2>
-              <span id="responsesCountBadge" class="status-badge" style="background: #eff6ff; color: #2563eb; border-color: #bfdbfe; font-size: 0.8rem; padding: 2px 10px;">0 筆回覆</span>
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <h2 style="font-size: 1.25rem; color: #0f172a; margin: 0; font-weight: 700;">📋 學員填寫回覆順序列表</h2>
+              <span id="responsesCountBadge" class="status-badge" style="background: #eff6ff; color: #2563eb; border-color: #bfdbfe; font-size: 0.8rem; padding: 3px 12px; white-space: nowrap;">0 筆回覆</span>
             </div>
-            <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">最新回覆顯示於最上方。可即時檢視個別學員心得、評分與痛點；若遇無效或測試資料，可點擊「刪除」即時自資料庫移除並重新計算所有數據指標。</p>
+            <p style="font-size: 0.84rem; color: var(--text-muted); margin-top: 5px;">最新回覆排於最上方。以結構化卡片完整呈現每位學員之背景、評分、文字留言與成效痛點，右上角提供一鍵刪除並即時連動重算。</p>
           </div>
-          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-            <input type="text" id="responseSearchInput" class="chat-input" placeholder="🔍 搜尋學員、留言或痛點..." style="width: 240px; padding: 8px 12px; font-size: 0.85rem;" oninput="filterResponsesTable()">
-            <button class="btn btn-secondary" onclick="exportResponsesCsv()" title="匯出完整學員回覆為 CSV 檔案">📥 匯出完整回覆 (CSV)</button>
-            <button class="btn btn-secondary" onclick="syncCloudNow()" title="自 Render 雲端主機立即拉取最新學員填答" style="color:#0284c7; border-color:#0284c7;">☁️ 同步雲端</button>
-            <button class="btn btn-secondary" onclick="autoSyncAndRefresh()" title="重新載入填答資料">🔄 重新整理</button>
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <!-- 視圖切換器 -->
+            <div class="view-toggle-group">
+              <button type="button" id="toggleViewCardBtn" class="view-toggle-btn active" onclick="setResponseViewMode('card')">🗂️ 詳細回饋卡片</button>
+              <button type="button" id="toggleViewTableBtn" class="view-toggle-btn" onclick="setResponseViewMode('table')">📋 緊湊數據表格</button>
+            </div>
+            <!-- 搜尋框 -->
+            <input type="text" id="responseSearchInput" class="chat-input" placeholder="🔍 搜尋學員、留言或痛點..." style="width: 220px; padding: 7px 12px; font-size: 0.84rem;" oninput="filterResponsesTable()">
+            <!-- 操作按鈕 -->
+            <button class="btn btn-secondary" onclick="exportResponsesCsv()" title="匯出完整學員回覆為 CSV 檔案" style="padding: 7px 13px; font-size: 0.84rem;">📥 匯出 CSV</button>
+            <button class="btn btn-secondary" onclick="syncCloudNow()" title="自 Render 雲端主機立即拉取最新學員填答" style="color: #0284c7; border-color: #0284c7; padding: 7px 13px; font-size: 0.84rem;">☁️ 同步雲端</button>
+            <button class="btn btn-secondary" onclick="autoSyncAndRefresh()" title="重新載入填答資料" style="padding: 7px 13px; font-size: 0.84rem;">🔄 重新整理</button>
           </div>
         </div>
 
-        <div style="overflow-x: auto;">
+        <!-- 視圖 1: 結構化回饋卡片流 (預設清晰視圖) -->
+        <div id="responsesCardContainer" style="display: flex; flex-direction: column; gap: 16px;">
+          <!-- JS 動態渲染卡片 -->
+        </div>
+
+        <!-- 視圖 2: 緊湊表格檢視 (備用) -->
+        <div id="responsesTableWrapper" style="overflow-x: auto; display: none; margin-top: 10px;">
           <table class="redemption-table" id="responsesListTable">
             <thead>
               <tr>
-                <th style="width: 48px; text-align: center;">#</th>
-                <th style="min-width: 140px;">填答時間</th>
-                <th style="min-width: 150px;">學員稱呼 / 聯絡資訊</th>
-                <th style="min-width: 100px;">起點背景</th>
-                <th style="min-width: 140px;">綜合評分 (NPS / 星級)</th>
-                <th style="min-width: 150px;">學習卡關痛點</th>
+                <th style="width: 48px; text-align: center; white-space: nowrap;">#</th>
+                <th style="white-space: nowrap;">填答時間</th>
+                <th style="min-width: 140px;">學員姓名 / 聯絡資訊</th>
+                <th style="white-space: nowrap;">起點背景</th>
+                <th style="min-width: 150px;">綜合評分 (NPS / 星級)</th>
+                <th style="min-width: 200px;">學員原聲留言</th>
+                <th style="min-width: 160px;">學習卡關痛點</th>
                 <th style="min-width: 160px;">核心進步收穫</th>
-                <th style="min-width: 220px;">學員原聲留言</th>
-                <th style="min-width: 140px;">加碼單元課兌換</th>
-                <th style="width: 90px; text-align: center;">操作</th>
+                <th style="white-space: nowrap;">單元課兌換</th>
+                <th style="width: 80px; text-align: center; white-space: nowrap;">操作</th>
               </tr>
             </thead>
             <tbody id="responsesListTbody">
-              <!-- JS 動態渲染 -->
+              <!-- JS 動態渲染表格列 -->
             </tbody>
           </table>
         </div>
@@ -1569,6 +1627,27 @@
     }
 
     let currentSortedResponses = [];
+    let currentResponseViewMode = 'card';
+
+    function setResponseViewMode(mode) {
+      currentResponseViewMode = mode;
+      const cardContainer = document.getElementById('responsesCardContainer');
+      const tableWrapper = document.getElementById('responsesTableWrapper');
+      const cardBtn = document.getElementById('toggleViewCardBtn');
+      const tableBtn = document.getElementById('toggleViewTableBtn');
+
+      if (mode === 'card') {
+        if (cardContainer) cardContainer.style.display = 'flex';
+        if (tableWrapper) tableWrapper.style.display = 'none';
+        if (cardBtn) cardBtn.classList.add('active');
+        if (tableBtn) tableBtn.classList.remove('active');
+      } else {
+        if (cardContainer) cardContainer.style.display = 'none';
+        if (tableWrapper) tableWrapper.style.display = 'block';
+        if (cardBtn) cardBtn.classList.remove('active');
+        if (tableBtn) tableBtn.classList.add('active');
+      }
+    }
 
     function renderResponsesListTable(data) {
       const badge = document.getElementById('responsesCountBadge');
@@ -1599,29 +1678,36 @@
     }
 
     function renderResponsesListRows(rows) {
+      const cardContainer = document.getElementById('responsesCardContainer');
       const tbody = document.getElementById('responsesListTbody');
-      if (!tbody) return;
-      tbody.innerHTML = '';
+      
+      if (cardContainer) cardContainer.innerHTML = '';
+      if (tbody) tbody.innerHTML = '';
 
+      // 空白回覆狀態
       if (!rows || rows.length === 0) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="10" style="text-align: center; color: #94a3b8; padding: 36px 16px;">
-              <div style="font-size: 2rem; margin-bottom: 8px;">📋</div>
-              <div style="font-weight: 600; color: #475569; font-size: 1rem;">目前尚無學員回覆記錄</div>
-              <div style="font-size: 0.82rem; color: #94a3b8; margin-top: 4px;">學員填寫問卷送出後，系統將自動依填寫時間呈現於此清單中。</div>
-            </td>
-          </tr>
-        `;
+        if (cardContainer) {
+          cardContainer.innerHTML = `
+            <div style="text-align: center; color: #94a3b8; padding: 48px 16px; background: #ffffff; border: 1.5px dashed var(--card-border); border-radius: 12px;">
+              <div style="font-size: 2.2rem; margin-bottom: 8px;">📋</div>
+              <div style="font-weight: 600; color: #475569; font-size: 1.05rem;">目前尚無學員回覆記錄</div>
+              <div style="font-size: 0.84rem; color: #94a3b8; margin-top: 4px;">學員填寫問卷送出後，系統將自動依填寫時間呈現於此清單中。</div>
+            </div>
+          `;
+        }
+        if (tbody) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="10" style="text-align: center; color: #94a3b8; padding: 36px 16px;">
+                <div style="font-weight: 600; color: #475569; font-size: 0.95rem;">尚無回覆資料</div>
+              </td>
+            </tr>
+          `;
+        }
         return;
       }
 
       rows.forEach((row, index) => {
-        const tr = document.createElement('tr');
-        tr.style.transition = 'background 0.2s';
-        tr.onmouseover = () => { tr.style.background = '#f8fafc'; };
-        tr.onmouseout = () => { tr.style.background = ''; };
-
         const wants = row.wants_reward !== 'no';
         const hasReward = wants && row.selected_reward_course && !['無需兌換好禮', '無需兌換 (純回饋)', '未開放兌換 (純回饋)', '活動未開放'].includes(row.selected_reward_course);
         const rewardText = hasReward ? row.selected_reward_course : '無需兌換 (純回饋)';
@@ -1629,81 +1715,220 @@
         const phone = row.phone || '';
         const line = row.line_id || '';
         const email = row.email || '';
+        const timeStr = row.timestamp || '-';
+        const expStr = row.prior_experience || '未填寫背景';
 
-        // NPS 評分徽章顏色
+        // NPS 指標色彩與評級
         const npsVal = parseFloat(row.nps_score || 0);
-        let npsBadgeStyle = 'background: #f1f5f9; color: #475569; border-color: #cbd5e1;';
+        let npsTierLabel = '推薦者 (Promoter)';
+        let npsTagStyle = 'background: #16a34a; color: #ffffff;';
+        let npsCapsuleStyle = 'background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d;';
         if (npsVal >= 9) {
-          npsBadgeStyle = 'background: #dcfce7; color: #15803d; border-color: #86efac;';
+          npsTierLabel = '推薦者';
+          npsTagStyle = 'background: #16a34a; color: #ffffff;';
+          npsCapsuleStyle = 'background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d;';
         } else if (npsVal >= 7) {
-          npsBadgeStyle = 'background: #fef9c3; color: #a16207; border-color: #fde047;';
+          npsTierLabel = '被動者';
+          npsTagStyle = 'background: #ca8a04; color: #ffffff;';
+          npsCapsuleStyle = 'background: #fefce8; border: 1px solid #fef08a; color: #a16207;';
         } else if (npsVal > 0) {
-          npsBadgeStyle = 'background: #fee2e2; color: #b91c1c; border-color: #fca5a5;';
+          npsTierLabel = '批評者';
+          npsTagStyle = 'background: #dc2626; color: #ffffff;';
+          npsCapsuleStyle = 'background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c;';
+        } else {
+          npsTierLabel = '未填答';
+          npsTagStyle = 'background: #64748b; color: #ffffff;';
+          npsCapsuleStyle = 'background: #f1f5f9; border: 1px solid #cbd5e1; color: #475569;';
         }
 
         const instRating = row.instructor_rating ? `${row.instructor_rating} ★` : '-';
         const courseRating = row.course_rating ? `${row.course_rating} ★` : '-';
         const taRating = row.ta_rating ? `${row.ta_rating} ★` : '-';
+        const platformExp = row.platform_experience ? escapeHtml(row.platform_experience) : '';
 
-        // 聯絡方式資訊列
-        let contactHtml = `<div style="font-weight: 600; color: #0f172a; font-size: 0.92rem;">${escapeHtml(name)}</div>`;
+        // 兌換好禮標籤
+        const rewardBadgeHtml = hasReward
+          ? `<span class="badge-nowrap" style="font-size: 0.78rem; background: #fef3c7; color: #92400e; border: 1px solid #fde68a; padding: 3px 10px; border-radius: 12px; font-weight: 600;">🎁 兌換：${escapeHtml(rewardText)}</span>`
+          : `<span class="badge-nowrap" style="font-size: 0.78rem; background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; padding: 3px 10px; border-radius: 12px;">📝 無需兌換 (純回饋)</span>`;
+
+        // 聯絡資訊條
+        let contactBarHtml = '';
         if (phone || line || email) {
-          contactHtml += `<div style="font-size: 0.76rem; color: #64748b; margin-top: 2px;">`;
-          if (phone) contactHtml += `📞 ${escapeHtml(phone)} `;
-          if (line) contactHtml += `💬 LINE: ${escapeHtml(line)} `;
-          if (email) contactHtml += `✉️ ${escapeHtml(email)}`;
-          contactHtml += `</div>`;
-        }
-
-        // 原聲留言
-        let commentsHtml = '';
-        if (row.instructor_comment) {
-          commentsHtml += `<div style="font-size: 0.85rem; color: #1e293b; line-height: 1.45;">「${escapeHtml(row.instructor_comment)}」</div>`;
-        }
-        if (row.ta_comment && row.ta_comment.trim() && !['無', 'none', '沒有', '-'].includes(row.ta_comment.trim().toLowerCase())) {
-          commentsHtml += `<div style="font-size: 0.78rem; color: #64748b; margin-top: 4px; padding-left: 6px; border-left: 2px solid #cbd5e1;">助教反饋: ${escapeHtml(row.ta_comment)}</div>`;
-        }
-        if (!commentsHtml) {
-          commentsHtml = `<span style="color: #94a3b8; font-size: 0.82rem;">(無文字回饋)</span>`;
-        }
-
-        // 痛點與收穫
-        const struggleHtml = row.struggle_point 
-          ? `<span style="font-size: 0.84rem; color: #475569;">${escapeHtml(row.struggle_point)}</span>`
-          : `<span style="color: #94a3b8; font-size: 0.82rem;">-</span>`;
-
-        const progressHtml = row.key_progress
-          ? `<span style="font-size: 0.84rem; color: #166534; font-weight: 500;">${escapeHtml(row.key_progress)}</span>`
-          : `<span style="color: #94a3b8; font-size: 0.82rem;">-</span>`;
-
-        // 兌換狀態
-        const rewardHtml = hasReward
-          ? `<span class="badge-course" style="font-size: 0.76rem;">🎁 ${escapeHtml(rewardText)}</span>`
-          : `<span style="font-size: 0.76rem; color: #94a3b8;">${escapeHtml(rewardText)}</span>`;
-
-        tr.innerHTML = `
-          <td style="text-align: center; color: #64748b; font-weight: 600; font-size: 0.82rem;">${index + 1}</td>
-          <td style="color: #475569; font-size: 0.8rem; white-space: nowrap;">${escapeHtml(row.timestamp || '-')}</td>
-          <td>${contactHtml}</td>
-          <td><span class="status-badge" style="background:#f1f5f9; color:#475569; border-color:#cbd5e1; font-size:0.75rem;">${escapeHtml(row.prior_experience || '未填寫')}</span></td>
-          <td>
-            <div style="display: flex; flex-direction: column; gap: 2px;">
-              <span class="status-badge" style="${npsBadgeStyle} font-size: 0.74rem; display: inline-block; width: fit-content;">NPS: ${row.nps_score || 0} 分</span>
-              <span style="font-size: 0.78rem; color: #d97706; font-weight: 600;">講師: ${instRating}</span>
-              <span style="font-size: 0.72rem; color: #64748b;">課程: ${courseRating} | 助教: ${taRating}</span>
+          contactBarHtml = `
+            <div style="display: flex; gap: 14px; align-items: center; background: #f8fafc; padding: 7px 14px; border-radius: 8px; font-size: 0.82rem; color: #475569; border: 1px solid #edf2f7; flex-wrap: wrap;">
+              ${phone ? `<span>📞 電話：<strong style="color: #0284c7; font-weight: 600;">${escapeHtml(phone)}</strong></span>` : ''}
+              ${line ? `<span>💬 LINE：<strong style="color: #4f46e5; font-weight: 600;">${escapeHtml(line)}</strong></span>` : ''}
+              ${email ? `<span>✉️ Email：<span style="color: #64748b;">${escapeHtml(email)}</span></span>` : ''}
             </div>
-          </td>
-          <td>${struggleHtml}</td>
-          <td>${progressHtml}</td>
-          <td>${commentsHtml}</td>
-          <td>${rewardHtml}</td>
-          <td style="text-align: center;">
-            <button type="button" class="btn" style="background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; padding: 4px 10px; font-size: 0.78rem; border-radius: 6px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 3px;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fef2f2'" data-timestamp="${encodeURIComponent(row.timestamp || '')}" data-class-id="${encodeURIComponent(row.class_id || currentClassId)}" data-student-name="${encodeURIComponent(row.student_name || '')}" onclick="handleDeleteResponseClick(this)" title="從資料庫刪除此筆填答">
-              🗑️ 刪除
-            </button>
-          </td>
-        `;
-        tbody.appendChild(tr);
+          `;
+        }
+
+        // 學員原聲留言
+        const instComment = (row.instructor_comment || '').trim();
+        const taComment = (row.ta_comment || '').trim();
+        const hasTaComm = taComment && !['無', 'none', '沒有', '-'].includes(taComment.toLowerCase());
+
+        let quoteBlockHtml = '';
+        if (instComment || hasTaComm) {
+          quoteBlockHtml = `
+            <div style="background: #f8fafc; border-left: 4px solid #2563eb; border-radius: 0 8px 8px 0; padding: 12px 18px; border-top: 1px solid #edf2f7; border-right: 1px solid #edf2f7; border-bottom: 1px solid #edf2f7;">
+              ${instComment ? `<div style="font-size: 0.98rem; color: #0f172a; line-height: 1.6; font-weight: 500;">💬 「${escapeHtml(instComment)}」</div>` : '<div style="font-size: 0.85rem; color: #94a3b8; font-style: italic;">(學員未留下文字評語)</div>'}
+              ${hasTaComm ? `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #e2e8f0; font-size: 0.85rem; color: #475569; line-height: 1.5;"><strong style="color: #6366f1;">🤝 助教反饋：</strong>「${escapeHtml(taComment)}」</div>` : ''}
+            </div>
+          `;
+        } else {
+          quoteBlockHtml = `
+            <div style="background: #fafafa; border-left: 4px solid #cbd5e1; border-radius: 0 8px 8px 0; padding: 10px 16px; border: 1px solid #edf2f7; border-left: 4px solid #cbd5e1;">
+              <span style="color: #94a3b8; font-size: 0.85rem; font-style: italic;">💬 (學員填寫量化評分，未留下文字評語)</span>
+            </div>
+          `;
+        }
+
+        // ============================================
+        // 1. 渲染卡片視圖 (Card View)
+        // ============================================
+        if (cardContainer) {
+          const card = document.createElement('div');
+          card.className = 'response-feedback-card';
+          card.innerHTML = `
+            <!-- 卡片頂部：學員身分、背景、時間與刪除按鈕 -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <span style="background: #eff6ff; color: #1d4ed8; font-weight: 700; font-size: 0.82rem; padding: 3px 10px; border-radius: 6px; border: 1px solid #dbeafe;">#${index + 1}</span>
+                <span style="font-size: 1.15rem; font-weight: 700; color: #0f172a;">${escapeHtml(name)}</span>
+                <span class="badge-nowrap" style="font-size: 0.78rem; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 3px 10px; border-radius: 14px; font-weight: 500;">
+                  🌱 ${escapeHtml(expStr)}
+                </span>
+                ${rewardBadgeHtml}
+                <span style="font-size: 0.82rem; color: #64748b; margin-left: 2px;">📅 ${escapeHtml(timeStr)}</span>
+              </div>
+              <div>
+                <button type="button" class="btn" style="background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; padding: 6px 14px; font-size: 0.82rem; border-radius: 8px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; transition: all 0.15s;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fef2f2'" data-timestamp="${encodeURIComponent(row.timestamp || '')}" data-class-id="${encodeURIComponent(row.class_id || currentClassId)}" data-student-name="${encodeURIComponent(row.student_name || '')}" onclick="handleDeleteResponseClick(this)" title="從資料庫刪除此筆填答">
+                  🗑️ 刪除此筆
+                </button>
+              </div>
+            </div>
+
+            <!-- 若有留聯絡方式 -->
+            ${contactBarHtml}
+
+            <!-- 評分指標膠囊列 (Metrics Pills) -->
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <!-- NPS 推薦值 -->
+              <div style="${npsCapsuleStyle} padding: 5px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;">
+                <span>🔥 推薦度 (NPS)</span>
+                <strong style="font-size: 0.95rem;">${row.nps_score || 0} / 10</strong>
+                <span style="font-size: 0.72rem; padding: 1px 6px; border-radius: 4px; ${npsTagStyle}">${npsTierLabel}</span>
+              </div>
+
+              <!-- 講師評分 -->
+              <div style="background: #fffbeb; border: 1px solid #fde68a; color: #b45309; padding: 5px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
+                <span>👨‍🏫 講師授課：</span>
+                <span style="color: #d97706; font-size: 0.92rem;">${instRating}</span>
+              </div>
+
+              <!-- 課程評分 -->
+              <div style="background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; padding: 5px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
+                <span>📚 課程內容：</span>
+                <span>${courseRating}</span>
+              </div>
+
+              <!-- 助教評分 -->
+              <div style="background: #f5f3ff; border: 1px solid #ddd6fe; color: #6d28d9; padding: 5px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
+                <span>🤝 助教支援：</span>
+                <span>${taRating}</span>
+              </div>
+
+              <!-- 平台體驗 -->
+              ${platformExp ? `
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; color: #475569; padding: 5px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
+                  <span>🖥️ 直播平台：</span>
+                  <span>${platformExp}</span>
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- 學員原聲文字留言 -->
+            ${quoteBlockHtml}
+
+            <!-- 學習成效對照網格 (收穫 ✕ 痛點) -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px;">
+              <!-- 核心進步收穫 -->
+              <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 11px 15px;">
+                <div style="font-size: 0.8rem; font-weight: 700; color: #166534; display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">
+                  <span>🎯 核心進步收穫</span>
+                </div>
+                <div style="font-size: 0.88rem; color: #14532d; line-height: 1.5; font-weight: 500;">
+                  ${escapeHtml(row.key_progress || '未具體填寫')}
+                </div>
+              </div>
+
+              <!-- 學習卡關痛點 -->
+              <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 11px 15px;">
+                <div style="font-size: 0.8rem; font-weight: 700; color: #b45309; display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">
+                  <span>⚠️ 學習卡關痛點</span>
+                </div>
+                <div style="font-size: 0.88rem; color: #78350f; line-height: 1.5; font-weight: 500;">
+                  ${escapeHtml(row.struggle_point || '無卡關或未填寫')}
+                </div>
+              </div>
+            </div>
+          `;
+          cardContainer.appendChild(card);
+        }
+
+        // ============================================
+        // 2. 渲染備用表格視圖 (Table View)
+        // ============================================
+        if (tbody) {
+          const tr = document.createElement('tr');
+          tr.style.transition = 'background 0.2s';
+          tr.onmouseover = () => { tr.style.background = '#f8fafc'; };
+          tr.onmouseout = () => { tr.style.background = ''; };
+
+          let contactCellHtml = `<div style="font-weight: 600; color: #0f172a; font-size: 0.9rem;">${escapeHtml(name)}</div>`;
+          if (phone || line || email) {
+            contactCellHtml += `<div style="font-size: 0.76rem; color: #64748b; margin-top: 2px;">`;
+            if (phone) contactCellHtml += `📞 ${escapeHtml(phone)} `;
+            if (line) contactCellHtml += `💬 ${escapeHtml(line)} `;
+            contactCellHtml += `</div>`;
+          }
+
+          let tableCommentHtml = '';
+          if (instComment) {
+            tableCommentHtml += `<div style="font-size: 0.85rem; color: #1e293b; line-height: 1.45;">「${escapeHtml(instComment)}」</div>`;
+          }
+          if (hasTaComm) {
+            tableCommentHtml += `<div style="font-size: 0.78rem; color: #64748b; margin-top: 3px; padding-left: 6px; border-left: 2px solid #cbd5e1;">助教: ${escapeHtml(taComment)}</div>`;
+          }
+          if (!tableCommentHtml) {
+            tableCommentHtml = `<span style="color: #94a3b8; font-size: 0.8rem;">(無文字回饋)</span>`;
+          }
+
+          tr.innerHTML = `
+            <td style="text-align: center; color: #64748b; font-weight: 600; font-size: 0.82rem; white-space: nowrap;">${index + 1}</td>
+            <td style="color: #475569; font-size: 0.8rem; white-space: nowrap;">${escapeHtml(timeStr)}</td>
+            <td>${contactCellHtml}</td>
+            <td style="white-space: nowrap;"><span class="status-badge" style="background:#f1f5f9; color:#475569; border-color:#cbd5e1; font-size:0.75rem; white-space: nowrap;">${escapeHtml(expStr)}</span></td>
+            <td>
+              <div style="display: flex; flex-direction: column; gap: 2px;">
+                <span class="status-badge" style="${npsCapsuleStyle} font-size: 0.74rem; display: inline-block; width: fit-content; white-space: nowrap;">NPS: ${row.nps_score || 0} (${npsTierLabel})</span>
+                <span style="font-size: 0.78rem; color: #d97706; font-weight: 600; white-space: nowrap;">講師: ${instRating}</span>
+                <span style="font-size: 0.72rem; color: #64748b; white-space: nowrap;">課程: ${courseRating} | 助教: ${taRating}</span>
+              </div>
+            </td>
+            <td>${tableCommentHtml}</td>
+            <td><span style="font-size: 0.84rem; color: #78350f;">${escapeHtml(row.struggle_point || '-')}</span></td>
+            <td><span style="font-size: 0.84rem; color: #166534; font-weight: 500;">${escapeHtml(row.key_progress || '-')}</span></td>
+            <td style="white-space: nowrap;">${rewardBadgeHtml}</td>
+            <td style="text-align: center; white-space: nowrap;">
+              <button type="button" class="btn" style="background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; padding: 4px 10px; font-size: 0.78rem; border-radius: 6px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 3px;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fef2f2'" data-timestamp="${encodeURIComponent(row.timestamp || '')}" data-class-id="${encodeURIComponent(row.class_id || currentClassId)}" data-student-name="${encodeURIComponent(row.student_name || '')}" onclick="handleDeleteResponseClick(this)" title="從資料庫刪除此筆填答">
+                🗑️ 刪除
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        }
       });
     }
 
