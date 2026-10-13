@@ -378,6 +378,40 @@
         <p class="security-note" id="securityNoteText">🔒 我們嚴格保護您的個資，資訊僅用於教學檢討與本次單元課兌換聯繫</p>
       </div>
     </form>
+
+    <!-- 提交成功感謝頁面 (送出後取代表單顯示，不再停留在填寫頁) -->
+    <div id="surveyCompletedCard" class="form-section" style="display: none; text-align: center; padding: 48px 24px; animation: fadeIn 0.4s ease; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); background: #ffffff;">
+      <div style="font-size: 3.6rem; margin-bottom: 12px; line-height: 1;">🎉</div>
+      <h2 id="completedTitle" style="font-size: 1.45rem; color: var(--text-primary); margin-bottom: 10px; font-weight: 700;">結業問卷已成功送出！</h2>
+      <p id="completedSub" style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; max-width: 500px; margin: 0 auto 24px auto;">
+        非常感謝您的用心填寫，您的寶貴回饋已安全送達後台分析系統，將幫助教學團隊持續優化課程品質 ✨
+      </p>
+
+      <!-- 完課好禮登記確認區塊 (若有兌換) -->
+      <div id="completedGiftBox" class="gift-download-box" style="display: none; max-width: 480px; margin: 0 auto 24px auto; text-align: left;">
+        <div class="gift-box-header">
+          <span class="badge-gold">已為您登記兌換</span>
+          <h4 id="completedRewardCourseName" style="margin-top: 4px; font-size: 1rem; color: #b45309;">線上單元課兌換已受理</h4>
+        </div>
+        <p class="gift-desc" style="font-size: 0.88rem; color: #78350f; margin-top: 6px; line-height: 1.5;">
+          後台統計專員將於 <strong>1~2 個工作天內</strong>，透過您留下的 <strong>手機或 LINE</strong> 與您聯繫確認，並為您開通觀看權限！
+        </p>
+        <div class="modal-note-box" style="margin-top: 10px; font-size: 0.82rem;">
+          🔔 請留意近期來自學院助教專員的 LINE 或電話通知唷！
+        </div>
+      </div>
+
+      <div style="display: inline-flex; align-items: center; gap: 8px; background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; font-size: 0.88rem; padding: 8px 18px; border-radius: 24px; font-weight: 500; margin-bottom: 24px;">
+        <span>✅</span>
+        <span>本次問卷填答已圓滿完成，您可以安心關閉此視窗</span>
+      </div>
+
+      <div>
+        <button type="button" class="primary-btn" onclick="handleCloseSurveyTab()" style="max-width: 260px; margin: 0 auto; padding: 12px 20px; font-size: 0.95rem; border-radius: var(--radius-md);">
+          <span>關閉此分頁 / 離開</span>
+        </button>
+      </div>
+    </div>
   </main>
 
   <!-- 提交成功 ＆ 單元課兌換確認彈窗 -->

@@ -524,10 +524,22 @@ function initFormSubmit() {
       const result = await response.json();
 
       if (response.ok && result.status === 'success') {
+        // 隱藏填寫表單，切換為完課感謝成功畫面 (學員絕不會再停留在已填寫的表單中)
+        form.style.display = 'none';
+        const completedCard = document.getElementById('surveyCompletedCard');
+        const completedTitle = document.getElementById('completedTitle');
+        const completedSub = document.getElementById('completedSub');
+        const completedGiftBox = document.getElementById('completedGiftBox');
+        const completedRewardCourseName = document.getElementById('completedRewardCourseName');
+
         if (!wantsReward) {
           if (modalTitle) modalTitle.textContent = '🎉 問卷回饋已成功送出！';
           if (modalSub) modalSub.textContent = '非常感謝您撥冗填寫寶貴意見，您的回饋將幫助教學團隊持續打磨更好的學習體驗 ✨';
           if (modalGiftBox) modalGiftBox.style.display = 'none';
+
+          if (completedTitle) completedTitle.textContent = '🎉 問卷回饋已成功送出！';
+          if (completedSub) completedSub.textContent = '非常感謝您撥冗填寫寶貴意見，您的回饋將幫助教學團隊持續打磨更好的學習體驗 ✨';
+          if (completedGiftBox) completedGiftBox.style.display = 'none';
         } else {
           if (modalTitle) modalTitle.textContent = '🎉 問卷回饋與兌換申請已受理！';
           if (modalSub) modalSub.textContent = '感謝您的認真填寫，您的寶貴意見將幫助教學團隊持續打磨更好的學習體驗 ✨';
@@ -535,7 +547,20 @@ function initFormSubmit() {
           if (modalRewardCourseName && data.selected_reward_course) {
             modalRewardCourseName.textContent = data.selected_reward_course;
           }
+
+          if (completedTitle) completedTitle.textContent = '🎉 問卷回饋與兌換申請已受理！';
+          if (completedSub) completedSub.textContent = '感謝您的認真填寫，您的寶貴意見將幫助教學團隊持續打磨更好的學習體驗 ✨';
+          if (completedGiftBox) completedGiftBox.style.display = 'block';
+          if (completedRewardCourseName && data.selected_reward_course) {
+            completedRewardCourseName.textContent = data.selected_reward_course;
+          }
         }
+
+        if (completedCard) {
+          completedCard.style.display = 'block';
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
         modal.classList.add('show');
       } else {
         alert(result.message || '提交時遇到問題，請再試一次！');
@@ -557,6 +582,15 @@ function initFormSubmit() {
   if (closeModalBtn) {
     closeModalBtn.addEventListener('click', () => {
       modal.classList.remove('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
+}
+
+// 供學員關閉問卷網頁
+function handleCloseSurveyTab() {
+  window.close();
+  setTimeout(() => {
+    alert('🎉 您已成功完成填答！請直接點擊手機瀏覽器左上角的「✕」或關閉分頁即可。');
+  }, 250);
 }
