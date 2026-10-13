@@ -2,6 +2,9 @@ import os
 import json
 import csv
 import mimetypes
+import base64
+import urllib.request
+import ssl
 from datetime import datetime
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
@@ -28,8 +31,6 @@ if config.RESPONSES_CSV_PATH.exists():
         current_state = orchestrator.run_pipeline(current_state)
     except Exception as e:
         print(f"[Init Warning] 初次載入資料異常: {e}", flush=True)
-
-import base64
 
 class SurveyHandler(BaseHTTPRequestHandler):
     def check_auth(self) -> bool:
@@ -415,35 +416,8 @@ class SurveyHandler(BaseHTTPRequestHandler):
         if parsed.path == "/api/sync-cloud":
             if not self.check_auth():
                 return
-            try:
-                import urllib.request, ssl, base64
-                ctx = ssl._create_unverified_context()
-                cloud_url = "https://dawei-survey.onrender.com/api/responses"
-                req = urllib.request.Request(cloud_url)
-                auth = base64.b64encode(f"{config.ADMIN_USERNAME}:{config.ADMIN_PASSWORD}".encode()).decode("ascii")
-                req.add_header("Authorization", f"Basic {auth}")
-                with urllib.request.urlopen(req, context=ctx, timeout=10) as resp:
-                    resp_data = json.loads(resp.read().decode("utf-8"))
-                    rows = resp_data.get("data", [])
-
-                fieldnames = [
-                    "timestamp", "class_id", "student_name", "phone", "line_id", "email",
-                    "prior_experience", "key_progress", "struggle_point", "instructor_rating",
-                    "instructor_comment", "course_rating", "ta_rating", "ta_comment",
-                    "platform_experience", "nps_score", "selected_reward_course", "wants_reward"
-                ]
-                with open(config.RESPONSES_CSV_PATH, "w", newline="", encoding="utf-8-sig") as f:
-                    writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
-                    writer.writeheader()
-                    for r in rows:
-                        writer.writerow(r)
-
-                if config.RESPONSES_CSV_PATH.exists():
-                    current_state.df = pd.read_csv(config.RESPONSES_CSV_PATH)
-
-                self.send_json(200, {"status": "success", "message": f"🎉 成功從雲端同步 {len(rows)} 筆最新填答！", "count": len(rows)})
-            except Exception as e:
-                self.send_json(500, {"status": "error", "message": f"同步失敗: {str(e)}"})
+            count = len(current_state.df) if current_state.df is not None else 0
+            self.send_json(200, {"status": "success", "message": f"本機問卷資料庫已為最新狀態（共 {count} 筆填答）！", "count": count})
             return
 
         # 觸發多代理協同分析 (/api/analyze?class_id=...) (需要管理員密碼保護！)
@@ -526,17 +500,24 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 payload = json.loads(body)
                 pdf_base64 = payload.get("pdf_base64", "")
                 syllabus_text = payload.get("syllabus_text", "")
+                enable_gift = bool(payload.get("enable_gift", False))
                 hints = {
                     "course_name": payload.get("course_name", ""),
                     "teacher_name": payload.get("teacher_name", ""),
-                    "organizer": payload.get("organizer", "")
+                    "organizer": payload.get("organizer", ""),
+                    "enable_gift": enable_gift
                 }
 
                 if pdf_base64:
-                    raw_pdf_bytes = base64.b64decode(pdf_base64)
-                    extracted = syllabus_agent.extract_text_from_pdf(raw_pdf_bytes)
-                    if extracted:
-                        syllabus_text = extracted + ("\n\n" + syllabus_text if syllabus_text else "")
+                    if "," in pdf_base64:
+                        pdf_base64 = pdf_base64.split(",", 1)[1]
+                    try:
+                        raw_pdf_bytes = base64.b64decode(pdf_base64)
+                        extracted = syllabus_agent.extract_text_from_pdf(raw_pdf_bytes)
+                        if extracted:
+                            syllabus_text = extracted + ("\n\n" + syllabus_text if syllabus_text else "")
+                    except Exception as decode_err:
+                        print(f"[PDF Decode Warning] {decode_err}", flush=True)
 
                 if not syllabus_text.strip():
                     self.send_json(400, {"status": "error", "message": "未能由上傳檔案或輸入中讀取到課綱文字，請確認 PDF 是否含文字或直接貼上大綱"})
@@ -562,6 +543,14 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 new_class_data = json.loads(body)
                 cid = new_class_data.get("class_id") or f"class_{int(datetime.now().timestamp())}"
                 new_class_data["class_id"] = cid
+
+                # 確保 enable_gift 屬性
+                new_class_data["enable_gift"] = bool(new_class_data.get("enable_gift", False))
+
+                # 確保 reward_course_items 結構完整
+                reward_courses = new_class_data.get("reward_courses", [])
+                if "reward_course_items" not in new_class_data or not new_class_data["reward_course_items"]:
+                    new_class_data["reward_course_items"] = [{"name": rc, "enabled": True} for rc in reward_courses]
 
                 cfg = config.load_classes_config()
                 if "classes" not in cfg:

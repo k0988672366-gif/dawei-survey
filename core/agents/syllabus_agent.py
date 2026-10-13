@@ -36,22 +36,36 @@ class SyllabusSurveyAgent:
             print(f"[SyllabusAgent Error] PDF 解析失敗: {e}", flush=True)
             return ""
 
-    def generate_survey_config(self, syllabus_text: str, hints: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
+    def generate_survey_config(self, syllabus_text: str, hints: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """依據課綱文字與輔助提示，自動規劃完整問卷設定"""
         hints = hints or {}
         custom_course = hints.get("course_name", "").strip()
         custom_teacher = hints.get("teacher_name", "").strip()
         custom_org = hints.get("organizer", "").strip()
+        enable_gift = bool(hints.get("enable_gift", False))
 
+        result = None
         if self.llm.is_live_llm():
             try:
                 result = self._generate_with_gemini(syllabus_text, custom_course, custom_teacher, custom_org)
-                if result and isinstance(result, dict) and "course_name" in result:
-                    return result
             except Exception as e:
                 print(f"[SyllabusAgent Warning] Gemini 生成失敗，切換至本機智慧引擎: {e}", flush=True)
 
-        return self._heuristic_generate(syllabus_text, custom_course, custom_teacher, custom_org)
+        if not result or not isinstance(result, dict) or not result.get("course_name"):
+            result = self._heuristic_generate(syllabus_text, custom_course, custom_teacher, custom_org)
+
+        result["enable_gift"] = enable_gift
+        if "reward_course_items" not in result or not result["reward_course_items"]:
+            result["reward_course_items"] = [{"name": rc, "enabled": True} for rc in result.get("reward_courses", [])]
+
+        if enable_gift:
+            result["badge_text"] = "🎁 結業學習回饋 ✕ 限時專屬好禮"
+            result["pill_3"] = "🎁 完填即贈單元課"
+        else:
+            result["badge_text"] = "📝 結業學習成果回饋"
+            result["pill_3"] = "✨ 匿名填答"
+
+        return result
 
     def _generate_with_gemini(self, text: str, c_name: str, t_name: str, org: str) -> Dict[str, Any]:
         """使用 Gemini API 進行深度教學法課綱問卷設計"""
@@ -70,15 +84,17 @@ class SyllabusSurveyAgent:
 - 主辦單位提示: {org or '赫綵設計學院'}
 
 【你的任務】
-請為本門課程量身規劃一套「高完填率、深度對齊課綱單元、且能精準抓出學員學習痛點」的手機端結業問卷配置，以及 3~4 門極具吸引力的「完課免費兌換單元課」獎勵選項。
+請為本門課程量身規劃一套「高完填率、深度對齊課綱單元、且能精準抓出學員學習痛點」的手機端結業問卷配置，以及 3~4 門推薦加碼單元課。
+【重要要求】
+問卷副標題請以「學習成效檢核與教學滿意度」為主軸（例如：結業學習成效檢核 ＆ 教學滿意度回饋），請勿強制在標題中提及「贈送單元課」或「免費加碼兌換」，以確保問卷在未開啟贈課功能時仍能自然得體。
 
 請嚴格輸出合法的 JSON 物件，格式如下（請勿包含 Markdown 標記以外的額外解釋）：
 ```json
 {{
   "class_id": "auto_class_id",
   "course_name": "課程完整正式名稱",
-  "course_subtitle": "吸睛、有溫度且切合本課程主題的副標題",
-  "badge_text": "🎁 結業回饋 ✕ 限時專屬好禮",
+  "course_subtitle": "結業學習成果驗收 ＆ 教學滿意度回饋",
+  "badge_text": "📝 結業學習成果回饋",
   "teacher_name": "授課講師姓名",
   "organizer": "主辦機構名稱",
   "platform_name": "OKBOM直播平台",
@@ -86,7 +102,7 @@ class SyllabusSurveyAgent:
   "gift_banner_desc": "感謝您的認真參與，填寫完畢即可於文末免費勾選一門量身打造的進階單元課，將由專員聯繫為您開通！",
   "pill_1": "⏱ 只需 90 秒",
   "pill_2": "📱 手機極速點選",
-  "pill_3": "🎁 完填即贈單元課",
+  "pill_3": "✨ 匿名填答",
   "syllabus_topics": [
     "單元 1：核心單元名稱與實作重點",
     "單元 2：核心單元名稱與實作重點",
@@ -108,11 +124,20 @@ class SyllabusSurveyAgent:
 }}
 ```
 """
-        raw = self.llm.generate_text(prompt)
-        json_match = re.search(r'\{.*\}', raw, re.DOTALL)
-        if json_match:
-            data = json.loads(json_match.group(0))
-            return data
+        try:
+            raw = self.llm.generate_text(prompt)
+            code_match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', raw, re.DOTALL)
+            json_str = code_match.group(1) if code_match else None
+            if not json_str:
+                json_match = re.search(r'\{.*\}', raw, re.DOTALL)
+                if json_match:
+                    json_str = json_match.group(0)
+            if json_str:
+                data = json.loads(json_str)
+                if isinstance(data, dict) and data.get("course_name"):
+                    return data
+        except Exception as e:
+            print(f"[SyllabusAgent Warning] Gemini JSON 解析異常: {e}", flush=True)
         return {}
 
     def _heuristic_generate(self, text: str, c_name: str, t_name: str, org: str) -> Dict[str, Any]:
@@ -190,7 +215,7 @@ class SyllabusSurveyAgent:
                 "單元課 C：【調色秘笈】色彩心理學與高級感配色盤速成 (市價 $1,200)",
                 "單元課 D：【動態骨架】角色五官精準比例與動態速繪指南 (市價 $1,600)"
             ]
-            subtitle = "結業成果驗收 ＆ 免費加碼單元課兌換"
+            subtitle = "結業學習成果驗收 ＆ 創作心得回饋"
         elif is_code:
             struggle_options = [
                 "資料型別與邏輯迴圈觀念較抽象",
@@ -204,7 +229,7 @@ class SyllabusSurveyAgent:
                 "單元課 B：【網路爬蟲】動態網頁資料採集與輿情監控快打術 (市價 $1,500)",
                 "單元課 C：【AI 賦能】Prompt 工程與大語言模型 API 串接實戰 (市價 $1,500)"
             ]
-            subtitle = "結業技術盤點 ＆ 實戰單元課免費兌換"
+            subtitle = "結業技術掌握檢核 ＆ 課程滿意度評鑑"
         elif is_design:
             struggle_options = [
                 "格線系統與響應式排版規則較難適應",
@@ -218,7 +243,7 @@ class SyllabusSurveyAgent:
                 "單元課 B：【視覺提案】商業設計提案簡報與作品集包裝 (市價 $1,500)",
                 "單元課 C：【排版心法】網頁與 App 資訊層級黃金架構 (市價 $1,200)"
             ]
-            subtitle = "結業能力評估 ＆ 精選單元課免費兌換"
+            subtitle = "結業設計成果評估 ＆ 課後學習回饋"
         else:
             struggle_options = [
                 "核心方法論與理論框架較為龐大",
@@ -232,7 +257,7 @@ class SyllabusSurveyAgent:
                 "單元課 B：【工具加速】必備生產力工具與模板大禮包 (市價 $1,500)",
                 "單元課 C：【職涯晉升】實戰專案演練與關鍵能力突破 (市價 $1,200)"
             ]
-            subtitle = "結業學習評量 ＆ 精選加值單元課免費兌換"
+            subtitle = "結業學習成效檢核 ＆ 教學滿意度評鑑"
 
         import time
         auto_id = f"class_{int(time.time())}"
@@ -241,7 +266,7 @@ class SyllabusSurveyAgent:
             "class_id": auto_id,
             "course_name": detected_course,
             "course_subtitle": subtitle,
-            "badge_text": "🎁 結業回饋 ✕ 限時專屬好禮",
+            "badge_text": "📝 結業學習成果回饋",
             "gift_banner_title": "完課專屬好禮：任選一門線上單元課！",
             "gift_banner_desc": "感謝您的認真參與，填寫完畢即可於文末免費勾選一門量身打造的線上單元課，將由客服聯繫為您開通！",
             "teacher_name": detected_teacher,
@@ -249,8 +274,10 @@ class SyllabusSurveyAgent:
             "platform_name": "OKBOM直播平台",
             "pill_1": "⏱ 只需 90 秒",
             "pill_2": "📱 手機極速點選",
-            "pill_3": "🎁 完填即贈單元課",
+            "pill_3": "✨ 匿名填答",
             "syllabus_topics": topics,
             "struggle_options": struggle_options,
-            "reward_courses": reward_courses
+            "reward_courses": reward_courses,
+            "reward_course_items": [{"name": rc, "enabled": True} for rc in reward_courses],
+            "enable_gift": False
         }

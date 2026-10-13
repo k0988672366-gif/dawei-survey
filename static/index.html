@@ -3,26 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>結業滿意度回饋 ＆ 線上單元課兌換領取</title>
+  <title>結業學習成效回饋問卷</title>
   <link rel="stylesheet" href="/static/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="background-decor">
-    <div class="glow glow-1"></div>
-    <div class="glow glow-2"></div>
-  </div>
-
   <main class="container">
     <!-- 頂部主視覺卡片 -->
     <header class="header-card">
-      <div class="badge" id="badgeText">🎁 結業回饋 ✕ 限時完課好禮</div>
-      <h1 id="courseTitle">劉大維畫室 直播課程</h1>
-      <p class="subtitle" id="courseSubtitle">結業滿意度回饋 ＆ 線上單元課免費兌換</p>
+      <div class="badge" id="badgeText">📝 結業學習成果回饋</div>
+      <h1 id="courseTitle">結業培訓課程</h1>
+      <p class="subtitle" id="courseSubtitle">結業成果驗收 ＆ 教學成效回饋</p>
       
-      <div class="gift-banner" id="heroGiftBanner">
+      <div class="gift-banner" id="heroGiftBanner" style="display: none;">
         <div class="gift-icon">🎓</div>
         <div class="gift-info">
           <strong id="giftBannerTitle">完課專屬好禮：任選一門線上單元課！</strong>
@@ -33,7 +28,7 @@
       <div class="meta-pills">
         <span class="pill" id="pill1">⏱ 只需 90 秒</span>
         <span class="pill" id="pill2">📱 手機極速點選</span>
-        <span class="pill" id="pill3">🎁 完填即贈單元課</span>
+        <span class="pill" id="pill3">✨ 匿名填答</span>
       </div>
     </header>
 
@@ -122,7 +117,7 @@
           </div>
           <!-- 勾選「其他」時動態顯示之輸入欄位 -->
           <div id="struggleOtherWrap" style="display: none; margin-top: 10px;">
-            <input type="text" id="struggleOtherText" class="text-input" placeholder="請簡述您的卡關原因或學習狀況..." style="font-size: 0.88rem; padding: 10px 14px; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(99, 102, 241, 0.45); border-radius: 8px; width: 100%; color: #fff;">
+            <input type="text" id="struggleOtherText" class="text-input" placeholder="請簡述您的卡關原因或學習狀況..." style="font-size: 0.88rem; width: 100%;">
           </div>
         </div>
       </section>
@@ -168,8 +163,8 @@
         <div class="question-group">
           <label class="question-label">
             6. 課程規劃課綱、教材講義與節奏滿意度 <span class="req">*</span>
-            <div id="syllabusTopicChips" style="display:none; margin-top: 8px; font-size: 0.82rem; color: #94a3b8;">
-              <span style="font-weight: 600; color: #cbd5e1;">📋 本班課綱重點：</span>
+            <div id="syllabusTopicChips" style="display:none; margin-top: 8px; font-size: 0.82rem; color: var(--text-muted);">
+              <span style="font-weight: 600; color: var(--text-secondary);">📋 本班課綱重點：</span>
               <div id="syllabusTopicList" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;"></div>
             </div>
           </label>
@@ -259,18 +254,18 @@
         </div>
 
         <!-- 結業好禮兌換意願 -->
-        <div class="question-group" id="q11WantsRewardContainer" style="margin-top: 24px; padding-top: 20px; border-top: 1px dashed rgba(255, 255, 255, 0.1);">
+        <div class="question-group" id="q11WantsRewardContainer" style="margin-top: 24px; padding-top: 18px; border-top: 1px dashed var(--border-color);">
           <label class="question-label">
             11. 您是否想要免費兌換一門「線上單元課」結業好禮？ <span class="req">*</span>
             <small class="hint">（勾選「想兌換」再填寫專員開通聯繫資訊即可）</small>
           </label>
           <div class="radio-cards horizontal" data-name="wants_reward" id="wantsRewardGroup">
-            <label class="radio-card compact active-reward" id="wantsYesLabel" style="border: 1px solid rgba(245, 158, 11, 0.5); background: rgba(245, 158, 11, 0.08);">
+            <label class="radio-card compact active-reward" id="wantsYesLabel">
               <input type="radio" name="wants_reward" value="yes" checked required>
               <div class="card-body">
                 <span class="emoji">🎁</span>
                 <strong>我想免費兌換好禮</strong>
-                <small style="color: #fbbf24;">自由任選一門單元課</small>
+                <small style="color: var(--gold-dark);">自由任選一門單元課</small>
               </div>
             </label>
             <label class="radio-card compact" id="wantsNoLabel">
@@ -288,8 +283,8 @@
       <!-- 區塊 5: 【全新亮點】免費線上單元課兌換 (勾選) -->
       <section class="form-section highlight-section" id="rewardRedemptionSection">
         <div class="section-title">
-          <span class="step-num" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">05</span>
-          <h3 style="color: #fbbf24;">🎁 完課專屬好禮：任選一門線上單元課兌換</h3>
+          <span class="step-num" style="background: var(--gold-soft); color: var(--gold-dark); border-color: var(--gold-border);">05</span>
+          <h3 style="color: var(--gold-dark);">🎁 完課專屬好禮：任選一門線上單元課兌換</h3>
         </div>
 
         <p class="reward-instruction">
@@ -297,7 +292,7 @@
         </p>
 
         <div class="question-group">
-          <label class="question-label" style="color: #fef08a;">
+          <label class="question-label" style="color: var(--gold-dark);">
             請勾選您欲免費兌換的線上單元課 <span class="req">*</span>
           </label>
           <div class="reward-course-list" id="rewardCourseList">
@@ -361,15 +356,15 @@
         </div>
 
         <!-- 個資法法定告知事項與同意規範 -->
-        <div class="privacy-notice-box" style="margin-top: 20px; padding: 14px; background: rgba(255, 255, 255, 0.03); border: 1px dashed rgba(255, 255, 255, 0.15); border-radius: var(--radius-sm);">
-          <div style="font-size: 0.82rem; font-weight: 600; color: #a5b4fc; margin-bottom: 6px;">
+        <div class="privacy-notice-box">
+          <div class="privacy-notice-title">
             🛡️ 個人資料蒐集與隱私保護告知（符合個人資料保護法規定）
           </div>
-          <p style="font-size: 0.78rem; color: #94a3b8; line-height: 1.5; margin-bottom: 8px;">
+          <p class="privacy-notice-text">
             依據《個人資料保護法》第八條規定，本問卷所蒐集之個人資料（姓名、電話、LINE ID、Email），僅供主辦單位進行本次教學滿意度分析、以及後台專員聯繫開通您所勾選之免費線上單元課使用。本單位嚴格遵循資訊安全與隱私規範，絕不向第三方洩漏或移作未授權之推銷用途，請安心填寫。
           </p>
-          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: #f1f5f9; cursor: pointer;">
-            <input type="checkbox" name="privacy_agree" id="privacyAgreeCheckbox" checked required style="accent-color: var(--primary); width: 16px; height: 16px;">
+          <label class="privacy-notice-agree">
+            <input type="checkbox" name="privacy_agree" id="privacyAgreeCheckbox" checked required style="accent-color: var(--accent-primary); width: 16px; height: 16px;">
             <span>我已詳細閱讀並同意上述個人資料蒐集與單元課兌換聯繫條款 <span class="req">*</span></span>
           </label>
         </div>
@@ -400,7 +395,7 @@
         <p class="gift-desc">
           後台統計專員將於 <strong>1~2 個工作天內</strong>，透過您留下的 <strong>手機或 LINE</strong> 與您聯繫確認，並開通線上單元課觀看權限！
         </p>
-        <div style="background: rgba(255,255,255,0.08); padding: 10px; border-radius: 8px; font-size: 0.82rem; color: #a5b4fc;">
+        <div class="modal-note-box">
           🔔 請留意近期來自學院助教專員的 LINE 或電話通知唷！
         </div>
       </div>

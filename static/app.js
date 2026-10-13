@@ -35,41 +35,89 @@ async function loadClassConfig() {
       document.getElementById('classIdInput').value = data.class_id || classId || 'default';
     }
 
-    // 判斷是否開啟完課好禮課程 (預設為 true，若後台設為 false 則轉為純回饋模式)
-    window.isGiftEnabled = (data.enable_gift !== false);
+    // 判斷是否開啟完課好禮課程 (以資料明確標記為準，未開啟則為純回饋模式)
+    window.isGiftEnabled = (data.enable_gift === true);
+    const isGift = window.isGiftEnabled;
 
-    // 更新頂部卡片所有文案
-    if (data.badge_text && document.getElementById('badgeText')) {
-      document.getElementById('badgeText').textContent = window.isGiftEnabled 
-        ? data.badge_text 
-        : (data.badge_text.includes('好禮') ? '📝 結業成果回饋 ✕ 匿名填答' : data.badge_text);
+    const badgeEl = document.getElementById('badgeText');
+    const titleEl = document.getElementById('courseTitle');
+    const subtitleEl = document.getElementById('courseSubtitle');
+    const pill1El = document.getElementById('pill1');
+    const pill2El = document.getElementById('pill2');
+    const pill3El = document.getElementById('pill3');
+
+    // 課程名稱與網頁標題
+    if (data.course_name && titleEl) {
+      titleEl.textContent = data.course_name;
+      document.title = isGift 
+        ? `${data.course_name} 結業回饋 ＆ 線上單元課兌換` 
+        : `${data.course_name} 結業學習成果回饋問卷`;
     }
-    if (data.course_name && document.getElementById('courseTitle')) {
-      document.getElementById('courseTitle').textContent = data.course_name;
-      document.title = window.isGiftEnabled 
-        ? `${data.course_name} 結業回饋＆線上單元課兌換` 
-        : `${data.course_name} 結業滿意度回饋問卷`;
+
+    // Badge 膠囊標籤
+    if (badgeEl) {
+      if (isGift) {
+        badgeEl.textContent = (data.badge_text && !data.badge_text.includes('匿名')) 
+          ? data.badge_text 
+          : '🎁 結業學習回饋 ✕ 限時專屬好禮';
+      } else {
+        const raw = (data.badge_text || '').trim();
+        if (!raw || /好禮|贈|兌換|免費/.test(raw)) {
+          badgeEl.textContent = '📝 結業學習成果回饋';
+        } else {
+          badgeEl.textContent = raw;
+        }
+      }
     }
-    if (data.course_subtitle && document.getElementById('courseSubtitle')) {
-      document.getElementById('courseSubtitle').textContent = window.isGiftEnabled 
-        ? data.course_subtitle 
-        : (data.course_subtitle.includes('兌換') ? '結業滿意度回饋 ＆ 學習成效檢討' : data.course_subtitle);
+
+    // 副標題 (嚴格解耦贈課文字)
+    if (subtitleEl) {
+      if (isGift) {
+        subtitleEl.textContent = data.course_subtitle || '結業成果驗收 ＆ 免費加碼單元課兌換';
+      } else {
+        let clean = (data.course_subtitle || '')
+          .replace(/[＆&＋+]\s*免費加碼單元課兌換/g, '')
+          .replace(/[＆&＋+]\s*線上單元課免費兌換/g, '')
+          .replace(/[＆&＋+]\s*實戰單元課免費兌換/g, '')
+          .replace(/[＆&＋+]\s*精選單元課免費兌換/g, '')
+          .replace(/[＆&＋+]\s*精選加值單元課免費兌換/g, '')
+          .replace(/免費加碼單元課兌換/g, '')
+          .replace(/線上單元課免費兌換/g, '')
+          .trim();
+        if (!clean || /兌換|好禮|單元課|加碼/.test(clean)) {
+          clean = '結業學習成果驗收 ＆ 教學成效回饋';
+        }
+        subtitleEl.textContent = clean;
+      }
     }
+
     if (data.gift_banner_title && document.getElementById('giftBannerTitle')) {
       document.getElementById('giftBannerTitle').textContent = data.gift_banner_title;
     }
     if (data.gift_banner_desc && document.getElementById('giftBannerDesc')) {
       document.getElementById('giftBannerDesc').textContent = data.gift_banner_desc;
     }
-    if (data.pill_1 && document.getElementById('pill1')) {
-      document.getElementById('pill1').textContent = data.pill_1;
+
+    if (data.pill_1 && pill1El) pill1El.textContent = data.pill_1;
+    if (data.pill_2 && pill2El) pill2El.textContent = data.pill_2;
+    if (pill3El) {
+      if (isGift) {
+        if (data.pill_3 && /好禮|贈|單元課/.test(data.pill_3)) {
+          pill3El.textContent = data.pill_3;
+        } else if (data.pill_3 && !/匿名/.test(data.pill_3)) {
+          pill3El.textContent = data.pill_3;
+        } else {
+          pill3El.textContent = '🎁 完填即贈單元課';
+        }
+      } else {
+        if (data.pill_3 && !/好禮|贈|單元課/.test(data.pill_3)) {
+          pill3El.textContent = data.pill_3;
+        } else {
+          pill3El.textContent = '✨ 匿名填答';
+        }
+      }
     }
-    if (data.pill_2 && document.getElementById('pill2')) {
-      document.getElementById('pill2').textContent = data.pill_2;
-    }
-    if (data.pill_3 && document.getElementById('pill3')) {
-      document.getElementById('pill3').textContent = window.isGiftEnabled ? data.pill_3 : '✨ 純回饋免選課';
-    }
+
     if (data.teacher_name) {
       document.querySelectorAll('.teacher-name-span').forEach(el => {
         el.textContent = `${data.teacher_name}老師`;
@@ -108,7 +156,7 @@ async function loadClassConfig() {
         topicList.innerHTML = '';
         data.syllabus_topics.forEach(t => {
           const chip = document.createElement('span');
-          chip.style.cssText = 'background: rgba(99, 102, 241, 0.12); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 6px; padding: 3px 8px; font-size: 0.78rem;';
+          chip.className = 'topic-chip';
           chip.textContent = t;
           topicList.appendChild(chip);
         });
@@ -254,7 +302,7 @@ function initTagSelectors() {
 
 // 根據後台好禮設定套用顯隱邏輯
 function applyGiftVisibility() {
-  const isGiftEnabled = window.isGiftEnabled !== false;
+  const isGiftEnabled = (window.isGiftEnabled === true);
   const giftBanner = document.getElementById('heroGiftBanner');
   const q11 = document.getElementById('q11WantsRewardContainer');
   const rewardSection = document.getElementById('rewardRedemptionSection');
@@ -286,7 +334,7 @@ function applyGiftVisibility() {
     }
 
     if (submitBtn) {
-      submitBtn.innerHTML = '<span>🚀 送出結業回饋問卷</span>';
+      submitBtn.innerHTML = '<span>🚀 送出匿名結業回饋</span>';
     }
     if (secNote) {
       secNote.textContent = '🔒 我們嚴格保護您的回饋，資訊僅用於教學檢討與持續優化課程品質';
@@ -294,6 +342,19 @@ function applyGiftVisibility() {
   } else {
     if (giftBanner) giftBanner.style.display = 'flex';
     if (q11) q11.style.display = 'block';
+
+    const wantsVal = document.querySelector('input[name="wants_reward"]:checked')?.value || 'yes';
+    if (rewardSection) {
+      rewardSection.style.display = (wantsVal === 'no') ? 'none' : 'block';
+    }
+    if (submitBtn) {
+      submitBtn.innerHTML = (wantsVal === 'no') 
+        ? '<span>🚀 送出結業回饋問卷</span>' 
+        : '<span>🎁 登記兌換 ＆ 送出結業問卷</span>';
+    }
+    if (secNote) {
+      secNote.textContent = '🔒 我們嚴格保護您的個資，資訊僅用於教學檢討與本次單元課兌換聯繫';
+    }
   }
 }
 
@@ -323,12 +384,12 @@ function initRewardToggle() {
     if (selectedVal === 'no') {
       rewardSection.style.display = 'none';
       if (yesLabel) {
-        yesLabel.style.borderColor = 'rgba(255, 255, 255, 0.12)';
-        yesLabel.style.background = 'rgba(255, 255, 255, 0.03)';
+        yesLabel.style.borderColor = 'var(--border-color)';
+        yesLabel.style.background = '#ffffff';
       }
       if (noLabel) {
-        noLabel.style.borderColor = 'rgba(99, 102, 241, 0.6)';
-        noLabel.style.background = 'rgba(99, 102, 241, 0.15)';
+        noLabel.style.borderColor = 'var(--accent-primary)';
+        noLabel.style.background = 'var(--accent-soft)';
       }
       // 移除必填限制
       requiredFields.forEach(sel => {
@@ -344,12 +405,12 @@ function initRewardToggle() {
     } else {
       rewardSection.style.display = 'block';
       if (yesLabel) {
-        yesLabel.style.borderColor = 'rgba(245, 158, 11, 0.5)';
-        yesLabel.style.background = 'rgba(245, 158, 11, 0.08)';
+        yesLabel.style.borderColor = 'var(--gold)';
+        yesLabel.style.background = 'var(--gold-soft)';
       }
       if (noLabel) {
-        noLabel.style.borderColor = 'rgba(255, 255, 255, 0.12)';
-        noLabel.style.background = 'rgba(255, 255, 255, 0.03)';
+        noLabel.style.borderColor = 'var(--border-color)';
+        noLabel.style.background = '#ffffff';
       }
       // 恢復必填限制 (姓名、電話、個資同意；LINE 與 Email 保持選填)
       requiredFields.forEach(sel => {

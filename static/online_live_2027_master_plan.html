@@ -1449,23 +1449,23 @@ function renderH1Cards() {
   container.innerHTML = "";
 
   const h1Courses = [
-    { title: "商用視覺平面設計 (Q1 週末早)", code: "Q1", time: "週日 10:00-13:00 (24堂)", teacher: "王仁駿", target: "120 人", badge: "A 基礎", note: "大排基石引流，清空 249 人未登記大戶" },
-    { title: "商用視覺平面設計 (Q2 平日晚)", code: "Q2", time: "週二、四 18:30-21:30 (24堂)", teacher: "戴禎儀", target: "110 人", badge: "A 基礎", note: "雙師分流，吸納上班族平日進修" },
-    { title: "商用平面設計進階班 (Q2 平日晚)", code: "Q2", time: "週二、四 18:30-21:30 (24堂)", teacher: "王仁駿", target: "100 人", badge: "B 進階一", note: "承接 Q1 基礎畢業生，消化 148 未登記" },
-    { title: "AI品牌系統創建 (Q2 週末午)", code: "Q2", time: "週六 14:00-17:00 (18堂)", teacher: "戴禎儀", target: "90 人", badge: "B 進階一", note: "2026 首開 91 人爆款，2027 AI 升級核心" },
-    { title: "數位漫畫班 (Q1 寒假特訓)", code: "Q1", time: "週一、三 18:30-21:30 (24堂)", teacher: "曾建華", target: "130 人", badge: "A 基礎", note: "強力回補！終結 231 筆補課外溢民怨" },
-    { title: "數位漫畫班 (Q2 週末午)", code: "Q2", time: "週日 14:00-17:00 (24堂)", teacher: "曾建華", target: "110 人", badge: "A 基礎", note: "曾建華名師二棒，穩定承接青少年電繪潮" },
-    { title: "數位繪畫班 (Q1 平日晚)", code: "Q1", time: "週二、四 18:30-21:30 (24堂)", teacher: "柯光曜", target: "110 人", badge: "A 基礎", note: "電繪長青樹，消化 39 個實體班外溢" },
-    { title: "Procreate 數位繪畫 (Q1 週末早)", code: "Q1", time: "週六 18:00-21:00 (24堂)", teacher: "金芸萱", target: "120 人", badge: "A 基礎", note: "劃撥併入《漫畫故事力 125人》，雙軌直播+錄播" },
-    { title: "IP 角色人物創作班 (Q2 平日晚)", code: "Q2", time: "週二、四 18:30-21:30 (20堂)", teacher: "柯光曜", target: "95 人", badge: "B 進階一", note: "開拓 163 人完全未登記幽靈庫存，全台合併" },
-    { title: "Vtuber 創作全攻略 (Q1 週末早)", code: "Q1", time: "週六 18:00-21:00 (24堂)", teacher: "黃俊傑", target: "130 人", badge: "A 基礎", note: "全校完課率最高 (60.9%) 王牌梯隊龍頭" },
-    { title: "V皮角色繪製 (Q2 週末早)", code: "Q2", time: "週六 18:00-21:00 (24堂)", teacher: "黃俊傑", target: "130 人", badge: "B 進階一", note: "承接 Q1 全攻略畢業生，單班超高產能" },
-    { title: "Live2D 動畫製作 (Q2 週末午)", code: "Q2", time: "週日 10:00-13:00 (24堂)", teacher: "黃俊傑", target: "130 人", badge: "C 進階二", note: "梯隊垂直閉環終點，100% 商業出道級作品" },
-    { title: "AI 遊戲設計班 (Q1 平日晚)", code: "Q1", time: "週二、四 18:30-21:30 (24堂)", teacher: "葉奕志", target: "120 人", badge: "A 基礎", note: "成長 128% 爆款，全面導入 AI 遊戲流程" },
-    { title: "遊戲角色美術班 (Q2 平日晚)", code: "Q2", time: "週二、四 18:30-21:30 (20堂)", teacher: "葉奕志", target: "85 人", badge: "B 進階一", note: "雙軌專案銜接，消化 88 位未消耗學員" },
-    { title: "日本動畫職人養成班 (Q1 週末午)", code: "Q1", time: "週日 14:00-17:00 (24堂)", teacher: "王家敏/王韋力", target: "90 人", badge: "A 綜合", note: "跨國雙師日方連線，消化 368 人動漫庫存" },
-    { title: "After Effects 特效動畫 (Q1 平日晚)", code: "Q1", time: "週一、三 18:30-21:30 (20堂)", teacher: "戴禎儀", target: "95 人", badge: "A 基礎", note: "改革為 20 堂精實版，大幅提升完課率" },
-    { title: "★全 AI 音樂創作實戰 (Q2 週末早)", code: "Q2", time: "週日 09:30-12:30 (20堂)", teacher: "周岳澄", target: "100 人", badge: "A 基礎", note: "★戰略新藍海！化解 88.2% 跨區補課與 370 庫存" }
+    { title: "商用視覺平面設計 (Q1 週日班)", code: "Q1", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共24堂)", teacher: "王仁駿", target: "120 人", badge: "A 基礎", note: "大排基石引流，清空 249 人未登記大戶" },
+    { title: "商用視覺平面設計 (Q2 平日晚)", code: "Q2", time: "週一、三 18:30-21:30 (共24堂)", teacher: "戴禎儀", target: "110 人", badge: "A 基礎", note: "雙師分流，吸納上班族平日進修" },
+    { title: "商用平面設計進階班 (Q2 平日晚)", code: "Q2", time: "週二、四 18:30-21:30 (共24堂)", teacher: "王仁駿", target: "100 人", badge: "B 進階一", note: "承接 Q1 基礎畢業生，消化 148 未登記" },
+    { title: "AI品牌系統創建 (Q2 週六班)", code: "Q2", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共18堂)", teacher: "戴禎儀", target: "90 人", badge: "B 進階一", note: "2026 首開 91 人爆款，2027 AI 升級核心" },
+    { title: "數位漫畫班·寒假特訓 (Q1 平日晚)", code: "Q1", time: "週一、三 18:30-21:30 (共24堂)", teacher: "曾建華", target: "130 人", badge: "A 基礎", note: "強力回補！終結 231 筆補課外溢民怨" },
+    { title: "數位漫畫班 (Q2 週日班)", code: "Q2", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共24堂)", teacher: "曾建華", target: "110 人", badge: "A 基礎", note: "曾建華名師二棒，穩定承接青少年電繪潮" },
+    { title: "數位繪畫班 (Q1 平日晚)", code: "Q1", time: "週二、四 18:30-21:30 (共24堂)", teacher: "柯光曜", target: "110 人", badge: "A 基礎", note: "電繪長青樹，消化 39 個實體班外溢" },
+    { title: "Procreate 數位繪畫 (Q1 週日班)", code: "Q1", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共24堂)", teacher: "金芸萱", target: "120 人", badge: "A 基礎", note: "劃撥併入《漫畫故事力 125人》，雙軌直播+錄播" },
+    { title: "IP 角色人物創作班 (Q2 平日晚)", code: "Q2", time: "週二、四 18:30-21:30 (共20堂)", teacher: "柯光曜", target: "95 人", badge: "B 進階一", note: "開拓 163 人完全未登記幽靈庫存，全台合併" },
+    { title: "Vtuber 創作全攻略 (Q1 週六班)", code: "Q1", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共24堂)", teacher: "黃俊傑", target: "130 人", badge: "A 基礎", note: "全校完課率最高 (60.9%) 王牌梯隊龍頭" },
+    { title: "V皮角色繪製 (Q2 週六班)", code: "Q2", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共24堂)", teacher: "黃俊傑", target: "130 人", badge: "B 進階一", note: "承接 Q1 全攻略畢業生，單班超高產能" },
+    { title: "Live2D 動畫製作 (Q2 週六班)", code: "Q2", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共24堂)", teacher: "黃俊傑", target: "130 人", badge: "C 進階二", note: "梯隊垂直閉環終點，100% 商業出道級作品" },
+    { title: "AI 遊戲設計班 (Q1 平日晚)", code: "Q1", time: "週二、四 18:30-21:30 (共24堂)", teacher: "葉奕志", target: "120 人", badge: "A 基礎", note: "成長 128% 爆款，全面導入 AI 遊戲流程" },
+    { title: "遊戲角色美術班 (Q2 平日晚)", code: "Q2", time: "週二、四 18:30-21:30 (共20堂)", teacher: "葉奕志", target: "85 人", badge: "B 進階一", note: "雙軌專案銜接，消化 88 位未消耗學員" },
+    { title: "日本動畫職人養成班 (Q1 週日班)", code: "Q1", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共24堂)", teacher: "王家敏/王韋力", target: "90 人", badge: "A 綜合", note: "跨國雙師日方連線，消化 368 人動漫庫存" },
+    { title: "After Effects 特效動畫 (Q1 平日晚)", code: "Q1", time: "週一、三 18:30-21:30 (共20堂)", teacher: "戴禎儀", target: "95 人", badge: "A 基礎", note: "改革為 20 堂精實版，大幅提升完課率" },
+    { title: "★全 AI 音樂創作實戰 (Q2 週日班)", code: "Q2", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共20堂)", teacher: "周岳澄", target: "100 人", badge: "A 基礎", note: "★戰略新藍海！化解 88.2% 跨區補課與 276 庫存" }
   ];
 
   h1Courses.forEach(c => {
@@ -1508,17 +1508,17 @@ function renderH2Cards() {
   container.innerHTML = "";
 
   const h2Courses = [
-    { title: "商用視覺平面設計 (Q3 暑假平日晚)", time: "週二、四 18:30-21:30 (24堂)", teacher: "王仁駿", target: "120 人", trigger: "暑假學生潮溢流 / Q1 基礎班滿班" },
-    { title: "商用視覺平面設計 (Q4 週末早)", time: "週日 10:00-13:00 (24堂)", teacher: "戴禎儀", target: "100 人", trigger: "年末轉職進修潮啟動" },
-    { title: "商用平面設計進階班 (Q4 平日晚)", time: "週二、四 18:30-21:30 (24堂)", teacher: "王仁駿", target: "95 人", trigger: "Q2 基礎班結業生轉換" },
-    { title: "AI品牌系統創建 (Q3 平日晚)", time: "週六 14:00-17:00 (18堂)", teacher: "戴禎儀", target: "90 人", trigger: "AI 企業專案加開池" },
-    { title: "數位漫畫進階班 (Q3 暑假週末午)", time: "週日 14:00-17:00 (24堂)", teacher: "曾建華", target: "90 人", trigger: "H1 漫畫雙班結業生作品集班" },
-    { title: "數位繪畫班 (Q3 暑期平日晚)", time: "週二、四 18:30-21:30 (24堂)", teacher: "柯光曜", target: "110 人", trigger: "暑期電繪高峰檔" },
-    { title: "Procreate 數位繪畫 (Q3 週末午)", time: "週日 10:00-13:00 (24堂)", teacher: "金芸萱", target: "110 人", trigger: "平板插畫暑期檔" },
-    { title: "Vtuber 創作全攻略 (Q3 暑假週末早)", time: "週六 18:00-21:00 (24堂)", teacher: "黃俊傑", target: "130 人", trigger: "年度第二梯隊 Q3 引流啟動" },
-    { title: "V皮角色繪製 (Q4 週末早)", time: "週六 18:00-21:00 (24堂)", teacher: "黃俊傑", target: "130 人", trigger: "第二梯隊立繪推進" },
-    { title: "Live2D 動畫製作 (Q4 週末午)", time: "週日 10:00-13:00 (24堂)", teacher: "黃俊傑", target: "130 人", trigger: "第二梯隊商業出道收斂" },
-    { title: "★數位音樂製作人實戰 (Q3 週末早)", time: "週日 09:30-12:30 (20堂)", teacher: "周岳澄", target: "100 人", trigger: "Q2 全 AI 音樂班結業生進階" }
+    { title: "商用視覺平面設計 (Q3 暑期平日晚)", time: "週一、三 18:30-21:30 (共24堂)", teacher: "王仁駿", target: "120 人", trigger: "暑假學生潮溢流 / Q1 基礎班滿班" },
+    { title: "商用視覺平面設計 (Q4 週日班)", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共24堂)", teacher: "戴禎儀", target: "100 人", trigger: "年末轉職進修潮啟動" },
+    { title: "商用平面設計進階班 (Q4 平日晚)", time: "週一、三 18:30-21:30 (共24堂)", teacher: "王仁駿", target: "95 人", trigger: "Q2 基礎班結業生轉換" },
+    { title: "AI品牌系統創建 (Q3 週六班)", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共18堂)", teacher: "戴禎儀", target: "90 人", trigger: "AI 企業專案加開池" },
+    { title: "數位漫畫進階班 (Q3 暑期週日班)", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共24堂)", teacher: "曾建華", target: "90 人", trigger: "H1 漫畫雙班結業生作品集班" },
+    { title: "數位繪畫班 (Q3 暑期平日晚)", time: "週二、四 18:30-21:30 (共24堂)", teacher: "柯光曜", target: "110 人", trigger: "暑期電繪高峰檔" },
+    { title: "Procreate 數位繪畫 (Q3 週日班)", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共24堂)", teacher: "金芸萱", target: "110 人", trigger: "平板插畫暑期檔" },
+    { title: "Vtuber 創作全攻略 (Q3 暑假週六班)", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共24堂)", teacher: "黃俊傑", target: "130 人", trigger: "年度第二梯隊 Q3 引流啟動" },
+    { title: "V皮角色繪製 (Q4 週六班)", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共24堂)", teacher: "黃俊傑", target: "130 人", trigger: "第二梯隊立繪推進" },
+    { title: "Live2D 動畫製作 (Q4 週六班)", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共24堂)", teacher: "黃俊傑", target: "130 人", trigger: "第二梯隊商業出道收斂" },
+    { title: "★數位音樂製作人實戰 (Q3 週日班)", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共20堂)", teacher: "周岳澄", target: "100 人", trigger: "Q2 全 AI 音樂班結業生進階" }
   ];
 
   h2Courses.forEach((c, idx) => {
@@ -1613,7 +1613,7 @@ window.onload = function() {
 };
 
 function copyShareLink(btn) {
-  const shareUrl = 'https://dawei-survey.onrender.com/static/online_live_2027_master_plan.html';
+  const shareUrl = window.location.href;
   if (navigator.clipboard && window.isSecureContext) {
     navigator.clipboard.writeText(shareUrl).then(() => {
       const orig = btn.innerHTML;

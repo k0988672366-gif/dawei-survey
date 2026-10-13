@@ -2836,7 +2836,7 @@
   let allExpanded = false;
 
   function copyShareLink(btn) {
-    const shareUrl = 'https://dawei-survey.onrender.com/static/schedule_2025_presentation.html';
+    const shareUrl = window.location.href;
     navigator.clipboard.writeText(shareUrl).then(() => {
       const orig = btn.innerHTML;
       btn.innerHTML = '✅ 已複製分享網址！';
