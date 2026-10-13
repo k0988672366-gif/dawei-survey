@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DATE 線上直播學院｜2027 年度排課落點示範（互動調配系統）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-bg: #eff6ff;
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --amber: #ea580c;
+    --amber-bg: #fff7ed;
+    --purple: #9333ea;
+    --purple-bg: #faf5ff;
+    --text-main: #0f172a;
+    --text-sub: #334155;
+    --text-muted: #64748b;
+    --border: #cbd5e1;
+    --border-light: #e2e8f0;
+    --bg: #f8fafc;
+    --surface: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    line-height: 1.5;
+    padding: 24px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page-container {
+    max-width: 1520px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+
+  /* Header banner */
+  .header-banner {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #1e3a8a 100%);
+    color: #ffffff;
+    padding: 26px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+    border-bottom: 3px solid #3b82f6;
+  }
+
+  .header-title-group h1 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .tag-live {
+    font-size: 11px;
+    background: #ef4444;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .tag-interactive {
+    font-size: 11px;
+    background: #0284c7;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+
+  .header-title-group p {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-top: 6px;
+    max-width: 900px;
+    line-height: 1.6;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .btn-action {
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    padding: 9px 16px;
+    font-size: 12.5px;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+  }
+  .btn-action:hover { background: #1d4ed8; }
+
+  .btn-action.secondary {
+    background: rgba(255,255,255,0.12);
+    color: #f1f5f9;
+    border: 1px solid rgba(255,255,255,0.25);
+  }
+  .btn-action.secondary:hover { background: rgba(255,255,255,0.22); }
+
+  .btn-action.green { background: #16a34a; }
+  .btn-action.green:hover { background: #15803d; }
+
+  .btn-action.amber { background: #ea580c; }
+  .btn-action.amber:hover { background: #c2410c; }
+
+  /* Control bar */
+  .control-toolbar {
+    padding: 16px 32px;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .tab-group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tab-pill {
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    border: 1px solid var(--border);
+    background: #ffffff;
+    border-radius: 20px;
+    cursor: pointer;
+    color: var(--text-sub);
+    transition: all 0.15s;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tab-pill:hover {
+    background: #f1f5f9;
+    color: var(--primary);
+  }
+  .tab-pill.active {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+    box-shadow: 0 2px 6px rgba(37,99,235,0.25);
+  }
+
+  .tools-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .tool-tag {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Breadcrumb & Section title */
+  .section-intro {
+    padding: 20px 32px 14px 32px;
+    background: #ffffff;
+  }
+  .intro-sub {
+    font-size: 13px;
+    font-weight: 800;
+    color: #ea580c;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .intro-main {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  /* Matrix Layout */
+  .matrix-wrap {
+    padding: 0 32px 28px 32px;
+    overflow-x: auto;
+  }
+
+  table.matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    border: 1.5px solid var(--border);
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  table.matrix-table thead {
+    background: #f8fafc;
+  }
+
+  table.matrix-table th {
+    padding: 14px 12px;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text-sub);
+    text-align: center;
+    border-bottom: 2px solid var(--border);
+    border-right: 1px solid var(--border-light);
+    background: #f1f5f9;
+  }
+  table.matrix-table th:first-child {
+    width: 170px;
+    background: #e2e8f0;
+    color: #1e293b;
+  }
+  table.matrix-table th.th-future {
+    background: #eff6ff;
+    color: #1e40af;
+  }
+  table.matrix-table th.th-past {
+    background: #f8fafc;
+    color: #475569;
+  }
+
+  table.matrix-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border-light);
+    vertical-align: top;
+    height: 140px;
+  }
+
+  /* Time slot left column header */
+  td.slot-time-header {
+    background: #ffffff;
+    text-align: center;
+    vertical-align: middle;
+    padding: 14px 10px;
+  }
+  .time-day {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 4px;
+  }
+  .time-hours {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: #ea580c;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  /* Slot Card */
+  .slot-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 12px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.15s;
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  }
+  .slot-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(37,99,235,0.12);
+    transform: translateY(-2px);
+  }
+
+  .slot-card.is-empty {
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+  }
+  .slot-card.is-empty:hover {
+    background: #eff6ff;
+    border-color: #3b82f6;
+  }
+  .empty-label {
+    color: #94a3b8;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .sc-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .badge-level {
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .badge-a { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+  .badge-b { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+  .badge-c { background: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; }
+  .badge-ocean { background: #cffafe; color: #0e7490; border: 1px solid #a5f3fc; }
+
+  .course-name {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.35;
+  }
+
+  .sc-mid {
+    font-size: 12px;
+    color: var(--text-sub);
+    margin: 4px 0 6px 0;
+  }
+  .teacher-name { font-weight: 700; color: #1e293b; }
+  .student-count { font-weight: 600; color: #64748b; }
+
+  .sc-bottom {
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: auto;
+  }
+  .tag-past { color: #dc2626; }
+  .tag-h1 { color: #16a34a; }
+  .tag-h2 { color: #d97706; }
+  .tag-empty { color: #94a3b8; font-weight: 500; }
+
+  .edit-hover-icon {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    font-size: 11px;
+    background: rgba(15,23,42,0.06);
+    padding: 2px 5px;
+    border-radius: 3px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .slot-card:hover .edit-hover-icon {
+    opacity: 1;
+  }
+
+  /* Footer Explanation Cards */
+  .footer-notes {
+    padding: 24px 32px 32px 32px;
+    background: #f8fafc;
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .note-box {
+    background: #ffffff;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  }
+
+  .note-box h3 {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .note-list {
+    list-style: none;
+    font-size: 12.5px;
+    color: var(--text-sub);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    line-height: 1.6;
+  }
+
+  .note-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .note-list li strong {
+    color: var(--text-main);
+  }
+  .bullet-icon {
+    color: #ea580c;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .check-icon {
+    color: #16a34a;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  /* Modal Form */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  .modal-card {
+    background: #ffffff;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border);
+    padding: 28px;
+    position: relative;
+    animation: modalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .modal-header h3 {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .modal-close {
+    background: #f1f5f9;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-sub);
+  }
+  .modal-close:hover { background: #e2e8f0; }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 6px;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 9px 12px;
+    font-size: 13px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: inherit;
+    outline: none;
+    background: #ffffff;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .modal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-light);
+  }
+
+  /* Toast Notification */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: #0f172a;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    border-left: 4px solid #16a34a;
+  }
+  .toast.active {
+    display: flex;
+  }
+
+  /* Print Styles */
+  @media print {
+    body {
+      padding: 0;
+      background: #ffffff;
+    }
+    .page-container {
+      border: none;
+      box-shadow: none;
+      max-width: 100%;
+    }
+    .header-actions, .control-toolbar, .edit-hover-icon, .modal-overlay, .toast {
+      display: none !important;
+    }
+    .header-banner {
+      padding: 16px 20px;
+      border-bottom: 2px solid #2563eb;
+    }
+    .matrix-wrap {
+      padding: 0 10px 10px 10px;
+    }
+    table.matrix-table {
+      font-size: 11px;
+    }
+    .footer-notes {
+      padding: 14px 10px;
+      page-break-inside: avoid;
+    }
+    @page {
+      size: landscape;
+      margin: 8mm;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-container">
+
+  <!-- Header Banner -->
+  <div class="header-banner">
+    <div class="header-title-group">
+      <h1>
+        DATE 線上直播學院｜2027 年度排課落點示範
+        <span class="tag-live">DATE 直播專屬</span>
+        <span class="tag-interactive">可自訂選項互動版</span>
+      </h1>
+      <p>
+        <strong>四大固定時段✕五大期別落點可視化調配系統：</strong>
+        支援依據原本課程名稱與時段進行下拉自訂切換、即時碰撞檢核、目標人數調整與一鍵列印/匯出 PDF 報告。
+      </p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-action green" onclick="window.print()">🖨️ 列印落點示範 / 另存 PDF</button>
+      <button class="btn-action" onclick="saveSlotsToStorage()">💾 儲存自訂設定</button>
+      <button class="btn-action secondary" onclick="resetToPreset()">🔄 還原預設落點</button>
+      <a href="online_live_2027_master_plan.html" class="btn-action secondary">📊 回主規劃報告</a>
+    </div>
+  </div>
+
+  <!-- Control toolbar -->
+  <div class="control-toolbar">
+    <div class="tab-group">
+      <button class="tab-pill active" id="pill-anime" onclick="switchCategory('anime')">
+        🎨【動漫、電繪與 Vtuber 生態鏈】怎麼排課
+      </button>
+      <button class="tab-pill" id="pill-design" onclick="switchCategory('design')">
+        📐【視覺平面、AI 遊戲與數位音樂藍海】怎麼排課
+      </button>
+      <button class="tab-pill" id="pill-all" onclick="switchCategory('all')">
+        🌐【全學系 28 班排課落點綜合檢視】
+      </button>
+    </div>
+    <div class="tools-group">
+      <span class="tool-tag">💡 點選任一格子可直接更改「課程名稱」、「時段」與「主力師資」</span>
+    </div>
+  </div>
+
+  <!-- Section Title Intro -->
+  <div class="section-intro">
+    <div class="intro-sub">05 / 排課邏輯實務示範</div>
+    <div class="intro-main">
+      <span id="currentCategoryTitle">落點示範：DATE 線上直播【動漫、電繪與 Vtuber 生態鏈】怎麼排課</span>
+      <span style="font-size: 13px; font-weight: 600; color: #64748b;" id="currentStats">全年度 14 班部署 ｜ 100% 符合產品部規範</span>
+    </div>
+  </div>
+
+  <!-- The Interactive Matrix -->
+  <div class="matrix-wrap" id="matrixContainer">
+    <!-- Populated by JavaScript -->
+  </div>
+
+  <!-- Footer Explanations -->
+  <div class="footer-notes">
+    <div class="note-box">
+      <h3>💡 怎麼看這張表（DATE 線上直播專屬固定時段特色）</h3>
+      <ul class="note-list" id="notesListLeft">
+        <!-- Populated by JS according to category -->
+      </ul>
+    </div>
+    <div class="note-box">
+      <h3>☑ 數據對齊指標（四維交叉驗證結果）</h3>
+      <ul class="note-list" id="notesListRight">
+        <li><span class="check-icon">☑</span> <div><strong>固定上課時段：</strong>平日一三(18:30-21:30)、二四(18:30-21:30)。</div></li>
+        <li><span class="check-icon">☑</span> <div><strong>週末固定時段：</strong>六(14-17 / 18-21 休一小)、日(10-13 / 14-17 休一小)。</div></li>
+        <li><span class="check-icon">☑</span> <div><strong>落實產品部規範：</strong>6 成大排定案 17 班 ＋ 4 成彈性保留池 11 班。</div></li>
+        <li><span class="check-icon">☑</span> <div><strong>徹底化解未消耗庫存：</strong>直攻 3,500+ 人次積壓，消保零風險。</div></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal: Edit Slot -->
+<div class="modal-overlay" id="slotModal" onclick="closeModalOnOverlay(event)">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 id="modalTitle">⚙️ 設定排課落點</h3>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+
+    <form id="slotForm" onsubmit="saveSlotForm(event)">
+      <input type="hidden" id="editSlotId">
+
+      <div class="form-group">
+        <label>課程名稱（可下拉挑選或自訂填寫）</label>
+        <select id="selectCourse" onchange="onCourseSelectChange(this)">
+          <!-- Populated by JS -->
+        </select>
+        <input type="text" id="inputCustomCourse" placeholder="或自行輸入自訂課程名稱..." style="margin-top: 6px; display: none;">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>固定排課時段</label>
+          <select id="selectTime">
+            <option value="一三">一三 18:30-21:30 (平日晚)</option>
+            <option value="二四">二四 18:30-21:30 (平日晚)</option>
+            <option value="六">週六 14:00-17:00 (休一小) 18:00-21:00 (6h)</option>
+            <option value="日">週日 10:00-13:00 (休一小) 14:00-17:00 (6h)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>排課季度 / 期別</label>
+          <select id="selectQuarter">
+            <option value="2026_q4">2026 第 4 期 10-12月 (參考)</option>
+            <option value="2027_q1">2027 第 1 期 1-3月 (H1 寒假/春季大排)</option>
+            <option value="2027_q2">2027 第 2 期 4-6月 (H1 初夏/進階大排)</option>
+            <option value="2027_q3">2027 第 3 期 7-9月 (H2 暑假加開/保留)</option>
+            <option value="2027_q4">2027 第 4 期 10-12月 (H2 秋季閉環/保留)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>主力師資</label>
+          <select id="selectTeacher">
+            <!-- Populated by JS -->
+          </select>
+          <input type="text" id="inputCustomTeacher" placeholder="或自行填寫師資..." style="margin-top: 6px; display: none;">
+        </div>
+
+        <div class="form-group">
+          <label>目標服務人數 / 實績備註</label>
+          <input type="text" id="inputCount" placeholder="例如：目標 120 人 或 140 人">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>梯隊階層標籤</label>
+          <select id="selectBadge">
+            <option value="A|badge-a|A 基礎">A 基礎</option>
+            <option value="B|badge-b|B 進階一">B 進階一</option>
+            <option value="C|badge-c|C 進階二">C 進階二</option>
+            <option value="★|badge-ocean|★新藍海">★新藍海</option>
+            <option value="保留|badge-a|4成保留">4成保留</option>
+            <option value="無||無標籤">無標籤</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>開班決策屬性標籤</label>
+          <select id="selectType">
+            <option value="tag-h1|● H1 大排定案">● H1 大排定案 (綠色)</option>
+            <option value="tag-h2|▲ H2 保留池">▲ H2 保留池 (橙色)</option>
+            <option value="tag-past|2026 實績">2026 實績 (紅色)</option>
+            <option value="tag-empty|留加開 / 4成保留">[ 保有空檔 ] 留加開</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>戰略備註說明（如：強勢回補、雙時段連開、完課率口碑等）</label>
+        <input type="text" id="inputNote" placeholder="例如：強勢回補！終結 231 筆補課外溢民怨">
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-action secondary" style="color: #dc2626; border-color: #fca5a5;" onclick="clearSlotToEmpty()">🗑️ 設為空檔</button>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn-action secondary" onclick="closeModal()">取消</button>
+          <button type="submit" class="btn-action green">確認套用落點</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toastNotice">
+  <span id="toastMsg">✅ 已儲存自訂落點設定！</span>
+</div>
+
+<script>
+// Raw Preset Data
+const PRESET_DATA = {"anime": [{"slotId": "anime_r1_c1", "category": "anime", "timeRow": "一三", "timeStr": "一三 18:30-21:30", "quarter": "2026_q4", "quarterLabel": "2026 第 4 期 (參考)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "數位漫畫班", "teacher": "曾建華", "count": "71 人", "typeTag": "tag-past", "typeText": "2026 實績 (嚴重赤字)", "isEmpty": false}, {"slotId": "anime_r1_c2", "category": "anime", "timeRow": "一三", "timeStr": "一三 18:30-21:30", "quarter": "2027_q1", "quarterLabel": "第 1 期 1-3 月 (H1 寒假大排)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "數位漫畫班·寒假", "teacher": "曾建華", "count": "目標 130 人", "typeTag": "tag-h1", "typeText": "● H1 大排定案 (強勢回補)", "isEmpty": false}, {"slotId": "anime_r1_c3", "category": "anime", "timeRow": "一三", "timeStr": "一三 18:30-21:30", "quarter": "2027_q2", "quarterLabel": "第 2 期 4-6 月 (H1 初夏大排)", "badge": "", "badgeText": "", "badgeClass": "", "name": "[ 保有空檔 ]", "teacher": "", "count": "", "typeTag": "tag-empty", "typeText": "留加開 / 趨勢 / 4成保留", "isEmpty": true}, {"slotId": "anime_r1_c4", "category": "anime", "timeRow": "一三", "timeStr": "一三 18:30-21:30", "quarter": "2027_q3", "quarterLabel": "第 3 期 7-9 月 (H2 暑假保留)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "數位漫畫班·暑期", "teacher": "曾建華", "count": "目標 120 人", "typeTag": "tag-h2", "typeText": "▲ H2 保留池 (暑期溢流)", "isEmpty": false}, {"slotId": "anime_r1_c5", "category": "anime", "timeRow": "一三", "timeStr": "一三 18:30-21:30", "quarter": "2027_q4", "quarterLabel": "第 4 期 10-12 月 (H2 秋季保留)", "badge": "", "badgeText": "", "badgeClass": "", "name": "[ 保有空檔 ]", "teacher": "", "count": "", "typeTag": "tag-empty", "typeText": "留加開 / 趨勢 / 4成保留", "isEmpty": true}, {"slotId": "anime_r2_c1", "category": "anime", "timeRow": "二四", "timeStr": "二四 18:30-21:30", "quarter": "2026_q4", "quarterLabel": "2026 第 4 期 (參考)", "badge": "B", "badgeText": "B 進階一", "badgeClass": "badge-b", "name": "Live2D 動畫製作", "teacher": "黃俊傑", "count": "140 人", "typeTag": "tag-past", "typeText": "2026 實績 (完課率之王)", "isEmpty": false}, {"slotId": "anime_r2_c2", "category": "anime", "timeRow": "二四", "timeStr": "二四 18:30-21:30", "quarter": "2027_q1", "quarterLabel": "第 1 期 1-3 月 (H1 寒假大排)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "數位繪畫班", "teacher": "柯光曜", "count": "目標 110 人", "typeTag": "tag-h1", "typeText": "● H1 大排定案 (吸納補課)", "isEmpty": false}, {"slotId": "anime_r2_c3", "category": "anime", "timeRow": "二四", "timeStr": "二四 18:30-21:30", "quarter": "2027_q2", "quarterLabel": "第 2 期 4-6 月 (H1 初夏大排)", "badge": "B", "badgeText": "B 進階一", "badgeClass": "badge-b", "name": "IP 角色人物創作", "teacher": "柯光曜", "count": "目標 95 人", "typeTag": "tag-h1", "typeText": "● H1 大排定案 (幽靈庫存)", "isEmpty": false}, {"slotId": "anime_r2_c4", "category": "anime", "timeRow": "二四", "timeStr": "二四 18:30-21:30", "quarter": "2027_q3", "quarterLabel": "第 3 期 7-9 月 (H2 暑假保留)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "數位繪畫班·暑期", "teacher": "柯光曜", "count": "目標 110 人", "typeTag": "tag-h2", "typeText": "▲ H2 保留池 (電繪高峰)", "isEmpty": false}, {"slotId": "anime_r2_c5", "category": "anime", "timeRow": "二四", "timeStr": "二四 18:30-21:30", "quarter": "2027_q4", "quarterLabel": "第 4 期 10-12 月 (H2 秋季保留)", "badge": "B", "badgeText": "B 進階一", "badgeClass": "badge-b", "name": "IP 角色人物創作", "teacher": "柯光曜", "count": "目標 95 人", "typeTag": "tag-h2", "typeText": "▲ H2 保留池 (第二梯隊)", "isEmpty": false}, {"slotId": "anime_r3_c1", "category": "anime", "timeRow": "六", "timeStr": "六 14:00-17:00 休一小 18:00-21:00 (6小時)", "quarter": "2026_q4", "quarterLabel": "2026 第 4 期 (參考)", "badge": "B", "badgeText": "B 進階一", "badgeClass": "badge-b", "name": "V 皮角色繪製", "teacher": "黃俊傑", "count": "141 人", "typeTag": "tag-past", "typeText": "2026 實績 (超高產能)", "isEmpty": false}, {"slotId": "anime_r3_c2", "category": "anime", "timeRow": "六", "timeStr": "六 14:00-17:00 休一小 18:00-21:00 (6小時)", "quarter": "2027_q1", "quarterLabel": "第 1 期 1-3 月 (H1 寒假大排)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "Vtuber 創作全攻略", "teacher": "黃俊傑", "count": "目標 130 人", "typeTag": "tag-h1", "typeText": "● H1 大排定案 (王牌引流)", "isEmpty": false}, {"slotId": "anime_r3_c3", "category": "anime", "timeRow": "六", "timeStr": "六 14:00-17:00 休一小 18:00-21:00 (6小時)", "quarter": "2027_q2", "quarterLabel": "第 2 期 4-6 月 (H1 初夏大排)", "badge": "B", "badgeText": "B 進階一", "badgeClass": "badge-b", "name": "V皮繪製 + Live2D", "teacher": "黃俊傑", "count": "雙時段連開", "typeTag": "tag-h1", "typeText": "● H1 大排定案 (B+C閉環)", "isEmpty": false}, {"slotId": "anime_r3_c4", "category": "anime", "timeRow": "六", "timeStr": "六 14:00-17:00 休一小 18:00-21:00 (6小時)", "quarter": "2027_q3", "quarterLabel": "第 3 期 7-9 月 (H2 暑假保留)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "Vtuber 全攻略 (二梯)", "teacher": "黃俊傑", "count": "目標 130 人", "typeTag": "tag-h2", "typeText": "▲ H2 保留池 (第二梯引流)", "isEmpty": false}, {"slotId": "anime_r3_c5", "category": "anime", "timeRow": "六", "timeStr": "六 14:00-17:00 休一小 18:00-21:00 (6小時)", "quarter": "2027_q4", "quarterLabel": "第 4 期 10-12 月 (H2 秋季保留)", "badge": "B", "badgeText": "B 進階一", "badgeClass": "badge-b", "name": "V皮繪製 + Live2D", "teacher": "黃俊傑", "count": "雙時段連開", "typeTag": "tag-h2", "typeText": "▲ H2 保留池 (二梯收斂)", "isEmpty": false}, {"slotId": "anime_r4_c1", "category": "anime", "timeRow": "日", "timeStr": "日 10:00-13:00 休一小 14:00-17:00 (6小時)", "quarter": "2026_q4", "quarterLabel": "2026 第 4 期 (參考)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "數位繪畫班", "teacher": "柯光曜", "count": "86 人", "typeTag": "tag-past", "typeText": "2026 實績 (穩定常青)", "isEmpty": false}, {"slotId": "anime_r4_c2", "category": "anime", "timeRow": "日", "timeStr": "日 10:00-13:00 休一小 14:00-17:00 (6小時)", "quarter": "2027_q1", "quarterLabel": "第 1 期 1-3 月 (H1 寒假大排)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "Procreate 數位繪畫", "teacher": "金芸萱", "count": "目標 120 人", "typeTag": "tag-h1", "typeText": "● H1 大排定案 (併入故事力)", "isEmpty": false}, {"slotId": "anime_r4_c3", "category": "anime", "timeRow": "日", "timeStr": "日 10:00-13:00 休一小 14:00-17:00 (6小時)", "quarter": "2027_q2", "quarterLabel": "第 2 期 4-6 月 (H1 初夏大排)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "數位漫畫班", "teacher": "曾建華", "count": "目標 110 人", "typeTag": "tag-h1", "typeText": "● H1 大排定案 (春季大班)", "isEmpty": false}, {"slotId": "anime_r4_c4", "category": "anime", "timeRow": "日", "timeStr": "日 10:00-13:00 休一小 14:00-17:00 (6小時)", "quarter": "2027_q3", "quarterLabel": "第 3 期 7-9 月 (H2 暑假保留)", "badge": "B", "badgeText": "B 進階一", "badgeClass": "badge-b", "name": "數位漫畫進階班", "teacher": "曾建華", "count": "目標 90 人", "typeTag": "tag-h2", "typeText": "▲ H2 保留池 (作品集班)", "isEmpty": false}, {"slotId": "anime_r4_c5", "category": "anime", "timeRow": "日", "timeStr": "日 10:00-13:00 休一小 14:00-17:00 (6小時)", "quarter": "2027_q4", "quarterLabel": "第 4 期 10-12 月 (H2 秋季保留)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "Procreate 數位繪畫", "teacher": "金芸萱", "count": "目標 110 人", "typeTag": "tag-h2", "typeText": "▲ H2 保留池 (平板電繪)", "isEmpty": false}], "design": [{"slotId": "design_r1_c1", "category": "design", "timeRow": "一三", "timeStr": "一三 18:30-21:30", "quarter": "2026_q4", "quarterLabel": "2026 第 4 期 (參考)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "商用視覺平面設計", "teacher": "王仁駿", "count": "104 人", "typeTag": "tag-past", "typeText": "2026 實績 (第一大戶)", "isEmpty": false}, {"slotId": "design_r1_c2", "category": "design", "timeRow": "一三", "timeStr": "一三 18:30-21:30", "quarter": "2027_q1", "quarterLabel": "第 1 期 1-3 月 (H1 寒假大排)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "After Effects 特效", "teacher": "戴禎儀", "count": "目標 95 人", "typeTag": "tag-h1", "typeText": "● H1 大排定案 (精實20堂)", "isEmpty": false}, {"slotId": "design_r1_c3", "category": "design", "timeRow": "一三", "timeStr": "一三 18:30-21:30", "quarter": "2027_q2", "quarterLabel": "第 2 期 4-6 月 (H1 初夏大排)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "商用視覺平面設計", "teacher": "戴禎儀", "count": "目標 110 人", "typeTag": "tag-h1", "typeText": "● H1 大排定案 (雙師分流)", "isEmpty": false}, {"slotId": "design_r1_c4", "category": "design", "timeRow": "一三", "timeStr": "一三 18:30-21:30", "quarter": "2027_q3", "quarterLabel": "第 3 期 7-9 月 (H2 暑假保留)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "商用視覺平面設計", "teacher": "王仁駿", "count": "目標 120 人", "typeTag": "tag-h2", "typeText": "▲ H2 保留池 (暑期主力)", "isEmpty": false}, {"slotId": "design_r1_c5", "category": "design", "timeRow": "一三", "timeStr": "一三 18:30-21:30", "quarter": "2027_q4", "quarterLabel": "第 4 期 10-12 月 (H2 秋季保留)", "badge": "B", "badgeText": "B 進階一", "badgeClass": "badge-b", "name": "商用平面設計進階", "teacher": "王仁駿", "count": "目標 95 人", "typeTag": "tag-h2", "typeText": "▲ H2 保留池 (轉化進階)", "isEmpty": false}, {"slotId": "design_r2_c1", "category": "design", "timeRow": "二四", "timeStr": "二四 18:30-21:30", "quarter": "2026_q4", "quarterLabel": "2026 第 4 期 (參考)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "遊戲設計班", "teacher": "葉奕志", "count": "160 人", "typeTag": "tag-past", "typeText": "2026 實績 (翻倍成長)", "isEmpty": false}, {"slotId": "design_r2_c2", "category": "design", "timeRow": "二四", "timeStr": "二四 18:30-21:30", "quarter": "2027_q1", "quarterLabel": "第 1 期 1-3 月 (H1 寒假大排)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "AI 遊戲設計班", "teacher": "葉奕志", "count": "目標 120 人", "typeTag": "tag-h1", "typeText": "● H1 大排定案 (AI全面升級)", "isEmpty": false}, {"slotId": "design_r2_c3", "category": "design", "timeRow": "二四", "timeStr": "二四 18:30-21:30", "quarter": "2027_q2", "quarterLabel": "第 2 期 4-6 月 (H1 初夏大排)", "badge": "B", "badgeText": "B 進階一", "badgeClass": "badge-b", "name": "商用平面設計進階", "teacher": "王仁駿", "count": "目標 100 人", "typeTag": "tag-h1", "typeText": "● H1 大排定案 (完課55.4%)", "isEmpty": false}, {"slotId": "design_r2_c4", "category": "design", "timeRow": "二四", "timeStr": "二四 18:30-21:30", "quarter": "2027_q3", "quarterLabel": "第 3 期 7-9 月 (H2 暑假保留)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "AI 遊戲設計班·暑期", "teacher": "葉奕志", "count": "目標 120 人", "typeTag": "tag-h2", "typeText": "▲ H2 保留池 (電競高峰)", "isEmpty": false}, {"slotId": "design_r2_c5", "category": "design", "timeRow": "二四", "timeStr": "二四 18:30-21:30", "quarter": "2027_q4", "quarterLabel": "第 4 期 10-12 月 (H2 秋季保留)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "After Effects 特效", "teacher": "戴禎儀", "count": "目標 95 人", "typeTag": "tag-h2", "typeText": "▲ H2 保留池 (後製第二波)", "isEmpty": false}, {"slotId": "design_r3_c1", "category": "design", "timeRow": "六", "timeStr": "六 14:00-17:00 休一小 18:00-21:00 (6小時)", "quarter": "2026_q4", "quarterLabel": "2026 第 4 期 (參考)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "After Effects 特效", "teacher": "戴禎儀", "count": "59 人", "typeTag": "tag-past", "typeText": "2026 實績 (穩健)", "isEmpty": false}, {"slotId": "design_r3_c2", "category": "design", "timeRow": "六", "timeStr": "六 14:00-17:00 休一小 18:00-21:00 (6小時)", "quarter": "2027_q1", "quarterLabel": "第 1 期 1-3 月 (H1 寒假大排)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "UI 視覺介面設計", "teacher": "戴禎儀", "count": "目標 80 人", "typeTag": "tag-h1", "typeText": "● H1 大排定案 (精實20堂)", "isEmpty": false}, {"slotId": "design_r3_c3", "category": "design", "timeRow": "六", "timeStr": "六 14:00-17:00 休一小 18:00-21:00 (6小時)", "quarter": "2027_q2", "quarterLabel": "第 2 期 4-6 月 (H1 初夏大排)", "badge": "B", "badgeText": "B 進階一", "badgeClass": "badge-b", "name": "AI 品牌系統創建", "teacher": "戴禎儀", "count": "目標 90 人", "typeTag": "tag-h1", "typeText": "● H1 大排定案 (首開爆滿)", "isEmpty": false}, {"slotId": "design_r3_c4", "category": "design", "timeRow": "六", "timeStr": "六 14:00-17:00 休一小 18:00-21:00 (6小時)", "quarter": "2027_q3", "quarterLabel": "第 3 期 7-9 月 (H2 暑假保留)", "badge": "B", "badgeText": "B 進階一", "badgeClass": "badge-b", "name": "AI 品牌系統創建", "teacher": "戴禎儀", "count": "目標 90 人", "typeTag": "tag-h2", "typeText": "▲ H2 保留池 (企業品牌加開)", "isEmpty": false}, {"slotId": "design_r3_c5", "category": "design", "timeRow": "六", "timeStr": "六 14:00-17:00 休一小 18:00-21:00 (6小時)", "quarter": "2027_q4", "quarterLabel": "第 4 期 10-12 月 (H2 秋季保留)", "badge": "", "badgeText": "", "badgeClass": "", "name": "[ 保有空檔 ]", "teacher": "", "count": "", "typeTag": "tag-empty", "typeText": "留加開 / 趨勢 / 4成保留", "isEmpty": true}, {"slotId": "design_r4_c1", "category": "design", "timeRow": "日", "timeStr": "日 10:00-13:00 休一小 14:00-17:00 (6小時)", "quarter": "2026_q4", "quarterLabel": "2026 第 4 期 (參考)", "badge": "B", "badgeText": "B 進階一", "badgeClass": "badge-b", "name": "AI 品牌系統創建", "teacher": "戴禎儀", "count": "91 人", "typeTag": "tag-past", "typeText": "2026 實績 (爆款新課)", "isEmpty": false}, {"slotId": "design_r4_c2", "category": "design", "timeRow": "日", "timeStr": "日 10:00-13:00 休一小 14:00-17:00 (6小時)", "quarter": "2027_q1", "quarterLabel": "第 1 期 1-3 月 (H1 寒假大排)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "商用視覺平面設計", "teacher": "王仁駿", "count": "目標 120 人", "typeTag": "tag-h1", "typeText": "● H1 大排定案 (清空249未登)", "isEmpty": false}, {"slotId": "design_r4_c3", "category": "design", "timeRow": "日", "timeStr": "日 10:00-13:00 休一小 14:00-17:00 (6小時)", "quarter": "2027_q2", "quarterLabel": "第 2 期 4-6 月 (H1 初夏大排)", "badge": "A", "badgeText": "★新藍海", "badgeClass": "badge-ocean", "name": "★全 AI 音樂創作", "teacher": "周岳澄", "count": "目標 100 人", "typeTag": "tag-h1", "typeText": "● H1 大排定案 (新藍海引流)", "isEmpty": false}, {"slotId": "design_r4_c4", "category": "design", "timeRow": "日", "timeStr": "日 10:00-13:00 休一小 14:00-17:00 (6小時)", "quarter": "2027_q3", "quarterLabel": "第 3 期 7-9 月 (H2 暑假保留)", "badge": "B", "badgeText": "★新藍海", "badgeClass": "badge-ocean", "name": "★數位音樂製作人", "teacher": "周岳澄", "count": "目標 100 人", "typeTag": "tag-h2", "typeText": "▲ H2 保留池 (承接全AI音樂)", "isEmpty": false}, {"slotId": "design_r4_c5", "category": "design", "timeRow": "日", "timeStr": "日 10:00-13:00 休一小 14:00-17:00 (6小時)", "quarter": "2027_q4", "quarterLabel": "第 4 期 10-12 月 (H2 秋季保留)", "badge": "A", "badgeText": "A 基礎", "badgeClass": "badge-a", "name": "商用視覺平面設計", "teacher": "戴禎儀", "count": "目標 100 人", "typeTag": "tag-h2", "typeText": "▲ H2 保留池 (年末轉職潮)", "isEmpty": false}], "courses": ["商用視覺平面設計", "商用平面設計進階班", "AI品牌系統創建", "數位漫畫班", "數位漫畫班·寒假", "數位漫畫班·暑期", "數位漫畫進階班", "數位繪畫班", "數位繪畫班·暑期", "Procreate 數位繪畫", "IP 角色人物創作", "Vtuber 創作全攻略", "Vtuber 全攻略 (二梯)", "V 皮角色繪製", "V皮繪製 + Live2D", "Live2D 動畫製作", "AI 遊戲設計班", "AI 遊戲設計班·暑期", "遊戲角色美術班", "日本動畫職人養成班", "After Effects 特效", "UI 視覺介面設計", "★全 AI 音樂創作", "★數位音樂製作人", "[ 保有空檔 ]"], "times": ["一三 18:30-21:30", "二四 18:30-21:30", "六 14:00-17:00 休一小 18:00-21:00 (6小時)", "日 10:00-13:00 休一小 14:00-17:00 (6小時)"], "teachers": ["曾建華", "王仁駿", "戴禎儀", "黃俊傑", "柯光曜", "金芸萱", "葉奕志", "周岳澄", "徐碧娟", "林志豪"]};
+
+// Active state
+let currentCategory = 'anime';
+let slotState = loadSlotsFromStorage() || JSON.parse(JSON.stringify(PRESET_DATA));
+
+const timeSlots = [
+  { id: "一三", label: "一三", hours: "18:30-21:30" },
+  { id: "二四", label: "二四", hours: "18:30-21:30" },
+  { id: "六", label: "六", hours: "14-17 / 18-21 (6h)" },
+  { id: "日", label: "日", hours: "10-13 / 14-17 (6h)" }
+];
+
+const quarters = [
+  { id: "2026_q4", label: "2026 第 4 期", sub: "10-12 月 (參考)", isPast: true },
+  { id: "2027_q1", label: "第 1 期 1-3 月", sub: "(H1 寒假/春季大排)", isPast: false },
+  { id: "2027_q2", label: "第 2 期 4-6 月", sub: "(H1 初夏/進階大排)", isPast: false },
+  { id: "2027_q3", label: "第 3 期 7-9 月", sub: "(H2 暑假加開/保留)", isPast: false },
+  { id: "2027_q4", label: "第 4 期 10-12 月", sub: "(H2 秋季閉環/保留)", isPast: false }
+];
+
+function init() {
+  populateModalDropdowns();
+  renderMatrix();
+  renderFooterNotes();
+}
+
+function populateModalDropdowns() {
+  const courseSel = document.getElementById("selectCourse");
+  courseSel.innerHTML = "";
+  PRESET_DATA.courses.forEach(c => {
+    const opt = document.createElement("option");
+    opt.value = c;
+    opt.textContent = c;
+    courseSel.appendChild(opt);
+  });
+  const optCustom = document.createElement("option");
+  optCustom.value = "__custom__";
+  optCustom.textContent = "✏️ 自訂輸入課程名稱...";
+  courseSel.appendChild(optCustom);
+
+  const teacherSel = document.getElementById("selectTeacher");
+  teacherSel.innerHTML = "";
+  PRESET_DATA.teachers.forEach(t => {
+    const opt = document.createElement("option");
+    opt.value = t;
+    opt.textContent = t;
+    teacherSel.appendChild(opt);
+  });
+  const optTeacherCustom = document.createElement("option");
+  optTeacherCustom.value = "__custom__";
+  optTeacherCustom.textContent = "✏️ 自訂輸入師資...";
+  teacherSel.appendChild(optTeacherCustom);
+}
+
+function switchCategory(cat) {
+  currentCategory = cat;
+  document.querySelectorAll(".tab-pill").forEach(p => p.classList.remove("active"));
+  const btn = document.getElementById("pill-" + cat);
+  if (btn) btn.classList.add("active");
+
+  const titleEl = document.getElementById("currentCategoryTitle");
+  const statsEl = document.getElementById("currentStats");
+
+  if (cat === 'anime') {
+    titleEl.textContent = "落點示範：DATE 線上直播【動漫、電繪與 Vtuber 生態鏈】怎麼排課";
+    statsEl.textContent = "全年度 14 班部署 ｜ 100% 符合產品部規範";
+  } else if (cat === 'design') {
+    titleEl.textContent = "落點示範：DATE 線上直播【視覺平面、AI 遊戲與數位音樂藍海】怎麼排課";
+    statsEl.textContent = "全年度 14 班部署 ｜ 100% 符合產品部規範";
+  } else {
+    titleEl.textContent = "落點示範：DATE 線上直播【全學系 28 班綜合落點總表】";
+    statsEl.textContent = "28 班大排定案 ＋ 彈性保留全覽 ｜ 四大固定時段零衝突";
+  }
+
+  renderMatrix();
+  renderFooterNotes();
+}
+
+function renderMatrix() {
+  const container = document.getElementById("matrixContainer");
+  let list = [];
+
+  if (currentCategory === 'anime') {
+    list = slotState.anime;
+  } else if (currentCategory === 'design') {
+    list = slotState.design;
+  } else {
+    // Combine both
+    list = [...slotState.anime, ...slotState.design];
+  }
+
+  let html = `
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>固定時段<br><span style="font-size:11px; font-weight:500; color:#64748b;">(全台線上標準時段)</span></th>
+  `;
+
+  quarters.forEach(q => {
+    html += `
+      <th class="${q.isPast ? 'th-past' : 'th-future'}">
+        ${q.label}<br>
+        <span style="font-size:11px; font-weight:500;">${q.sub}</span>
+      </th>
+    `;
+  });
+
+  html += `
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  timeSlots.forEach(ts => {
+    html += `
+      <tr>
+        <td class="slot-time-header">
+          <div class="time-day">${ts.label}</div>
+          <div class="time-hours">${ts.hours}</div>
+        </td>
+    `;
+
+    quarters.forEach(q => {
+      const slotMatches = list.filter(item => item.timeRow === ts.id && item.quarter === q.id);
+
+      html += `<td>`;
+      if (slotMatches.length === 0) {
+        html += `
+          <div class="slot-card is-empty" onclick="openCreateModal('${ts.id}', '${q.id}')">
+            <div class="empty-label">
+              <strong>[ 保有空檔 ]</strong><br>
+              <span style="font-size:11px;">點擊新增排課</span>
+            </div>
+          </div>
+        `;
+      } else {
+        slotMatches.forEach(slot => {
+          if (slot.isEmpty) {
+            html += `
+              <div class="slot-card is-empty" onclick="openEditModal('${slot.slotId}')">
+                <div class="empty-label">
+                  <strong>[ 保有空檔 ]</strong><br>
+                  <span style="font-size:11px;">${slot.typeText || '留加開 / 4成保留'}</span>
+                </div>
+                <span class="edit-hover-icon">✏️ 設定</span>
+              </div>
+            `;
+          } else {
+            html += `
+              <div class="slot-card" onclick="openEditModal('${slot.slotId}')">
+                <span class="edit-hover-icon">✏️ 調整</span>
+                <div class="sc-top">
+                  ${slot.badge ? `<span class="badge-level ${slot.badgeClass}">${slot.badgeText || slot.badge}</span>` : ''}
+                  <span class="course-name">${slot.name}</span>
+                </div>
+                <div class="sc-mid">
+                  ${slot.teacher ? `<span class="teacher-name">師資: ${slot.teacher}</span>` : ''}
+                  ${slot.count ? `<span class="student-count"> (${slot.count})</span>` : ''}
+                </div>
+                <div class="sc-bottom ${slot.typeTag}">
+                  ${slot.typeText}
+                </div>
+              </div>
+            `;
+          }
+        });
+      }
+      html += `</td>`;
+    });
+
+    html += `</tr>`;
+  });
+
+  html += `
+      </tbody>
+    </table>
+  `;
+
+  container.innerHTML = html;
+}
+
+function renderFooterNotes() {
+  const notesLeft = document.getElementById("notesListLeft");
+  if (currentCategory === 'anime') {
+    notesLeft.innerHTML = `
+      <li><span class="bullet-icon">•</span> <div><strong>固定時段嚴格對齊：</strong>一三(18:30-21:30)、二四(18:30-21:30)、六(14-17 / 18-21)、日(10-13 / 14-17)。</div></li>
+      <li><span class="bullet-icon">•</span> <div><strong>觀察 2026 Q4 銜接到 2027：</strong>曾建華漫畫班於 Q1 寒假(一三晚)強力回補 130 人，終結 231 筆補課民怨！</div></li>
+      <li><span class="bullet-icon">•</span> <div><strong>黃俊傑 Vtuber 生態鏈：</strong>（A攻略 ➔ B立繪 ➔ C動畫）全年度運行兩大完整梯隊，完課率超群！</div></li>
+      <li><span class="bullet-icon">•</span> <div><strong>柯光曜老師精準佈局：</strong>於 Q2 (二四晚)精準開出《IP角色人物創作》，一口氣清空 163 人完全未登記幽靈庫存！</div></li>
+    `;
+  } else if (currentCategory === 'design') {
+    notesLeft.innerHTML = `
+      <li><span class="bullet-icon">•</span> <div><strong>商用視覺平面設計為全校未消耗第一大戶（473人）：</strong>全年部署 4 班（雙師分流），年消化近 500 人！</div></li>
+      <li><span class="bullet-icon">•</span> <div><strong>王仁駿老師《平面進階》：</strong>安排於二四晚(18:30-21:30)，無縫銜接 Q1 基礎班結業，發揮 55.4% 高完課率口碑。</div></li>
+      <li><span class="bullet-icon">•</span> <div><strong>週日首開《全 AI 音樂創作》與《音樂製作人》：</strong>一舉終結 88.2% 跨區補課痛點與 370 位積壓學員！</div></li>
+      <li><span class="bullet-icon">•</span> <div><strong>果斷停開 AutoCAD / SketchUp 停售課：</strong>100% 轉 VOD 自主觀看，時段全數釋放給高產能 AI 課！</div></li>
+    `;
+  } else {
+    notesLeft.innerHTML = `
+      <li><span class="bullet-icon">•</span> <div><strong>全學系 28 班綜合排課視圖：</strong>整合動漫、Vtuber、平面設計、AI遊戲與數位音樂藍海五大課系。</div></li>
+      <li><span class="bullet-icon">•</span> <div><strong>四大時段百分百承載：</strong>平日雙晚間 ＋ 週末全日雙時段，落實「無實體座位上限、無教室時段衝突」。</div></li>
+      <li><span class="bullet-icon">•</span> <div><strong>H1 (17 班 60%) ＋ H2 (11 班 40%)：</strong>兼顧年初強勢消庫存與下半年暑期/進階彈性需求。</div></li>
+    `;
+  }
+}
+
+// Modal Edit
+let activeEditingSlot = null;
+
+function findSlotById(id) {
+  for (const s of slotState.anime) if (s.slotId === id) return s;
+  for (const s of slotState.design) if (s.slotId === id) return s;
+  return null;
+}
+
+function openEditModal(slotId) {
+  const slot = findSlotById(slotId);
+  if (!slot) return;
+  activeEditingSlot = slot;
+
+  document.getElementById("modalTitle").innerHTML = `⚙️ 設定排課落點：<strong>${slot.name}</strong>`;
+  document.getElementById("editSlotId").value = slot.slotId;
+
+  // Set course
+  const selCourse = document.getElementById("selectCourse");
+  const customCourse = document.getElementById("inputCustomCourse");
+  if (PRESET_DATA.courses.includes(slot.name)) {
+    selCourse.value = slot.name;
+    customCourse.style.display = "none";
+  } else {
+    selCourse.value = "__custom__";
+    customCourse.value = slot.name;
+    customCourse.style.display = "block";
+  }
+
+  // Set time & quarter
+  document.getElementById("selectTime").value = slot.timeRow;
+  document.getElementById("selectQuarter").value = slot.quarter;
+
+  // Set teacher
+  const selTeacher = document.getElementById("selectTeacher");
+  const customTeacher = document.getElementById("inputCustomTeacher");
+  if (PRESET_DATA.teachers.includes(slot.teacher)) {
+    selTeacher.value = slot.teacher;
+    customTeacher.style.display = "none";
+  } else if (slot.teacher) {
+    selTeacher.value = "__custom__";
+    customTeacher.value = slot.teacher;
+    customTeacher.style.display = "block";
+  } else {
+    selTeacher.value = PRESET_DATA.teachers[0];
+    customTeacher.style.display = "none";
+  }
+
+  document.getElementById("inputCount").value = slot.count || "";
+
+  // Badge
+  const selBadge = document.getElementById("selectBadge");
+  if (slot.badge === "A") selBadge.value = "A|badge-a|A 基礎";
+  else if (slot.badge === "B") selBadge.value = "B|badge-b|B 進階一";
+  else if (slot.badge === "C") selBadge.value = "C|badge-c|C 進階二";
+  else if (slot.badge === "★") selBadge.value = "★|badge-ocean|★新藍海";
+  else if (slot.isEmpty) selBadge.value = "無||無標籤";
+  else selBadge.value = "A|badge-a|A 基礎";
+
+  // Type Tag
+  const selType = document.getElementById("selectType");
+  if (slot.typeTag === "tag-h1") selType.value = "tag-h1|● H1 大排定案";
+  else if (slot.typeTag === "tag-h2") selType.value = "tag-h2|▲ H2 保留池";
+  else if (slot.typeTag === "tag-past") selType.value = "tag-past|2026 實績";
+  else selType.value = "tag-empty|留加開 / 4成保留";
+
+  // Note
+  document.getElementById("inputNote").value = slot.typeText ? slot.typeText.replace(/^[●▲]\s*(H[12]\s*大排定案|H[12]\s*保留池)\s*\(/, '').replace(/\)$/, '') : "";
+
+  document.getElementById("slotModal").classList.add("active");
+}
+
+function openCreateModal(timeRow, quarter) {
+  // Create dynamic slot ID
+  const newId = (currentCategory === 'design' ? 'design' : 'anime') + '_' + timeRow + '_' + quarter + '_' + Date.now();
+  const newSlot = {
+    slotId: newId,
+    category: currentCategory === 'design' ? 'design' : 'anime',
+    timeRow: timeRow,
+    timeStr: timeRow === '一三' ? '一三 18:30-21:30' : (timeRow === '二四' ? '二四 18:30-21:30' : (timeRow === '六' ? '六 14-17 / 18-21' : '日 10-13 / 14-17')),
+    quarter: quarter,
+    quarterLabel: quarter,
+    badge: "A",
+    badgeText: "A 基礎",
+    badgeClass: "badge-a",
+    name: PRESET_DATA.courses[0],
+    teacher: PRESET_DATA.teachers[0],
+    count: "目標 100 人",
+    typeTag: quarter.includes('q1') || quarter.includes('q2') ? "tag-h1" : "tag-h2",
+    typeText: quarter.includes('q1') || quarter.includes('q2') ? "● H1 大排定案 (新設)" : "▲ H2 保留池 (新設)",
+    isEmpty: false
+  };
+
+  if (currentCategory === 'design') {
+    slotState.design.push(newSlot);
+  } else {
+    slotState.anime.push(newSlot);
+  }
+
+  openEditModal(newId);
+}
+
+function onCourseSelectChange(sel) {
+  const custom = document.getElementById("inputCustomCourse");
+  if (sel.value === '__custom__') {
+    custom.style.display = "block";
+    custom.focus();
+  } else {
+    custom.style.display = "none";
+  }
+}
+
+function closeModal() {
+  document.getElementById("slotModal").classList.remove("active");
+}
+
+function closeModalOnOverlay(e) {
+  if (e.target.id === "slotModal") closeModal();
+}
+
+function saveSlotForm(e) {
+  e.preventDefault();
+  if (!activeEditingSlot) return;
+
+  const selCourse = document.getElementById("selectCourse").value;
+  const courseName = selCourse === '__custom__' ? document.getElementById("inputCustomCourse").value.trim() : selCourse;
+
+  const selTeacher = document.getElementById("selectTeacher").value;
+  const teacherName = selTeacher === '__custom__' ? document.getElementById("inputCustomTeacher").value.trim() : selTeacher;
+
+  const timeRow = document.getElementById("selectTime").value;
+  const quarter = document.getElementById("selectQuarter").value;
+  const count = document.getElementById("inputCount").value.trim();
+
+  const [bCode, bClass, bText] = document.getElementById("selectBadge").value.split("|");
+  const [tTag, tPrefix] = document.getElementById("selectType").value.split("|");
+  const note = document.getElementById("inputNote").value.trim();
+
+  activeEditingSlot.name = courseName || "[ 保有空檔 ]";
+  activeEditingSlot.isEmpty = (courseName === "[ 保有空檔 ]" || tTag === "tag-empty");
+  activeEditingSlot.timeRow = timeRow;
+  activeEditingSlot.quarter = quarter;
+  activeEditingSlot.teacher = teacherName;
+  activeEditingSlot.count = count;
+  activeEditingSlot.badge = bCode === "無" ? "" : bCode;
+  activeEditingSlot.badgeClass = bClass;
+  activeEditingSlot.badgeText = bText;
+  activeEditingSlot.typeTag = tTag;
+  activeEditingSlot.typeText = note ? `${tPrefix} (${note})` : tPrefix;
+
+  closeModal();
+  renderMatrix();
+  showToast("✅ 排課落點已更新！");
+}
+
+function clearSlotToEmpty() {
+  if (!activeEditingSlot) return;
+  activeEditingSlot.name = "[ 保有空檔 ]";
+  activeEditingSlot.isEmpty = true;
+  activeEditingSlot.teacher = "";
+  activeEditingSlot.count = "";
+  activeEditingSlot.badge = "";
+  activeEditingSlot.badgeClass = "";
+  activeEditingSlot.badgeText = "";
+  activeEditingSlot.typeTag = "tag-empty";
+  activeEditingSlot.typeText = "留加開 / 趨勢 / 4成保留";
+
+  closeModal();
+  renderMatrix();
+  showToast("🗑️ 該落點已設為空檔保留！");
+}
+
+function saveSlotsToStorage() {
+  try {
+    localStorage.setItem("date_schedule_slots_custom", JSON.stringify(slotState));
+    showToast("💾 自訂落點設定已儲存至瀏覽器！");
+  } catch (e) {
+    console.warn("Storage error", e);
+    showToast("⚠️ 儲存提醒：請確認瀏覽器儲存權限");
+  }
+}
+
+function loadSlotsFromStorage() {
+  try {
+    const saved = localStorage.getItem("date_schedule_slots_custom");
+    if (saved) return JSON.parse(saved);
+  } catch (e) {
+    console.warn("Storage load error", e);
+  }
+  return null;
+}
+
+function resetToPreset() {
+  if (confirm("確定要還原為系統標準排課落點示範嗎？所有自訂修改將被重置。")) {
+    slotState = JSON.parse(JSON.stringify(PRESET_DATA));
+    try { localStorage.removeItem("date_schedule_slots_custom"); } catch(e) {}
+    renderMatrix();
+    showToast("🔄 已成功還原為標準落點示範！");
+  }
+}
+
+function showToast(msg) {
+  const toast = document.getElementById("toastNotice");
+  const msgEl = document.getElementById("toastMsg");
+  msgEl.textContent = msg;
+  toast.classList.add("active");
+  setTimeout(() => {
+    toast.classList.remove("active");
+  }, 2500);
+}
+
+// Initialize
+window.onload = init;
+</script>
+
+</body>
+</html>

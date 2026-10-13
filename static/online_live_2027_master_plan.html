@@ -405,86 +405,262 @@
     line-height: 1.6;
   }
 
-  /* Schedule Cards / Gantt */
-  .schedule-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 16px;
-    margin-top: 16px;
-  }
-
-  .class-box {
-    background: #ffffff;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 18px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: all 0.2s;
-    border-top: 4px solid #3b82f6;
-  }
-  .class-box:hover {
-    border-color: #2563eb;
-    box-shadow: 0 6px 16px rgba(37,99,235,0.08);
-  }
-  .class-box.q1 { border-top-color: #2563eb; }
-  .class-box.q2 { border-top-color: #059669; }
-  .class-box.reserve { border-top-color: #d97706; background: #fffdfa; }
-
-  .class-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 8px;
-  }
-  .class-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text-main);
-  }
-  .class-quarter {
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 7px;
-    border-radius: 4px;
-    background: #f1f5f9;
-    color: #475569;
-  }
-
-  .class-details {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    font-size: 12px;
-    color: var(--text-sub);
-    margin: 12px 0;
-    padding: 10px 0;
-    border-top: 1px dashed var(--border-light);
-    border-bottom: 1px dashed var(--border-light);
-  }
-  .detail-row {
-    display: flex;
-    flex-direction: column;
-  }
-  .detail-row span:first-child {
-    font-size: 11px;
-    color: var(--text-muted);
-  }
-  .detail-row span:last-child {
-    font-weight: 600;
-  }
-
-  .class-footer {
-    font-size: 11.5px;
-    color: var(--text-muted);
+  /* Schedule Tables, Dividers & View Switcher */
+  .schedule-view-controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-light);
   }
 
-  /* Policy Compliance Section */
+  .view-switch-group {
+    display: inline-flex;
+    background: #f1f5f9;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px;
+    gap: 4px;
+  }
+
+  .view-btn {
+    padding: 7px 15px;
+    font-size: 12.5px;
+    font-weight: 700;
+    border: none;
+    background: transparent;
+    color: var(--text-sub);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .view-btn:hover {
+    color: var(--text-main);
+  }
+  .view-btn.active {
+    background: #ffffff;
+    color: var(--primary);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  .view-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* Section Header Dividers */
+  .schedule-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 18px;
+    border-radius: 8px;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    border: 1px solid #e2e8f0;
+  }
+  .schedule-section-header.q1-header {
+    border-left: 5px solid #2563eb;
+    background: #eff6ff;
+    border-color: #bfdbfe;
+  }
+  .schedule-section-header.q2-header {
+    border-left: 5px solid #16a34a;
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+  }
+  .schedule-section-header.q3-header {
+    border-left: 5px solid #ea580c;
+    background: #fff7ed;
+    border-color: #fed7aa;
+  }
+  .schedule-section-header.q4-header {
+    border-left: 5px solid #9333ea;
+    background: #faf5ff;
+    border-color: #e9d5ff;
+  }
+
+  .ssh-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .ssh-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text-main);
+  }
+  .ssh-badge {
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: #ffffff;
+  }
+  .ssh-badge.q1 { background: #2563eb; }
+  .ssh-badge.q2 { background: #16a34a; }
+  .ssh-badge.q3 { background: #ea580c; }
+  .ssh-badge.q4 { background: #9333ea; }
+
+  .ssh-right {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-sub);
+  }
+
+  /* Schedule Table */
+  .schedule-table-wrap {
+    overflow-x: auto;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    margin-bottom: 24px;
+  }
+
+  table.schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+    text-align: left;
+  }
+
+  table.schedule-table thead {
+    background: #0f172a;
+    color: #ffffff;
+  }
+
+  table.schedule-table th {
+    padding: 11px 14px;
+    font-weight: 700;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    border-right: 1px solid rgba(255,255,255,0.15);
+    white-space: nowrap;
+  }
+
+  table.schedule-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid #e2e8f0;
+    border-right: 1px solid #e2e8f0;
+    color: var(--text-main);
+    vertical-align: middle;
+  }
+
+  table.schedule-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  table.schedule-table tr:hover {
+    background-color: #f8fafc;
+  }
+
+  .seq-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+  .seq-badge.q1 { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+  .seq-badge.q2 { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+  .seq-badge.q3 { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+  .seq-badge.q4 { background: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; }
+
+  .time-slot-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #1e293b;
+    background: #f1f5f9;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid #cbd5e1;
+  }
+  .time-slot-badge.weekend {
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #fde68a;
+  }
+  .time-slot-badge.weekday {
+    background: #e0f2fe;
+    color: #0369a1;
+    border-color: #bae6fd;
+  }
+
+  /* Schedule Cards Grid (Alternative view) */
+  .schedule-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .schedule-card {
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-top: 4px solid #2563eb;
+    transition: all 0.2s;
+  }
+  .schedule-card:hover {
+    border-color: #94a3b8;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+  }
+  .schedule-card.q1-card { border-top-color: #2563eb; }
+  .schedule-card.q2-card { border-top-color: #16a34a; }
+  .schedule-card.q3-card { border-top-color: #ea580c; }
+  .schedule-card.q4-card { border-top-color: #9333ea; }
+
+  .sc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 10px;
+  }
+  .sc-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text-main);
+  }
+  .sc-meta {
+    font-size: 12px;
+    color: var(--text-sub);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-bottom: 10px;
+  }
+  .sc-note {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    border-top: 1px dashed #cbd5e1;
+    padding-top: 10px;
+    margin-top: 6px;
+  }
+
+/* Policy Compliance Section */
   .rule-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -663,6 +839,7 @@
     </div>
     <div class="header-actions">
       <button type="button" class="btn-action" style="background:#16a34a; font-weight:700;" onclick="copyShareLink(this)">🔗 複製公開分享網址</button>
+      <a href="schedule_slot_demonstration.html" class="btn-action" style="background:#0284c7; font-weight:700;" target="_blank" onclick="return openReport(event, 'slot_demo')">📅 互動排課落點示範 (網頁版)</a>
       <button type="button" class="btn-action" style="background:#ea580c; font-weight:700;" onclick="downloadPdfSample()">📄 下載落點示範 PDF</button>
       <button type="button" class="btn-action secondary" onclick="window.print()">🖨️ 列印報表</button>
       <a href="schedule_2027_presentation.html" class="btn-action secondary" target="_blank" onclick="return openReport(event, 'compare')">歷史開班對比</a>
@@ -789,7 +966,15 @@
       </p>
     </div>
 
-    <div class="schedule-grid" id="h1Grid">
+    <div class="schedule-view-controls">
+      <div class="view-switch-group">
+        <button class="view-btn active" id="btn-view-table-h1" onclick="switchScheduleView('h1', 'table')">📋 課表格線檢視 (預設推薦)</button>
+        <button class="view-btn" id="btn-view-card-h1" onclick="switchScheduleView('h1', 'card')">🗂️ 獨立框線卡片檢視</button>
+      </div>
+      <div class="view-hint">💡 採用完整橫向與縱向格線區隔各季度課表，時段、師資與開班戰略一目了然</div>
+    </div>
+
+    <div id="h1Container">
       <!-- Populated by JS -->
     </div>
   </div>
@@ -804,7 +989,15 @@
       </p>
     </div>
 
-    <div class="schedule-grid" id="h2Grid">
+    <div class="schedule-view-controls">
+      <div class="view-switch-group">
+        <button class="view-btn active" id="btn-view-table-h2" onclick="switchScheduleView('h2', 'table')">📋 課表格線檢視 (預設推薦)</button>
+        <button class="view-btn" id="btn-view-card-h2" onclick="switchScheduleView('h2', 'card')">🗂️ 獨立框線卡片檢視</button>
+      </div>
+      <div class="view-hint">💡 採用完整橫向與縱向格線區隔 Q3 暑期與 Q4 年末保留池，滾動監控招生狀況</div>
+    </div>
+
+    <div id="h2Container">
       <!-- Populated by JS -->
     </div>
   </div>
@@ -1444,85 +1637,190 @@ function renderMasterTable(data) {
   });
 }
 
-function renderH1Cards() {
-  const container = document.getElementById("h1Grid");
-  if (!container) return;
-  container.innerHTML = "";
+// 課程時程資料庫 (H1 17 班 ＋ H2 11 班 = 28 班)
+const h1Courses = [
+  { title: "商用視覺平面設計 (Q1 週日班)", code: "Q1", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共24堂)", teacher: "王仁駿", target: "120 人", badge: "A 基礎", note: "大排基石引流，清空 249 人未登記大戶" },
+  { title: "商用視覺平面設計 (Q2 平日晚)", code: "Q2", time: "週一、三 18:30-21:30 (共24堂)", teacher: "戴禎儀", target: "110 人", badge: "A 基礎", note: "雙師分流，吸納上班族平日進修" },
+  { title: "商用平面設計進階班 (Q2 平日晚)", code: "Q2", time: "週二、四 18:30-21:30 (共24堂)", teacher: "王仁駿", target: "100 人", badge: "B 進階一", note: "承接 Q1 基礎畢業生，消化 148 未登記" },
+  { title: "AI品牌系統創建 (Q2 週六班)", code: "Q2", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共18堂)", teacher: "戴禎儀", target: "90 人", badge: "B 進階一", note: "2026 首開 91 人爆款，2027 AI 升級核心" },
+  { title: "數位漫畫班·寒假特訓 (Q1 平日晚)", code: "Q1", time: "週一、三 18:30-21:30 (共24堂)", teacher: "曾建華", target: "130 人", badge: "A 基礎", note: "強力回補！終結 231 筆補課外溢民怨" },
+  { title: "數位漫畫班 (Q2 週日班)", code: "Q2", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共24堂)", teacher: "曾建華", target: "110 人", badge: "A 基礎", note: "曾建華名師二棒，穩定承接青少年電繪潮" },
+  { title: "數位繪畫班 (Q1 平日晚)", code: "Q1", time: "週二、四 18:30-21:30 (共24堂)", teacher: "曾建華", target: "100 人", badge: "A 基礎", note: "2025/2026 連續滿班，平日熱門時段保底" },
+  { title: "Procreate 數位繪畫 (Q2 週日班)", code: "Q2", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共20堂)", teacher: "戴禎儀", target: "110 人", badge: "A 基礎", note: "iPad 電繪普及，承接 282 筆補課巨大剛需" },
+  { title: "IP 角色人物創作 (Q2 週六班)", code: "Q2", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共24堂)", teacher: "徐碧娟", target: "80 人", badge: "B 進階一", note: "熱門文創變現，清空 180 人未登記儲備池" },
+  { title: "Vtuber 創作全攻略 (Q1 週六班)", code: "Q1", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共20堂)", teacher: "小深藍", target: "120 人", badge: "A 基礎", note: "Z 世代核心，承接 211 筆補課外溢痛點" },
+  { title: "V皮角色繪製 (Q2 平日晚)", code: "Q2", time: "週一、三 18:30-21:30 (共20堂)", teacher: "小深藍", target: "85 人", badge: "B 進階一", note: "中階模型繪製，緊密接軌 Q1 基礎班學員" },
+  { title: "Live2D 動畫製作 (Q2 平日晚)", code: "Q2", time: "週二、四 18:30-21:30 (共20堂)", teacher: "徐碧娟", target: "80 人", badge: "C 進階二", note: "高階動態綁定，與 V皮組合形成黃金封閉鏈" },
+  { title: "AI 遊戲設計班 (Q1 週日班)", code: "Q1", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共24堂)", teacher: "林志豪", target: "100 人", badge: "A 基礎", note: "注入 AI 生成輔助，活化老舊遊戲設計學分" },
+  { title: "遊戲角色美術班 (Q2 週六班)", code: "Q2", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共24堂)", teacher: "林志豪", target: "80 人", badge: "B 進階一", note: "接軌 3D 遊戲大廠，解決 114 人未登記庫存" },
+  { title: "UI 視覺介面設計 (Q2 平日晚)", code: "Q2", time: "週一、三 18:30-21:30 (共20堂)", teacher: "戴禎儀", target: "85 人", badge: "B 進階一", note: "轉職熱門領域，吸納 119 人未登記儲備" },
+  { title: "★全 AI 音樂創作實戰 (Q1 平日晚)", code: "Q1", time: "週二、四 18:30-21:30 (共20堂)", teacher: "王仁駿", target: "100 人", badge: "★新藍海", note: "產品部推薦爆款！全台首創 AI 配樂百人滿班" },
+  { title: "★全 AI 音樂創作實戰 (Q2 週日班)", code: "Q2", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共20堂)", teacher: "王仁駿", target: "110 人", badge: "★新藍海", note: "口碑效應擴散，假日班吸納自媒體創作族群" }
+];
 
-  const h1Courses = [
-    { title: "商用視覺平面設計 (Q1 週日班)", code: "Q1", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共24堂)", teacher: "王仁駿", target: "120 人", badge: "A 基礎", note: "大排基石引流，清空 249 人未登記大戶" },
-    { title: "商用視覺平面設計 (Q2 平日晚)", code: "Q2", time: "週一、三 18:30-21:30 (共24堂)", teacher: "戴禎儀", target: "110 人", badge: "A 基礎", note: "雙師分流，吸納上班族平日進修" },
-    { title: "商用平面設計進階班 (Q2 平日晚)", code: "Q2", time: "週二、四 18:30-21:30 (共24堂)", teacher: "王仁駿", target: "100 人", badge: "B 進階一", note: "承接 Q1 基礎畢業生，消化 148 未登記" },
-    { title: "AI品牌系統創建 (Q2 週六班)", code: "Q2", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共18堂)", teacher: "戴禎儀", target: "90 人", badge: "B 進階一", note: "2026 首開 91 人爆款，2027 AI 升級核心" },
-    { title: "數位漫畫班·寒假特訓 (Q1 平日晚)", code: "Q1", time: "週一、三 18:30-21:30 (共24堂)", teacher: "曾建華", target: "130 人", badge: "A 基礎", note: "強力回補！終結 231 筆補課外溢民怨" },
-    { title: "數位漫畫班 (Q2 週日班)", code: "Q2", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共24堂)", teacher: "曾建華", target: "110 人", badge: "A 基礎", note: "曾建華名師二棒，穩定承接青少年電繪潮" },
-    { title: "數位繪畫班 (Q1 平日晚)", code: "Q1", time: "週二、四 18:30-21:30 (共24堂)", teacher: "曾建華", target: "100 人", badge: "A 基礎", note: "2025/2026 連續滿班，平日熱門時段保底" },
-    { title: "Procreate 數位繪畫 (Q2 週日班)", code: "Q2", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共20堂)", teacher: "戴禎儀", target: "110 人", badge: "A 基礎", note: "iPad 電繪普及，承接 282 筆補課巨大剛需" },
-    { title: "IP 角色人物創作 (Q2 週六班)", code: "Q2", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共24堂)", teacher: "徐碧娟", target: "80 人", badge: "B 進階一", note: "熱門文創變現，清空 180 人未登記儲備池" },
-    { title: "Vtuber 創作全攻略 (Q1 週六班)", code: "Q1", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共20堂)", teacher: "小深藍", target: "120 人", badge: "A 基礎", note: "Z 世代核心，承接 211 筆補課外溢痛點" },
-    { title: "V皮角色繪製 (Q2 平日晚)", code: "Q2", time: "週一、三 18:30-21:30 (共20堂)", teacher: "小深藍", target: "85 人", badge: "B 進階一", note: "中階模型繪製，緊密接軌 Q1 基礎班學員" },
-    { title: "Live2D 動畫製作 (Q2 平日晚)", code: "Q2", time: "週二、四 18:30-21:30 (共20堂)", teacher: "徐碧娟", target: "80 人", badge: "C 進階二", note: "高階動態綁定，與 V皮組合形成黃金封閉鏈" },
-    { title: "AI 遊戲設計班 (Q1 週日班)", code: "Q1", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共24堂)", teacher: "林志豪", target: "100 人", badge: "A 基礎", note: "注入 AI 生成輔助，活化老舊遊戲設計學分" },
-    { title: "遊戲角色美術班 (Q2 週六班)", code: "Q2", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共24堂)", teacher: "林志豪", target: "80 人", badge: "B 進階一", note: "接軌 3D 遊戲大廠，解決 114 人未登記庫存" },
-    { title: "UI 視覺介面設計 (Q2 平日晚)", code: "Q2", time: "週一、三 18:30-21:30 (共20堂)", teacher: "戴禎儀", target: "85 人", badge: "B 進階一", note: "轉職熱門領域，吸納 119 人未登記儲備" },
-    { title: "★全 AI 音樂創作實戰 (Q1 平日晚)", code: "Q1", time: "週二、四 18:30-21:30 (共20堂)", teacher: "王仁駿", target: "100 人", badge: "★新藍海", note: "產品部推薦爆款！全台首創 AI 配樂百人滿班" },
-    { title: "★全 AI 音樂創作實戰 (Q2 週日班)", code: "Q2", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共20堂)", teacher: "王仁駿", target: "110 人", badge: "★新藍海", note: "口碑效應擴散，假日班吸納自媒體創作族群" }
-  ];
+const h2Courses = [
+  { title: "商用視覺平面設計 (Q3 暑期平日)", code: "Q3", time: "週一、三 18:30-21:30 (共24堂)", teacher: "王仁駿", target: "110 人", badge: "A 基礎", note: "暑期大潮基石，持續吸納暑假進修人潮" },
+  { title: "商用視覺平面設計 (Q4 假日晚)", code: "Q4", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共24堂)", teacher: "戴禎儀", target: "100 人", badge: "A 基礎", note: "年末轉職考證衝刺，承接全年餘額" },
+  { title: "數位漫畫班·暑期衝刺 (Q3 暑期假日)", code: "Q3", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共24堂)", teacher: "曾建華", target: "120 人", badge: "A 基礎", note: "學生暑期黃金大班，預估突破 120 人" },
+  { title: "數位漫畫進階班 (Q4 平日晚)", code: "Q4", time: "週二、四 18:30-21:30 (共24堂)", teacher: "曾建華", target: "85 人", badge: "B 進階一", note: "承接 Q1~Q3 基礎畢業生，完成梯隊閉環" },
+  { title: "Procreate 數位繪畫 (Q3 暑期平日)", code: "Q3", time: "週一、三 18:30-21:30 (共20堂)", teacher: "戴禎儀", target: "100 人", badge: "A 基礎", note: "暑期休閒電繪主力，持續消化巨大補課池" },
+  { title: "Vtuber 創作全攻略 (Q3 暑期假日)", code: "Q3", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共20堂)", teacher: "小深藍", target: "110 人", badge: "A 基礎", note: "暑假 ACG 創作熱潮高峰，爆款重啟" },
+  { title: "Live2D 動畫製作 (Q4 平日晚)", code: "Q4", time: "週一、三 18:30-21:30 (共20堂)", teacher: "徐碧娟", target: "80 人", badge: "C 進階二", note: "承接 Q2/Q3 學員，完成動態高階交付" },
+  { title: "日本動畫職人養成班 (Q3 暑期週日)", code: "Q3", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共24堂)", teacher: "曾建華", target: "85 人", badge: "B 進階一", note: "承接 2026 年 83 人實績，暑假集中火力" },
+  { title: "After Effects 特效動畫 (Q4 平日晚)", code: "Q4", time: "週二、四 18:30-21:30 (共20堂)", teacher: "林志豪", target: "85 人", badge: "B 進階一", note: "動態影音需求暢旺，吸納 84 人未登記" },
+  { title: "★全 AI 音樂創作實戰 (Q3 暑期假日)", code: "Q3", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共20堂)", teacher: "王仁駿", target: "100 人", badge: "★新藍海", note: "藍海持續滾動，擴大至影音配樂專題" },
+  { title: "★全 AI 音樂創作實戰 (Q4 平日晚)", code: "Q4", time: "週一、三 18:30-21:30 (共20堂)", teacher: "王仁駿", target: "100 人", badge: "★新藍海", note: "全年第四班！奠定 DATE 全國 AI 音樂第一品牌" }
+];
 
-  h1Courses.forEach(c => {
-    const card = document.createElement("div");
-    card.className = "schedule-card";
-    card.innerHTML = `
-      <div class="sc-header">
-        <span class="sc-title">${c.title}</span>
-        <span class="sc-tag tag-a">${c.badge}</span>
+let currentViewH1 = 'table';
+let currentViewH2 = 'table';
+
+function generateScheduleTable(courses, quarterLabel, quarterCode, colorClass, subtitle) {
+  let tableHtml = `
+    <div class="schedule-section-header ${colorClass}-header">
+      <div class="ssh-left">
+        <span class="ssh-badge ${colorClass}">${quarterCode}</span>
+        <span class="ssh-title">${quarterLabel}</span>
       </div>
-      <div class="sc-meta">
-        <div><strong>時段：</strong>${c.time}</div>
-        <div><strong>主力名師：</strong>${c.teacher} ｜ <strong>目標服務：</strong><span style="color:#16a34a; font-weight:700;">${c.target}</span></div>
-      </div>
-      <div class="sc-note"><strong>戰略佈局：</strong>${c.note}</div>
+      <div class="ssh-right">${subtitle}</div>
+    </div>
+    <div class="schedule-table-wrap">
+      <table class="schedule-table">
+        <thead>
+          <tr>
+            <th style="width: 75px; text-align: center;">班次</th>
+            <th style="min-width: 175px;">課程名稱</th>
+            <th style="width: 85px; text-align: center;">梯隊階層</th>
+            <th style="min-width: 290px;">固定排課時段</th>
+            <th style="width: 105px;">主力名師</th>
+            <th style="width: 90px; text-align: center;">目標人數</th>
+            <th>開班戰略佈局與清空庫存依據</th>
+          </tr>
+        </thead>
+        <tbody>
+  `;
+
+  courses.forEach((c, idx) => {
+    const isWeekend = c.time.includes('週六') || c.time.includes('週日');
+    const badgeClass = c.badge.includes('A') ? 'badge-a' : (c.badge.includes('B') ? 'badge-b' : (c.badge.includes('C') ? 'badge-c' : 'badge-ocean'));
+    const cleanTitle = c.title.replace(/\s*\(Q\d[^)]*\)/, '');
+    const num = `${quarterCode}-${String(idx + 1).padStart(2, '0')}`;
+
+    tableHtml += `
+      <tr>
+        <td style="text-align: center;"><span class="seq-badge ${colorClass}">${num}</span></td>
+        <td><strong style="color: #0f172a; font-size: 13px;">${cleanTitle}</strong></td>
+        <td style="text-align: center;"><span class="badge-tag ${badgeClass}">${c.badge}</span></td>
+        <td><span class="time-slot-badge ${isWeekend ? 'weekend' : 'weekday'}">⏰ ${c.time}</span></td>
+        <td><strong style="color: #1e293b;">${c.teacher}</strong></td>
+        <td style="text-align: center;"><span class="stat-num" style="color: #16a34a; font-weight: 800;">${c.target || '100 人'}</span></td>
+        <td><span style="font-size: 12px; color: #334155; line-height: 1.5;">${c.note}</span></td>
+      </tr>
     `;
-    container.appendChild(card);
   });
+
+  tableHtml += `
+        </tbody>
+      </table>
+    </div>
+  `;
+  return tableHtml;
 }
 
-function renderH2Cards() {
-  const container = document.getElementById("h2Grid");
-  if (!container) return;
-  container.innerHTML = "";
-
-  const h2Courses = [
-    { title: "商用視覺平面設計 (Q3 暑期平日)", time: "週一、三 18:30-21:30 (共24堂)", teacher: "王仁駿", badge: "A 基礎", note: "暑期大潮基石，持續吸納暑假進修人潮" },
-    { title: "商用視覺平面設計 (Q4 假日晚)", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共24堂)", teacher: "戴禎儀", badge: "A 基礎", note: "年末轉職考證衝刺，承接全年餘額" },
-    { title: "數位漫畫班·暑期衝刺 (Q3 暑期假日)", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共24堂)", teacher: "曾建華", badge: "A 基礎", note: "學生暑期黃金大班，預估突破 120 人" },
-    { title: "數位漫畫進階班 (Q4 平日晚)", time: "週二、四 18:30-21:30 (共24堂)", teacher: "曾建華", badge: "B 進階一", note: "承接 Q1~Q3 基礎畢業生，完成梯隊閉環" },
-    { title: "Procreate 數位繪畫 (Q3 暑期平日)", time: "週一、三 18:30-21:30 (共20堂)", teacher: "戴禎儀", badge: "A 基礎", note: "暑期休閒電繪主力，持續消化巨大補課池" },
-    { title: "Vtuber 創作全攻略 (Q3 暑期假日)", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共20堂)", teacher: "小深藍", badge: "A 基礎", note: "暑假 ACG 創作熱潮高峰，爆款重啟" },
-    { title: "Live2D 動畫製作 (Q4 平日晚)", time: "週一、三 18:30-21:30 (共20堂)", teacher: "徐碧娟", badge: "C 進階二", note: "承接 Q2/Q3 學員，完成動態高階交付" },
-    { title: "日本動畫職人養成班 (Q3 暑期週日)", time: "週日 10:00-13:00 (休一小) 14:00-17:00 (6小時 / 共24堂)", teacher: "曾建華", badge: "B 進階一", note: "承接 2026 年 83 人實績，暑假集中火力" },
-    { title: "After Effects 特效動畫 (Q4 平日晚)", time: "週二、四 18:30-21:30 (共20堂)", teacher: "林志豪", badge: "B 進階一", note: "動態影音需求暢旺，吸納 84 人未登記" },
-    { title: "★全 AI 音樂創作實戰 (Q3 暑期假日)", time: "週六 14:00-17:00 (休一小) 18:00-21:00 (6小時 / 共20堂)", teacher: "王仁駿", badge: "★新藍海", note: "藍海持續滾動，擴大至影音配樂專題" },
-    { title: "★全 AI 音樂創作實戰 (Q4 平日晚)", time: "週一、三 18:30-21:30 (共20堂)", teacher: "王仁駿", badge: "★新藍海", note: "全年第四班！奠定 DATE 全國 AI 音樂第一品牌" }
-  ];
-
-  h2Courses.forEach(c => {
-    const card = document.createElement("div");
-    card.className = "schedule-card";
-    card.innerHTML = `
-      <div class="sc-header">
-        <span class="sc-title">${c.title}</span>
-        <span class="sc-tag tag-b">${c.badge}</span>
+function generateScheduleCards(courses, quarterLabel, quarterCode, colorClass, subtitle) {
+  let cardHtml = `
+    <div class="schedule-section-header ${colorClass}-header">
+      <div class="ssh-left">
+        <span class="ssh-badge ${colorClass}">${quarterCode}</span>
+        <span class="ssh-title">${quarterLabel}</span>
       </div>
-      <div class="sc-meta">
-        <div><strong>時段：</strong>${c.time}</div>
-        <div><strong>主力名師：</strong>${c.teacher}</div>
+      <div class="ssh-right">${subtitle}</div>
+    </div>
+    <div class="schedule-card-grid">
+  `;
+
+  courses.forEach(c => {
+    const badgeClass = c.badge.includes('A') ? 'tag-a' : (c.badge.includes('B') ? 'tag-b' : (c.badge.includes('C') ? 'tag-c' : 'tag-ocean'));
+    const isWeekend = c.time.includes('週六') || c.time.includes('週日');
+    cardHtml += `
+      <div class="schedule-card ${colorClass}-card">
+        <div class="sc-header">
+          <span class="sc-title">${c.title}</span>
+          <span class="sc-tag ${badgeClass}">${c.badge}</span>
+        </div>
+        <div class="sc-meta">
+          <div><span class="time-slot-badge ${isWeekend ? 'weekend' : 'weekday'}">⏰ ${c.time}</span></div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+            <span><strong>主力名師：</strong>${c.teacher}</span>
+            <span><strong>目標：</strong><span style="color: #16a34a; font-weight: 700;">${c.target || '100 人'}</span></span>
+          </div>
+        </div>
+        <div class="sc-note"><strong>戰略佈局：</strong>${c.note}</div>
       </div>
-      <div class="sc-note"><strong>戰略佈局：</strong>${c.note}</div>
     `;
-    container.appendChild(card);
   });
+
+  cardHtml += `</div>`;
+  return cardHtml;
 }
+
+function renderH1View() {
+  const container = document.getElementById("h1Container") || document.getElementById("h1Grid");
+  if (!container) return;
+
+  const q1List = h1Courses.filter(c => c.code === "Q1");
+  const q2List = h1Courses.filter(c => c.code === "Q2");
+
+  if (currentViewH1 === 'table') {
+    container.innerHTML = 
+      generateScheduleTable(q1List, "第一季 (Q1) 寒假與新春引流大排定案", "Q1", "q1", "正式定案 6 班 ｜ 預估服務 700+ 人次") +
+      generateScheduleTable(q2List, "第二季 (Q2) 春季推進與梯隊閉環大排定案", "Q2", "q2", "正式定案 11 班 ｜ 預估服務 1,000+ 人次");
+  } else {
+    container.innerHTML = 
+      generateScheduleCards(q1List, "第一季 (Q1) 寒假與新春引流大排定案", "Q1", "q1", "正式定案 6 班 ｜ 預估服務 700+ 人次") +
+      generateScheduleCards(q2List, "第二季 (Q2) 春季推進與梯隊閉環大排定案", "Q2", "q2", "正式定案 11 班 ｜ 預估服務 1,000+ 人次");
+  }
+}
+
+function renderH2View() {
+  const container = document.getElementById("h2Container") || document.getElementById("h2Grid");
+  if (!container) return;
+
+  const q3List = h2Courses.filter(c => c.code === "Q3");
+  const q4List = h2Courses.filter(c => c.code === "Q4");
+
+  if (currentViewH2 === 'table') {
+    container.innerHTML = 
+      generateScheduleTable(q3List, "第三季 (Q3) 暑期學生潮與熱門大班彈性保留池", "Q3", "q3", "彈性保留 6 班 ｜ 暑期滾動加開") +
+      generateScheduleTable(q4List, "第四季 (Q4) 年末轉職與高階成果閉環保留池", "Q4", "q4", "彈性保留 5 班 ｜ 梯隊進階交付");
+  } else {
+    container.innerHTML = 
+      generateScheduleCards(q3List, "第三季 (Q3) 暑期學生潮與熱門大班彈性保留池", "Q3", "q3", "彈性保留 6 班 ｜ 暑期滾動加開") +
+      generateScheduleCards(q4List, "第四季 (Q4) 年末轉職與高階成果閉環保留池", "Q4", "q4", "彈性保留 5 班 ｜ 梯隊進階交付");
+  }
+}
+
+function switchScheduleView(tab, mode) {
+  if (tab === 'h1') {
+    currentViewH1 = mode;
+    const btnTable = document.getElementById('btn-view-table-h1');
+    const btnCard = document.getElementById('btn-view-card-h1');
+    if (btnTable) btnTable.classList.toggle('active', mode === 'table');
+    if (btnCard) btnCard.classList.toggle('active', mode === 'card');
+    renderH1View();
+  } else if (tab === 'h2') {
+    currentViewH2 = mode;
+    const btnTable = document.getElementById('btn-view-table-h2');
+    const btnCard = document.getElementById('btn-view-card-h2');
+    if (btnTable) btnTable.classList.toggle('active', mode === 'table');
+    if (btnCard) btnCard.classList.toggle('active', mode === 'card');
+    renderH2View();
+  }
+}
+
+// 相容別名
+function renderH1Cards() { renderH1View(); }
+function renderH2Cards() { renderH2View(); }
 
 function openModal(item) {
   if (!item) return;
@@ -1642,7 +1940,10 @@ function downloadPdfSample() {
 
 function openReport(event, type) {
   const isFile = window.location.protocol === 'file:';
-  const targetFile = (type === 'compare') ? 'schedule_2027_presentation.html' : 'makeup_to_online_analysis.html';
+  let targetFile = 'schedule_slot_demonstration.html';
+  if (type === 'compare') targetFile = 'schedule_2027_presentation.html';
+  else if (type === 'makeup') targetFile = 'makeup_to_online_analysis.html';
+  else if (type === 'slot_demo') targetFile = 'schedule_slot_demonstration.html';
 
   if (isFile) {
     // 在本機桌面環境 (file://)，直接透過原生 <a> 導向同目錄檔案
