@@ -193,21 +193,29 @@ async function loadClassConfig() {
       }
     }
 
-    // 動態載入延伸課程與開課課表意願 (區塊: 學員成長下一步)
-    const isFollowupEnabled = (data.enable_followup !== false);
-    window.isFollowupEnabled = isFollowupEnabled;
-    const followupSection = document.getElementById('followupSection');
-    const followupStepNum = document.getElementById('followupStepNum');
-    const rewardSection = document.getElementById('rewardRedemptionSection');
-    const rewardStepNum = rewardSection ? rewardSection.querySelector('.step-num') : null;
+    // 獨立處理 12. 延伸進階主題意願調查
+    const isTopicEnabled = (data.enable_followup_topics !== false);
+    window.isFollowupTopicEnabled = isTopicEnabled;
+    const topicSection = document.getElementById('followupTopicSection');
 
-    if (followupSection) {
-      if (!isFollowupEnabled) {
-        followupSection.style.display = 'none';
-        if (rewardStepNum) rewardStepNum.textContent = '05';
+    // 獨立處理 13. 開課課表梯次 ＆ 舊生早鳥優惠
+    const isScheduleEnabled = (data.enable_followup_schedules !== false);
+    window.isFollowupScheduleEnabled = isScheduleEnabled;
+    const scheduleSection = document.getElementById('followupScheduleSection');
+
+    const rewardSection = document.getElementById('rewardRedemptionSection');
+
+    // 自適應動態題號編排 (NPS評分之後)
+    let currentStep = 5;
+
+    if (topicSection) {
+      if (!isTopicEnabled) {
+        topicSection.style.display = 'none';
       } else {
-        followupSection.style.display = 'block';
-        if (rewardStepNum) rewardStepNum.textContent = '06';
+        topicSection.style.display = 'block';
+        const stepNumEl = document.getElementById('followupTopicStepNum');
+        if (stepNumEl) stepNumEl.textContent = String(currentStep).padStart(2, '0');
+        currentStep++;
 
         // 題目文字更新講師姓名
         const topicQuestionLabel = document.getElementById('followupTopicQuestionLabel');
@@ -228,7 +236,7 @@ async function loadClassConfig() {
                 "進階 C：數位繪畫商業接案與作品集專案指導班"
               ];
 
-          topics.forEach((top, idx) => {
+          topics.forEach(top => {
             const lbl = document.createElement('label');
             lbl.className = 'radio-card compact';
             lbl.innerHTML = `
@@ -259,6 +267,17 @@ async function loadClassConfig() {
             topicsContainer.appendChild(lbl);
           });
         }
+      }
+    }
+
+    if (scheduleSection) {
+      if (!isScheduleEnabled) {
+        scheduleSection.style.display = 'none';
+      } else {
+        scheduleSection.style.display = 'block';
+        const stepNumEl = document.getElementById('followupScheduleStepNum');
+        if (stepNumEl) stepNumEl.textContent = String(currentStep).padStart(2, '0');
+        currentStep++;
 
         // 動態渲染開課時段／課表晶片 (多選)
         const schedulesContainer = document.getElementById('followupSchedulesContainer');
@@ -284,6 +303,13 @@ async function loadClassConfig() {
 
           initScheduleCheckboxEvents();
         }
+      }
+    }
+
+    if (rewardSection) {
+      const rewardStepNum = rewardSection.querySelector('.step-num');
+      if (rewardStepNum) {
+        rewardStepNum.textContent = String(currentStep).padStart(2, '0');
       }
     }
   } catch (e) {
@@ -655,11 +681,15 @@ function initFormSubmit() {
       data.email = '';
     }
 
-    if (!window.isFollowupEnabled) {
+    if (!window.isFollowupTopicEnabled) {
       data.followup_interest_topic = "未開啟此項調查";
-      data.followup_schedules_selected = "未開啟此項調查";
     } else {
       data.followup_interest_topic = data.followup_interest_topic || "未填寫";
+    }
+
+    if (!window.isFollowupScheduleEnabled) {
+      data.followup_schedules_selected = "未開啟此項調查";
+    } else {
       data.followup_schedules_selected = data.followup_schedules_selected || "未勾選時段";
     }
 

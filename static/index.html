@@ -280,11 +280,11 @@
         </div>
       </section>
 
-      <!-- 區塊: 學員成長下一步 ＆ 延伸課程意願調查 (後台可手動自由修改主題與課表) -->
-      <section class="form-section" id="followupSection">
+      <!-- 區塊: 延伸進階主題意願調查 (後台 12 可獨立開關與手動修改) -->
+      <section class="form-section" id="followupTopicSection">
         <div class="section-title">
-          <span class="step-num" id="followupStepNum">05</span>
-          <h3>學員成長下一步 ＆ 延伸進階課程意願</h3>
+          <span class="step-num" id="followupTopicStepNum">05</span>
+          <h3>未來學習成長 ＆ 延伸進階主題調查</h3>
         </div>
 
         <!-- Q: 延伸進階主題 (單選) -->
@@ -297,11 +297,19 @@
             <!-- 由 JS 依後台設定動態渲染 -->
           </div>
         </div>
+      </section>
+
+      <!-- 區塊: 開課課表梯次 ＆ 舊生早鳥優惠 (後台 13 可獨立開關與手動修改) -->
+      <section class="form-section" id="followupScheduleSection">
+        <div class="section-title">
+          <span class="step-num" id="followupScheduleStepNum">06</span>
+          <h3>即將開課課表梯次 ＆ 舊生專屬早鳥優惠預約</h3>
+        </div>
 
         <!-- Q: 開課課表梯次 ✕ 舊生早鳥優惠 (可複選晶片) -->
-        <div class="question-group" style="margin-top: 24px; padding-top: 18px; border-top: 1px dashed var(--border-color);">
+        <div class="question-group">
           <label class="question-label">
-            🎁 【舊生專屬續報優惠】您有興趣接收哪一梯次的最新課表 ＆ 早鳥折價券？
+            🎁 【舊生專屬續報優惠】您有興趣接收哪一梯次的最新開課課表 ＆ 早鳥折價券？
             <small class="hint">（可複選，開課前專員將以 LINE / 簡訊優先發送專屬優惠碼與報名連結）</small>
           </label>
           <div id="followupSchedulesContainer" style="display: flex; flex-direction: column; gap: 8px;">

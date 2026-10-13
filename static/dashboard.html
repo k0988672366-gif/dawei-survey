@@ -725,40 +725,42 @@
             </label>
           </div>
 
-          <!-- 12. 延伸進階主題清單 (手動輸入，一行一個) -->
-          <div style="grid-column: span 2; background: #ffffff; border: 1px solid var(--card-border); border-radius: 8px; padding: 16px;">
-            <label style="font-size: 0.92rem; font-weight: 600; color: var(--text); margin: 0; display: block;">
-              🎨 12. 延伸進階主題清單（每行一個進階主題，供學員挑選下一步想學什麼）
-            </label>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; margin-bottom: 8px; line-height: 1.5;">
-              💡 <strong>自由手動修改</strong>：若主題有調整，直接在下方打字或貼上新名稱即可，儲存後學員端即時更新。
-            </p>
-            <textarea id="editFollowupTopics" rows="4" class="chat-input" style="height: auto; font-family: monospace; width: 100%;" placeholder="例如：&#10;進階 A：商業場景氛圍光影 ✕ 概念美術完稿實戰班&#10;進階 B：日系動畫 Layout 分鏡 ✕ 鏡頭空間透視大師班&#10;進階 C：數位繪畫商業接案與作品集專案指導班"></textarea>
-          </div>
-
-          <!-- 13. 開課課表與梯次時段 (實體講座／實體單元課／線上直播時段) -->
-          <div style="grid-column: span 2; background: #ffffff; border: 1px solid var(--card-border); border-radius: 8px; padding: 16px;">
-            <label style="font-size: 0.92rem; font-weight: 600; color: var(--text); margin: 0; display: block;">
-              📅 13. 開課課表與梯次時段（每行一個時段，供學員挑選偏好梯次與領取舊生早鳥優惠）
-            </label>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; margin-bottom: 8px; line-height: 1.5;">
-              💡 <strong>包含實體講座、單元課與直播</strong>：若有異動（改期、換地點、加開梯次），直接改文字即可！
-            </p>
-            <textarea id="editFollowupSchedules" rows="4" class="chat-input" style="height: auto; font-family: monospace; width: 100%;" placeholder="例如：&#10;🏛️【實體講座】11/15 (六) 14:00 - 16:00 台北站（實體交流）&#10;🎨【實體單元課】11/22 (日) 13:30 - 16:30 台中教室精實班&#10;💻【線上直播班】12/01 起 每週三晚間 19:30 - 21:30"></textarea>
-          </div>
-
-          <!-- 14. 延伸課程與課表意願調查總開關 (核取方塊 Checkbox) -->
-          <div style="grid-column: span 2; background: #f8fafc; border: 1.5px solid var(--card-border); border-radius: 8px; padding: 14px 18px; margin-top: 2px;">
-            <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; margin: 0; user-select: none;">
-              <input type="checkbox" id="editEnableFollowupCheckbox" style="width: 20px; height: 20px; accent-color: var(--primary-accent); margin-top: 2px; cursor: pointer;">
+          <!-- 12. 延伸進階主題意願調查 (獨立開關與手動清單) -->
+          <div style="grid-column: span 2; background: #ffffff; border: 1.5px solid var(--card-border); border-radius: 8px; padding: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed var(--card-border);">
               <div>
-                <strong style="font-size: 0.95rem; color: var(--text); display: block;">🚀 14. 開啟本班「延伸課程與課表意願調查」（打勾啟用 / 取消即完全隱藏）</strong>
-                <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; line-height: 1.5;">
-                  • <strong>勾選時</strong>：學員問卷會顯示第 05 區（延伸進階主題 ＆ 課表梯次早鳥優惠選單），精準捕捉舊生續報名單。<br>
-                  • <strong>取消勾選時</strong>：自動自學員端完全隱藏這 2 題，維持最精簡填答。
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 0; user-select: none;">
+                  <input type="checkbox" id="editEnableFollowupTopicsCheckbox" style="width: 20px; height: 20px; accent-color: var(--primary-accent); cursor: pointer;">
+                  <strong style="font-size: 1rem; color: var(--text);">🎨 12. 開啟「延伸進階主題意願調查」（打勾啟用 / 取消即隱藏）</strong>
+                </label>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; margin-left: 30px; margin-bottom: 0; line-height: 1.45;">
+                  💡 <strong>獨立課綱研發與主題調查</strong>：專門調查學員未來想學什麼進階方向，可單獨開啟，不需等待課表排定。
                 </p>
               </div>
+            </div>
+            <label style="font-size: 0.88rem; font-weight: 600; color: var(--text); margin: 0; display: block;">
+              進階主題清單（每行一個主題，直接在下方打字或貼上新名稱即可手動修改）：
             </label>
+            <textarea id="editFollowupTopics" rows="4" class="chat-input" style="height: auto; font-family: monospace; width: 100%; margin-top: 6px;" placeholder="例如：&#10;進階 A：商業場景氛圍光影 ✕ 概念美術完稿實戰班&#10;進階 B：日系動畫 Layout 分鏡 ✕ 鏡頭空間透視大師班&#10;進階 C：數位繪畫商業接案與作品集專案指導班"></textarea>
+          </div>
+
+          <!-- 13. 開課課表梯次 ＆ 舊生早鳥優惠 (獨立開關與手動時段) -->
+          <div style="grid-column: span 2; background: #ffffff; border: 1.5px solid var(--card-border); border-radius: 8px; padding: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed var(--card-border);">
+              <div>
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 0; user-select: none;">
+                  <input type="checkbox" id="editEnableFollowupSchedulesCheckbox" style="width: 20px; height: 20px; accent-color: var(--primary-accent); cursor: pointer;">
+                  <strong style="font-size: 1rem; color: var(--text);">📅 13. 開啟「開課課表梯次 ＆ 舊生早鳥優惠預約」（打勾啟用 / 取消即隱藏）</strong>
+                </label>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; margin-left: 30px; margin-bottom: 0; line-height: 1.45;">
+                  💡 <strong>獨立精準推課/促購轉化</strong>：包含實體講座、單元課與線上直播課表時段及早鳥折價券領取，可單獨開啟，直接收集意願預約名單！
+                </p>
+              </div>
+            </div>
+            <label style="font-size: 0.88rem; font-weight: 600; color: var(--text); margin: 0; display: block;">
+              開課課表與梯次時段（每行一個時段，包含實體講座地點、單元課、直播時段，直接修改即可）：
+            </label>
+            <textarea id="editFollowupSchedules" rows="4" class="chat-input" style="height: auto; font-family: monospace; width: 100%; margin-top: 6px;" placeholder="例如：&#10;🏛️【實體講座】11/15 (六) 14:00 - 16:00 台北站（實體交流）&#10;🎨【實體單元課】11/22 (日) 13:30 - 16:30 台中教室精實班&#10;💻【線上直播班】12/01 起 每週三晚間 19:30 - 21:30"></textarea>
           </div>
         </form>
       </div>
@@ -1910,17 +1912,26 @@
               </div>
             </div>
 
-            <!-- 延伸進階學習意願 ＆ 課表時段 (若有填寫) -->
-            ${((row.followup_interest_topic && row.followup_interest_topic !== '未開啟此項調查' && row.followup_interest_topic !== '未填寫') || (row.followup_schedules_selected && row.followup_schedules_selected !== '未開啟此項調查' && row.followup_schedules_selected !== '未勾選時段')) ? `
-              <div style="background: #f8fafc; border: 1px solid #e0e7ff; border-radius: 8px; padding: 11px 15px;">
-                <div style="font-size: 0.8rem; font-weight: 700; color: #4338ca; display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">
-                  <span>🚀 延伸進階學習意願 ＆ 預約開課課表</span>
+            <!-- 12. 延伸進階主題意向 (獨立顯示) -->
+            ${(row.followup_interest_topic && row.followup_interest_topic !== '未開啟此項調查' && row.followup_interest_topic !== '未填寫') ? `
+              <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px 14px;">
+                <div style="font-size: 0.8rem; font-weight: 700; color: #1d4ed8; display: flex; align-items: center; gap: 4px; margin-bottom: 3px;">
+                  <span>🎨 12. 延伸進階主題意向</span>
                 </div>
-                <div style="font-size: 0.86rem; color: #1e293b; line-height: 1.5;">
-                  <strong>想深入主題：</strong><span style="color: #2563eb; font-weight: 600;">${escapeHtml(row.followup_interest_topic || '未特別指定')}</span>
+                <div style="font-size: 0.88rem; color: #1e3a8a; font-weight: 600;">
+                  ${escapeHtml(row.followup_interest_topic)}
                 </div>
-                <div style="font-size: 0.82rem; color: #475569; margin-top: 3px; line-height: 1.45;">
-                  <strong>預約時段 / 早鳥優惠：</strong><span>${escapeHtml(row.followup_schedules_selected || '未特別指定')}</span>
+              </div>
+            ` : ''}
+
+            <!-- 13. 開課課表梯次 ＆ 舊生早鳥優惠 (獨立顯示) -->
+            ${(row.followup_schedules_selected && row.followup_schedules_selected !== '未開啟此項調查' && row.followup_schedules_selected !== '未勾選時段') ? `
+              <div style="background: #fefce8; border: 1px solid #fef08a; border-radius: 8px; padding: 10px 14px;">
+                <div style="font-size: 0.8rem; font-weight: 700; color: #a16207; display: flex; align-items: center; gap: 4px; margin-bottom: 3px;">
+                  <span>📅 13. 預約開課梯次 ＆ 舊生早鳥優惠</span>
+                </div>
+                <div style="font-size: 0.86rem; color: #713f12; line-height: 1.45; font-weight: 500;">
+                  ${escapeHtml(row.followup_schedules_selected)}
                 </div>
               </div>
             ` : ''}
@@ -2218,9 +2229,13 @@
         if (followupSchedulesInput) {
           followupSchedulesInput.value = (data.followup_schedules || []).join('\n');
         }
-        const editFollowupChk = document.getElementById('editEnableFollowupCheckbox');
-        if (editFollowupChk) {
-          editFollowupChk.checked = (data.enable_followup !== false);
+        const editFollowupTopicsChk = document.getElementById('editEnableFollowupTopicsCheckbox');
+        if (editFollowupTopicsChk) {
+          editFollowupTopicsChk.checked = (data.enable_followup_topics !== false);
+        }
+        const editFollowupSchedulesChk = document.getElementById('editEnableFollowupSchedulesCheckbox');
+        if (editFollowupSchedulesChk) {
+          editFollowupSchedulesChk.checked = (data.enable_followup_schedules !== false);
         }
       } catch (e) {
         console.error('Failed to load class config to editor:', e);
@@ -2449,8 +2464,11 @@
           const followupSchedules = document.getElementById('editFollowupSchedules')
             ? document.getElementById('editFollowupSchedules').value.split('\n').map(s => s.trim()).filter(Boolean)
             : [];
-          const enableFollowupVal = document.getElementById('editEnableFollowupCheckbox')
-            ? document.getElementById('editEnableFollowupCheckbox').checked
+          const enableFollowupTopicsVal = document.getElementById('editEnableFollowupTopicsCheckbox')
+            ? document.getElementById('editEnableFollowupTopicsCheckbox').checked
+            : true;
+          const enableFollowupSchedulesVal = document.getElementById('editEnableFollowupSchedulesCheckbox')
+            ? document.getElementById('editEnableFollowupSchedulesCheckbox').checked
             : true;
 
           const payload = {
@@ -2469,7 +2487,8 @@
             enable_gift: enableGiftVal,
             reward_courses: enabledCourses,
             reward_course_items: currentRewardItems,
-            enable_followup: enableFollowupVal,
+            enable_followup_topics: enableFollowupTopicsVal,
+            enable_followup_schedules: enableFollowupSchedulesVal,
             followup_topics: followupTopics,
             followup_schedules: followupSchedules
           };
@@ -2489,7 +2508,8 @@
                 allClassesData[payload.class_id].course_name = payload.course_name;
                 allClassesData[payload.class_id].reward_courses = payload.reward_courses;
                 allClassesData[payload.class_id].reward_course_items = payload.reward_course_items;
-                allClassesData[payload.class_id].enable_followup = payload.enable_followup;
+                allClassesData[payload.class_id].enable_followup_topics = payload.enable_followup_topics;
+                allClassesData[payload.class_id].enable_followup_schedules = payload.enable_followup_schedules;
                 allClassesData[payload.class_id].followup_topics = payload.followup_topics;
                 allClassesData[payload.class_id].followup_schedules = payload.followup_schedules;
               }

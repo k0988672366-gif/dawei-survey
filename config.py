@@ -66,8 +66,10 @@ def get_class_info(class_id: str = None) -> dict:
         }
     if "enable_gift" not in info:
         info["enable_gift"] = True
-    if "enable_followup" not in info:
-        info["enable_followup"] = True
+    if "enable_followup_topics" not in info:
+        info["enable_followup_topics"] = info.get("enable_followup", True)
+    if "enable_followup_schedules" not in info:
+        info["enable_followup_schedules"] = info.get("enable_followup", True)
     if "followup_topics" not in info:
         info["followup_topics"] = [
             "進階 A：商業場景氛圍光影 ✕ 概念美術完稿實戰班",

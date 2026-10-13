@@ -395,10 +395,16 @@ class SurveyHandler(BaseHTTPRequestHandler):
                     existing["enable_gift"] = bool(payload["enable_gift"])
                 elif "enable_gift" not in existing:
                     existing["enable_gift"] = True
-                if "enable_followup" in payload:
-                    existing["enable_followup"] = bool(payload["enable_followup"])
-                elif "enable_followup" not in existing:
-                    existing["enable_followup"] = True
+                if "enable_followup_topics" in payload:
+                    existing["enable_followup_topics"] = bool(payload["enable_followup_topics"])
+                elif "enable_followup_topics" not in existing:
+                    existing["enable_followup_topics"] = existing.get("enable_followup", True)
+                if "enable_followup_schedules" in payload:
+                    existing["enable_followup_schedules"] = bool(payload["enable_followup_schedules"])
+                elif "enable_followup_schedules" not in existing:
+                    existing["enable_followup_schedules"] = existing.get("enable_followup", True)
+                # 保持向後相容
+                existing["enable_followup"] = existing.get("enable_followup_topics", True) or existing.get("enable_followup_schedules", True)
                 cfg["classes"][cid] = existing
                 cfg["active_class_id"] = cid
 
