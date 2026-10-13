@@ -447,6 +447,7 @@
         <button id="bannerCopyLinkBtn" class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.82rem; border-color: var(--primary-accent); color: var(--primary-accent);" title="複製雲端公開網址，可直接貼入 reurl.cc 縮短網址">📋 複製雲端網址 (可縮網址)</button>
         <a id="bannerOpenLinkBtn" href="/?class=class_1791862849" target="_blank" class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.82rem;">📱 本機預覽</a>
         <a id="bannerOpenCloudBtn" href="https://dawei-survey.onrender.com/?class=class_1791862849" target="_blank" class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.82rem; border-color: #a855f7; color: #a855f7;">🌐 開啟雲端公開頁</a>
+        <button id="bannerSyncCloudBtn" class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.82rem; border-color: #0284c7; color: #0284c7; font-weight: 500;" onclick="syncCloudNow()" title="自 Render 雲端主機立即拉取最新學員填答">☁️ 立即同步雲端填答</button>
       </div>
     </div>
 
@@ -865,6 +866,7 @@
           <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
             <input type="text" id="responseSearchInput" class="chat-input" placeholder="🔍 搜尋學員、留言或痛點..." style="width: 240px; padding: 8px 12px; font-size: 0.85rem;" oninput="filterResponsesTable()">
             <button class="btn btn-secondary" onclick="exportResponsesCsv()" title="匯出完整學員回覆為 CSV 檔案">📥 匯出完整回覆 (CSV)</button>
+            <button class="btn btn-secondary" onclick="syncCloudNow()" title="自 Render 雲端主機立即拉取最新學員填答" style="color:#0284c7; border-color:#0284c7;">☁️ 同步雲端</button>
             <button class="btn btn-secondary" onclick="autoSyncAndRefresh()" title="重新載入填答資料">🔄 重新整理</button>
           </div>
         </div>
@@ -2490,6 +2492,26 @@
       link.click();
     }
 
+    async function syncCloudNow() {
+      const btn = document.getElementById('bannerSyncCloudBtn');
+      if (btn) { btn.disabled = true; btn.textContent = '☁️ 雲端同步中...'; }
+      try {
+        const res = await fetch('/api/sync-cloud', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ class_id: currentClassId })
+        });
+        const data = await res.json();
+        alert(`✅ ${data.message || '雲端填答已同步完畢！'}`);
+        await autoSyncAndRefresh();
+      } catch (err) {
+        alert(`❌ 同步失敗：${err.message}`);
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = '☁️ 立即同步雲端填答'; }
+      }
+    }
+
+    window.syncCloudNow = syncCloudNow;
     window.exportRedemptionCsv = exportRedemptionCsv;
     window.exportResponsesCsv = exportResponsesCsv;
     window.filterResponsesTable = filterResponsesTable;

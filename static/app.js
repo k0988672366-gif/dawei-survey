@@ -25,6 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadClassConfig() {
   const urlParams = new URLSearchParams(window.location.search);
   const classId = urlParams.get('class');
+  if (classId && document.getElementById('classIdInput')) {
+    document.getElementById('classIdInput').value = classId;
+  }
 
   try {
     const reqUrl = classId ? `/api/class-info?class_id=${classId}` : '/api/class-info';
@@ -32,7 +35,7 @@ async function loadClassConfig() {
     if (!res.ok) return;
     const data = await res.json();
     if (document.getElementById('classIdInput')) {
-      document.getElementById('classIdInput').value = data.class_id || classId || 'default';
+      document.getElementById('classIdInput').value = data.class_id || classId || 'class_1791862849';
     }
 
     // 判斷是否開啟完課好禮課程 (以資料明確標記為準，未開啟則為純回饋模式)
@@ -543,7 +546,11 @@ function initFormSubmit() {
       }
     } catch (err) {
       console.error('Submit error:', err);
-      modal.classList.add('show');
+      alert('⚠️ 送出時連線異常，請檢查網路連線後再試一次！\n錯誤訊息：' + err.message);
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = wantsReward 
+        ? '<span>🎁 登記兌換 ＆ 送出結業問卷</span>'
+        : '<span>🚀 送出結業回饋問卷</span>';
     }
   });
 

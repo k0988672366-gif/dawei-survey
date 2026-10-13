@@ -182,6 +182,8 @@ class SurveyHandler(BaseHTTPRequestHandler):
 
         # 7. API: 統計資訊 (/api/stats?class_id=...) (公開)
         if path == "/api/stats":
+            if not os.getenv("RENDER"):
+                self.pull_cloud_responses()
             cid = query_params.get("class_id", [None])[0]
             if cid == "":
                 cid = None
@@ -193,6 +195,8 @@ class SurveyHandler(BaseHTTPRequestHandler):
         if path == "/api/responses":
             if not self.check_auth():
                 return
+            if not os.getenv("RENDER"):
+                self.pull_cloud_responses()
             cid = query_params.get("class_id", [None])[0]
             if cid == "":
                 cid = None
@@ -284,6 +288,11 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 self.send_json(400, {"status": "error", "message": f"無效的 JSON 格式: {str(e)}"})
                 return
 
+            # 自動校正 class_id，防止遺漏或誤用舊預設
+            if not data.get("class_id") or data.get("class_id") in ["default", "dawei_studio_01"]:
+                cfg = config.load_classes_config()
+                data["class_id"] = data.get("class_id") or cfg.get("active_class_id", "class_1791862849")
+
             data["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             is_pure_feedback = (
                 data.get("wants_reward") == "no" or
@@ -305,6 +314,21 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 current_state.df = pd.read_csv(config.RESPONSES_CSV_PATH)
             except:
                 pass
+
+            # 若在本機端測試提交，同步備份至雲端 Render
+            if not os.getenv("RENDER"):
+                try:
+                    cloud_url = os.getenv("CLOUD_URL", "https://dawei-survey.onrender.com").rstrip("/")
+                    ctx = ssl._create_unverified_context()
+                    sub_req = urllib.request.Request(
+                        f"{cloud_url}/api/submit",
+                        data=json.dumps(data).encode("utf-8"),
+                        headers={"Content-Type": "application/json"}
+                    )
+                    with urllib.request.urlopen(sub_req, context=ctx, timeout=6) as r:
+                        pass
+                except Exception as err:
+                    print(f"[CloudSync Warning] 本機提交同步至雲端失敗: {err}", flush=True)
 
             msg = "感謝您的寶貴回饋！問卷已成功送出。" if is_pure_feedback else "感謝您的回饋！單元課兌換申請已受理。"
             self.send_json(200, {
@@ -493,6 +517,22 @@ class SurveyHandler(BaseHTTPRequestHandler):
                     except:
                         current_state.df = pd.DataFrame(all_rows)
 
+                    # 若在本機端刪除，同步轉發通知雲端 Render 刪除該筆資料
+                    if not os.getenv("RENDER"):
+                        try:
+                            cloud_url = os.getenv("CLOUD_URL", "https://dawei-survey.onrender.com").rstrip("/")
+                            ctx = ssl._create_unverified_context()
+                            auth = base64.b64encode(f"{config.ADMIN_USERNAME}:{config.ADMIN_PASSWORD}".encode("utf-8")).decode("ascii")
+                            del_req = urllib.request.Request(
+                                f"{cloud_url}/api/delete-response",
+                                data=json.dumps(payload).encode("utf-8"),
+                                headers={"Authorization": f"Basic {auth}", "Content-Type": "application/json"}
+                            )
+                            with urllib.request.urlopen(del_req, context=ctx, timeout=6) as r:
+                                pass
+                        except Exception as err:
+                            print(f"[CloudSync Warning] 雲端刪除同步失敗: {err}", flush=True)
+
                     self.send_json(200, {
                         "status": "success",
                         "message": "已成功刪除該筆學員回覆記錄！"
@@ -510,8 +550,23 @@ class SurveyHandler(BaseHTTPRequestHandler):
         if parsed.path == "/api/sync-cloud":
             if not self.check_auth():
                 return
-            count = len(current_state.df) if current_state.df is not None else 0
-            self.send_json(200, {"status": "success", "message": f"本機問卷資料庫已為最新狀態（共 {count} 筆填答）！", "count": count})
+            added = self.pull_cloud_responses(force=True)
+            cid = None
+            content_length = int(self.headers.get("Content-Length", 0))
+            if content_length > 0:
+                try:
+                    p = json.loads(self.rfile.read(content_length).decode("utf-8"))
+                    cid = p.get("class_id")
+                except:
+                    pass
+            all_responses = self.get_all_responses(class_id=cid)
+            count = len(all_responses)
+            self.send_json(200, {
+                "status": "success",
+                "message": f"🎉 雲端填答同步完成！已自雲端拉取 {added} 筆新資料，當前共 {count} 筆回覆記錄。",
+                "added": added,
+                "count": count
+            })
             return
 
         # 觸發多代理協同分析 (/api/analyze?class_id=...) (需要管理員密碼保護！)
@@ -710,6 +765,78 @@ class SurveyHandler(BaseHTTPRequestHandler):
             if not file_exists or file_path.stat().st_size == 0:
                 writer.writeheader()
             writer.writerow(row_dict)
+
+    _last_cloud_pull = 0
+
+    def pull_cloud_responses(self, force=False) -> int:
+        """從 Render 雲端自動拉取最新填答回覆並合併至本機資料庫 (持久化備份)"""
+        if os.getenv("RENDER") == "true":
+            return 0
+
+        now = datetime.now().timestamp()
+        if not force and (now - SurveyHandler._last_cloud_pull < 4):
+            return 0
+        SurveyHandler._last_cloud_pull = now
+
+        cloud_url = os.getenv("CLOUD_URL", "https://dawei-survey.onrender.com").rstrip("/")
+        try:
+            ctx = ssl._create_unverified_context()
+            auth = base64.b64encode(f"{config.ADMIN_USERNAME}:{config.ADMIN_PASSWORD}".encode("utf-8")).decode("ascii")
+            req = urllib.request.Request(
+                f"{cloud_url}/api/responses",
+                headers={"Authorization": f"Basic {auth}"}
+            )
+            with urllib.request.urlopen(req, context=ctx, timeout=8) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+                cloud_rows = data.get("data", [])
+                if not cloud_rows:
+                    return 0
+
+                fieldnames = [
+                    "timestamp", "class_id", "student_name", "phone", "line_id", "email",
+                    "prior_experience", "key_progress", "struggle_point", "instructor_rating",
+                    "instructor_comment", "course_rating", "ta_rating", "ta_comment",
+                    "platform_experience", "nps_score", "selected_reward_course", "wants_reward"
+                ]
+
+                local_rows = []
+                if config.RESPONSES_CSV_PATH.exists():
+                    with open(config.RESPONSES_CSV_PATH, "r", encoding="utf-8-sig") as f:
+                        reader = csv.DictReader(f)
+                        local_rows = list(reader)
+
+                def make_key(r):
+                    return (
+                        r.get("timestamp", "").strip(),
+                        r.get("class_id", "").strip(),
+                        r.get("student_name", "").strip()
+                    )
+
+                local_keys = set(make_key(r) for r in local_rows)
+                added_count = 0
+
+                for r in cloud_rows:
+                    key = make_key(r)
+                    if key not in local_keys:
+                        local_rows.append(r)
+                        local_keys.add(key)
+                        added_count += 1
+
+                if added_count > 0 or not config.RESPONSES_CSV_PATH.exists():
+                    with open(config.RESPONSES_CSV_PATH, "w", newline="", encoding="utf-8-sig") as f:
+                        writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
+                        writer.writeheader()
+                        writer.writerows(local_rows)
+
+                    try:
+                        current_state.df = pd.read_csv(config.RESPONSES_CSV_PATH)
+                    except:
+                        current_state.df = pd.DataFrame(local_rows)
+
+                return added_count
+        except Exception as e:
+            print(f"[CloudSync Warning] 同步雲端回覆失敗: {e}", flush=True)
+            return 0
 
     def get_all_responses(self, class_id=None):
         file_path = config.RESPONSES_CSV_PATH
