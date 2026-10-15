@@ -80,6 +80,12 @@ class SurveyHandler(BaseHTTPRequestHandler):
             self.serve_file(dashboard_path, "text/html; charset=utf-8")
             return
 
+        # 2.1 排課落點示範系統 (公開)
+        if path in ("/schedule", "/schedule-demo", "/slot-demo"):
+            demo_path = config.STATIC_DIR / "schedule_slot_demonstration.html"
+            self.serve_file(demo_path, "text/html; charset=utf-8")
+            return
+
         # 3. 班級設定 API (/api/class-info?class_id=...) (公開)
         if path == "/api/class-info":
             cid = query_params.get("class_id", [None])[0]
