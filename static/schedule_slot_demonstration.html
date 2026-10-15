@@ -299,14 +299,27 @@
     line-height: 1.35;
   }
 
+  .slot-cell-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 120px;
+  }
+
+  .slot-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-grow: 1;
+  }
+
   /* Slot Card */
   .slot-card {
     background: #ffffff;
     border: 1px solid #cbd5e1;
     border-radius: 8px;
-    padding: 12px;
-    height: 100%;
-    min-height: 110px;
+    padding: 10px 12px;
+    min-height: 100px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -329,6 +342,7 @@
     justify-content: center;
     text-align: center;
     cursor: pointer;
+    min-height: 90px;
   }
   .slot-card.is-empty:hover {
     background: #eff6ff;
@@ -342,7 +356,8 @@
 
   .sc-top {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: space-between;
     gap: 8px;
     margin-bottom: 6px;
   }
@@ -366,6 +381,71 @@
     line-height: 1.35;
   }
 
+  .card-btn-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  .btn-card-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 4px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.15s;
+    line-height: 1.3;
+  }
+  .btn-card-icon.edit:hover {
+    background: #eff6ff;
+    border-color: #3b82f6;
+    color: #1d4ed8;
+  }
+  .btn-card-icon.del {
+    color: #dc2626;
+    border-color: #fecaca;
+    background: #fef2f2;
+  }
+  .btn-card-icon.del:hover {
+    background: #fee2e2;
+    border-color: #ef4444;
+    color: #991b1b;
+    transform: scale(1.05);
+  }
+
+  .btn-cell-add {
+    width: 100%;
+    margin-top: 6px;
+    padding: 6px 10px;
+    font-size: 11.5px;
+    font-weight: 700;
+    border: 1px dashed #94a3b8;
+    border-radius: 6px;
+    background: #f8fafc;
+    color: #475569;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    transition: all 0.15s;
+  }
+  .btn-cell-add:hover {
+    background: #eff6ff;
+    border-color: #2563eb;
+    color: #2563eb;
+    box-shadow: 0 2px 6px rgba(37,99,235,0.12);
+    border-style: solid;
+  }
+
   .sc-mid {
     font-size: 12px;
     color: var(--text-sub);
@@ -383,21 +463,6 @@
   .tag-h1 { color: #16a34a; }
   .tag-h2 { color: #d97706; }
   .tag-empty { color: #94a3b8; font-weight: 500; }
-
-  .edit-hover-icon {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    font-size: 11px;
-    background: rgba(15,23,42,0.06);
-    padding: 2px 5px;
-    border-radius: 3px;
-    opacity: 0;
-    transition: opacity 0.15s;
-  }
-  .slot-card:hover .edit-hover-icon {
-    opacity: 1;
-  }
 
   /* Footer Explanation Cards */
   .footer-notes {
@@ -595,7 +660,7 @@
       box-shadow: none;
       max-width: 100%;
     }
-    .header-actions, .control-toolbar, .edit-hover-icon, .modal-overlay, .toast {
+    .header-actions, .control-toolbar, .edit-hover-icon, .modal-overlay, .toast, .btn-cell-add, .card-btn-group, .btn-card-icon {
       display: none !important;
     }
     .header-banner {
@@ -634,7 +699,7 @@
       </h1>
       <p>
         <strong>四大固定時段✕五大期別落點可視化調配系統：</strong>
-        已完整整合 Notion 師資庫（包含合作中及培訓期共 255 位名師、最新增設<strong>《AI室內設計實務班》林延君團隊</strong>）。支援自選課程、師資智能對應推薦、即時防撞檢核、目標人數調整與一鍵列印/匯出 PDF 報告。
+        已完整整合 Notion 師資庫（255 位在任名師、<strong>《AI室內設計實務班》林延君團隊</strong>）。每個時段欄位均支援<strong>「➕ 新增課程」</strong>與每門課<strong>「🗑️ 刪除課程」</strong>，並提供師資專長智慧推薦與一鍵列印/匯出 PDF 報告。
       </p>
     </div>
     <div class="header-actions">
@@ -662,7 +727,7 @@
       </button>
     </div>
     <div class="tools-group">
-      <span class="tool-tag">💡 點選任一格子可直接更改「課程名稱」、「時段」與「主力師資」</span>
+      <span class="tool-tag">💡 點選欄位「➕ 新增課程」可隨時加開班級；點選卡片「🗑️」或「✏️」可直接刪除或設定課程</span>
     </div>
   </div>
 
@@ -693,7 +758,7 @@
       <ul class="note-list" id="notesListRight">
         <li><span class="check-icon">☑</span> <div><strong>固定上課時段：</strong>平日一三(18:30-21:30)、二四(18:30-21:30)。</div></li>
         <li><span class="check-icon">☑</span> <div><strong>週末固定時段：</strong>六(14-17 / 18-21 休一小)、日(10-13 / 14-17 休一小)。</div></li>
-        <li><span class="check-icon">☑</span> <div><strong>師資全庫對齊：</strong>255 位合作中/培訓期師資全數就位，支援專長科目智慧聯動。</div></li>
+        <li><span class="check-icon">☑</span> <div><strong>自主彈性規劃：</strong>每個欄位皆可隨時「➕ 新增課程」或「🗑️ 刪除課程」，調整即時存檔。</div></li>
         <li><span class="check-icon">☑</span> <div><strong>落實產品部規範：</strong>6 成大排定案 ＋ 4 成彈性保留池，直攻未消耗庫存。</div></li>
       </ul>
     </div>
@@ -800,8 +865,11 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn-action secondary" style="color: #dc2626; border-color: #fca5a5;" onclick="clearSlotToEmpty()">🗑️ 設為空檔</button>
-        <div style="display: flex; gap: 8px;">
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn-action secondary" style="color: #dc2626; border-color: #fca5a5; background: #fff5f5;" onclick="deleteCurrentSlot()">🗑️ 刪除此課程</button>
+          <button type="button" class="btn-action secondary" style="color: #64748b;" onclick="clearSlotToEmpty()">⚪ 設為空檔保留</button>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
           <button type="button" class="btn-action secondary" onclick="closeModal()">取消</button>
           <button type="submit" class="btn-action green">確認套用落點</button>
         </div>
@@ -822,6 +890,8 @@ const PRESET_DATA = {"anime": [{"slotId": "anime_r1_c1", "category": "anime", "t
 let currentCategory = 'anime';
 let slotState = loadSlotsFromStorage() || JSON.parse(JSON.stringify(PRESET_DATA));
 
+let isCreatingNewSlot = false;
+
 const timeSlots = [
   { id: "一三", label: "一三", hours: "18:30-21:30" },
   { id: "二四", label: "二四", hours: "18:30-21:30" },
@@ -841,6 +911,28 @@ function init() {
   populateCourseDropdown();
   renderMatrix();
   renderFooterNotes();
+}
+
+function loadSlotsFromStorage() {
+  try {
+    const saved = localStorage.getItem("date_schedule_slots_custom");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (!parsed.interior && PRESET_DATA.interior) {
+        parsed.interior = JSON.parse(JSON.stringify(PRESET_DATA.interior));
+      }
+      if (!parsed.anime && PRESET_DATA.anime) {
+        parsed.anime = JSON.parse(JSON.stringify(PRESET_DATA.anime));
+      }
+      if (!parsed.design && PRESET_DATA.design) {
+        parsed.design = JSON.parse(JSON.stringify(PRESET_DATA.design));
+      }
+      return parsed;
+    }
+  } catch (e) {
+    console.warn("Storage load error", e);
+  }
+  return null;
 }
 
 function populateCourseDropdown() {
@@ -880,10 +972,8 @@ function getMatchedTeachersForCourse(courseName) {
     return [];
   }
   
-  const cLower = courseName.toLowerCase();
   const allTeachers = PRESET_DATA.teachers || [];
   
-  // Specific course matches
   if (courseName.includes("AI室內設計") || courseName.includes("林延君")) {
     return allTeachers.filter(t => t.name === "林延君團隊" || (t.categories && t.categories.includes("室內設計")));
   }
@@ -967,9 +1057,7 @@ function populateTeachersDropdown(courseName, currentTeacherName, filterKeyword 
   const allTeachers = PRESET_DATA.teachers || [];
   const keyword = filterKeyword.trim().toLowerCase();
 
-  // 1. Get matched teachers for course
   const matchedTeachers = getMatchedTeachersForCourse(courseName);
-  const matchedNames = new Set(matchedTeachers.map(t => t.name));
 
   const hintEl = document.getElementById("matchedTeacherCountHint");
   if (hintEl) {
@@ -981,14 +1069,12 @@ function populateTeachersDropdown(courseName, currentTeacherName, filterKeyword 
     }
   }
 
-  // Helper to format teacher label
   function formatTeacherLabel(t) {
     const catStr = (t.categories && t.categories.length > 0) ? t.categories.join('/') : '綜合';
     const subStr = (t.subjects && t.subjects.length > 0) ? t.subjects.slice(0, 3).join('·') : '';
     return subStr ? `${t.name} (${catStr} ｜ 專長: ${subStr})` : `${t.name} (${catStr})`;
   }
 
-  // Helper to filter
   function teacherMatchesKeyword(t) {
     if (!keyword) return true;
     const nameMatch = t.name.toLowerCase().includes(keyword);
@@ -1117,14 +1203,13 @@ function renderMatrix() {
   let list = [];
 
   if (currentCategory === 'anime') {
-    list = slotState.anime;
+    list = slotState.anime || [];
   } else if (currentCategory === 'design') {
-    list = slotState.design;
+    list = slotState.design || [];
   } else if (currentCategory === 'interior') {
-    list = slotState.interior;
+    list = slotState.interior || [];
   } else {
-    // Combine all
-    list = [...slotState.anime, ...slotState.design, ...slotState.interior];
+    list = [...(slotState.anime || []), ...(slotState.design || []), ...(slotState.interior || [])];
   }
 
   let html = `
@@ -1162,6 +1247,9 @@ function renderMatrix() {
       const slotMatches = list.filter(item => item.timeRow === ts.id && item.quarter === q.id);
 
       html += `<td>`;
+      html += `<div class="slot-cell-container">`;
+      html += `<div class="slot-cards-list">`;
+
       if (slotMatches.length === 0) {
         html += `
           <div class="slot-card is-empty" onclick="openCreateModal('${ts.id}', '${q.id}')">
@@ -1180,16 +1268,24 @@ function renderMatrix() {
                   <strong>[ 保有空檔 ]</strong><br>
                   <span style="font-size:11px;">${slot.typeText || '留加開 / 4成保留'}</span>
                 </div>
-                <span class="edit-hover-icon">✏️ 設定</span>
+                <div class="card-btn-group" onclick="event.stopPropagation()">
+                  <button type="button" class="btn-card-icon edit" title="設定此空檔" onclick="event.stopPropagation(); openEditModal('${slot.slotId}')">✏️ 設定</button>
+                  <button type="button" class="btn-card-icon del" title="刪除此空檔" onclick="event.stopPropagation(); deleteSlotDirectly('${slot.slotId}')">🗑️ 刪除</button>
+                </div>
               </div>
             `;
           } else {
             html += `
               <div class="slot-card" onclick="openEditModal('${slot.slotId}')">
-                <span class="edit-hover-icon">✏️ 調整</span>
                 <div class="sc-top">
-                  ${slot.badge ? `<span class="badge-level ${slot.badgeClass}">${slot.badgeText || slot.badge}</span>` : ''}
-                  <span class="course-name">${slot.name}</span>
+                  <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; flex: 1; padding-right: 4px;">
+                    ${slot.badge ? `<span class="badge-level ${slot.badgeClass}">${slot.badgeText || slot.badge}</span>` : ''}
+                    <span class="course-name">${slot.name}</span>
+                  </div>
+                  <div class="card-btn-group" onclick="event.stopPropagation()">
+                    <button type="button" class="btn-card-icon edit" title="編輯設定此課程" onclick="event.stopPropagation(); openEditModal('${slot.slotId}')">✏️</button>
+                    <button type="button" class="btn-card-icon del" title="刪除此課程" onclick="event.stopPropagation(); deleteSlotDirectly('${slot.slotId}')">🗑️</button>
+                  </div>
                 </div>
                 <div class="sc-mid">
                   ${slot.teacher ? `<span class="teacher-name">師資: ${slot.teacher}</span>` : ''}
@@ -1203,6 +1299,17 @@ function renderMatrix() {
           }
         });
       }
+
+      html += `</div>`; // .slot-cards-list
+
+      // Cell Add Button
+      html += `
+        <button type="button" class="btn-cell-add" title="在此欄位新增一班" onclick="openCreateModal('${ts.id}', '${q.id}')">
+          <span>➕</span> 新增課程
+        </button>
+      `;
+
+      html += `</div>`; // .slot-cell-container
       html += `</td>`;
     });
 
@@ -1259,6 +1366,44 @@ function findSlotById(id) {
   return null;
 }
 
+function removeSlotFromState(slotId) {
+  for (const cat of ['anime', 'design', 'interior']) {
+    if (slotState[cat]) {
+      const idx = slotState[cat].findIndex(s => s.slotId === slotId);
+      if (idx !== -1) {
+        slotState[cat].splice(idx, 1);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function deleteSlotDirectly(slotId) {
+  const slot = findSlotById(slotId);
+  if (!slot) return;
+  const slotName = slot.name && slot.name !== '[ 保有空檔 ]' ? slot.name : "此空檔卡片";
+  if (confirm(`確定要刪除「${slotName}」嗎？\n刪除後此課程將從該時段落點中移除。`)) {
+    removeSlotFromState(slotId);
+    saveSlotsToStorage();
+    renderMatrix();
+    showToast(`🗑️ 已成功刪除「${slotName}」！`);
+  }
+}
+
+function deleteCurrentSlot() {
+  if (!activeEditingSlot) return;
+  const slotName = activeEditingSlot.name && activeEditingSlot.name !== '[ 保有空檔 ]' ? activeEditingSlot.name : "此課程";
+  if (confirm(`確定要刪除「${slotName}」嗎？\n刪除後此課程將從該時段落點中移除。`)) {
+    removeSlotFromState(activeEditingSlot.slotId);
+    isCreatingNewSlot = false;
+    saveSlotsToStorage();
+    closeModal();
+    renderMatrix();
+    showToast(`🗑️ 已成功刪除「${slotName}」！`);
+  }
+}
+
 function openEditModal(slotId) {
   const slot = findSlotById(slotId);
   if (!slot) return;
@@ -1274,7 +1419,6 @@ function openEditModal(slotId) {
   const selCourse = document.getElementById("selectCourse");
   const customCourse = document.getElementById("inputCustomCourse");
   
-  // Check if course exists in preset courses
   let courseFound = false;
   for (let i = 0; i < selCourse.options.length; i++) {
     if (selCourse.options[i].value === slot.name) {
@@ -1331,13 +1475,17 @@ function openEditModal(slotId) {
   else selType.value = "tag-empty|留加開 / 4成保留";
 
   // Note
-  document.getElementById("inputNote").value = slot.typeText ? slot.typeText.replace(/^[●▲]\s*(H[12]\s*大排定案|H[12]\s*保留池)\s*\(/, '').replace(/\)$/, '') : "";
+  const rawNote = slot.typeText || "";
+  document.getElementById("inputNote").value = rawNote ? rawNote.replace(/^[●▲]\s*(H[12]\s*大排定案|H[12]\s*保留池)\s*\(/, '').replace(/\)$/, '') : "";
 
   document.getElementById("slotModal").classList.add("active");
 }
 
 function openCreateModal(timeRow, quarter) {
-  const cat = (currentCategory === 'interior') ? 'interior' : (currentCategory === 'design' ? 'design' : 'anime');
+  let cat = currentCategory;
+  if (cat === 'all') {
+    cat = 'interior';
+  }
   const newId = cat + '_' + timeRow + '_' + quarter + '_' + Date.now();
   
   let defaultCourse = (cat === 'interior') ? "AI室內設計實務班" : ((cat === 'design') ? "商用視覺平面設計" : "數位漫畫班");
@@ -1363,6 +1511,7 @@ function openCreateModal(timeRow, quarter) {
 
   if (!slotState[cat]) slotState[cat] = [];
   slotState[cat].push(newSlot);
+  isCreatingNewSlot = true;
 
   openEditModal(newId);
 }
@@ -1378,14 +1527,20 @@ function onCourseSelectChange(sel) {
     custom.style.display = "none";
   }
 
-  // Automatically update teacher dropdown with recommended teachers for this course!
   const matched = getMatchedTeachersForCourse(courseName);
   let defaultTeacher = matched.length > 0 ? matched[0].name : "";
   populateTeachersDropdown(courseName, defaultTeacher, document.getElementById("teacherSearchInput").value);
 }
 
 function closeModal() {
+  if (isCreatingNewSlot && activeEditingSlot) {
+    // If canceled without saving new slot, discard it
+    removeSlotFromState(activeEditingSlot.slotId);
+    isCreatingNewSlot = false;
+    renderMatrix();
+  }
   document.getElementById("slotModal").classList.remove("active");
+  activeEditingSlot = null;
 }
 
 function closeModalOnOverlay(e) {
@@ -1422,9 +1577,11 @@ function saveSlotForm(e) {
   activeEditingSlot.typeTag = tTag;
   activeEditingSlot.typeText = note ? `${tPrefix} (${note})` : tPrefix;
 
+  isCreatingNewSlot = false;
+  saveSlotsToStorage();
   closeModal();
   renderMatrix();
-  showToast("✅ 排課落點已更新！");
+  showToast("✅ 排課落點已更新並自動存檔！");
 }
 
 function clearSlotToEmpty() {
@@ -1439,6 +1596,8 @@ function clearSlotToEmpty() {
   activeEditingSlot.typeTag = "tag-empty";
   activeEditingSlot.typeText = "留加開 / 趨勢 / 4成保留";
 
+  isCreatingNewSlot = false;
+  saveSlotsToStorage();
   closeModal();
   renderMatrix();
   showToast("🗑️ 該落點已設為空檔保留！");
@@ -1452,28 +1611,6 @@ function saveSlotsToStorage() {
     console.warn("Storage error", e);
     showToast("⚠️ 儲存提醒：請確認瀏覽器儲存權限");
   }
-}
-
-function loadSlotsFromStorage() {
-  try {
-    const saved = localStorage.getItem("date_schedule_slots_custom");
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (!parsed.interior && PRESET_DATA.interior) {
-        parsed.interior = JSON.parse(JSON.stringify(PRESET_DATA.interior));
-      }
-      if (!parsed.anime && PRESET_DATA.anime) {
-        parsed.anime = JSON.parse(JSON.stringify(PRESET_DATA.anime));
-      }
-      if (!parsed.design && PRESET_DATA.design) {
-        parsed.design = JSON.parse(JSON.stringify(PRESET_DATA.design));
-      }
-      return parsed;
-    }
-  } catch (e) {
-    console.warn("Storage load error", e);
-  }
-  return null;
 }
 
 function resetToPreset() {
