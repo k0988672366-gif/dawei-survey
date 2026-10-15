@@ -751,7 +751,10 @@ html_template = """<!DOCTYPE html>
   <!-- Control toolbar -->
   <div class="control-toolbar">
     <div class="tab-group">
-      <button class="tab-pill active" id="pill-anime" onclick="switchCategory('anime')">
+      <button class="tab-pill active" id="pill-all" onclick="switchCategory('all')">
+        🌐【全學系排課落點綜合檢視】
+      </button>
+      <button class="tab-pill" id="pill-anime" onclick="switchCategory('anime')">
         🎨【動漫、電繪與 Vtuber 生態鏈】怎麼排課
       </button>
       <button class="tab-pill" id="pill-design" onclick="switchCategory('design')">
@@ -759,9 +762,6 @@ html_template = """<!DOCTYPE html>
       </button>
       <button class="tab-pill" id="pill-interior" onclick="switchCategory('interior')">
         🏛️【空間建築與 AI 室內設計】怎麼排課
-      </button>
-      <button class="tab-pill" id="pill-all" onclick="switchCategory('all')">
-        🌐【全學系排課落點綜合檢視】
       </button>
     </div>
     <div class="tools-group">
@@ -773,8 +773,8 @@ html_template = """<!DOCTYPE html>
   <div class="section-intro">
     <div class="intro-sub">05 / 排課邏輯實務示範</div>
     <div class="intro-main">
-      <span id="currentCategoryTitle">落點示範：DATE 線上直播【動漫、電繪與 Vtuber 生態鏈】怎麼排課</span>
-      <span style="font-size: 13px; font-weight: 600; color: #64748b;" id="currentStats">全年度 14 班部署 ｜ 100% 符合產品部規範</span>
+      <span id="currentCategoryTitle">落點示範：DATE 線上直播【全學系排課落點綜合檢視總表】</span>
+      <span style="font-size: 13px; font-weight: 600; color: #64748b;" id="currentStats">全學門大排定案 ＋ 彈性保留全覽 ｜ 固定時段零衝突</span>
     </div>
   </div>
 
@@ -927,7 +927,7 @@ html_template = """<!DOCTYPE html>
 const PRESET_DATA = __PRESET_JSON_PLACEHOLDER__;
 
 // Active state
-let currentCategory = 'anime';
+let currentCategory = 'all';
 let slotState = loadSlotsFromStorage() || JSON.parse(JSON.stringify(PRESET_DATA));
 
 let isCreatingNewSlot = false;
