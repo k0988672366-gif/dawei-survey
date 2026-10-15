@@ -382,6 +382,30 @@ html_template = """<!DOCTYPE html>
   .badge-c { background: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; }
   .badge-ocean { background: #cffafe; color: #0e7490; border: 1px solid #a5f3fc; }
 
+  /* Time slot badges for distinguishing 一三 vs 一三五 */
+  .badge-timeslot {
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1.2;
+    letter-spacing: 0.2px;
+  }
+  .badge-timeslot.badge-135 {
+    background: #ede9fe;
+    color: #6d28d9;
+    border: 1px solid #c4b5fd;
+    box-shadow: 0 1px 2px rgba(109,40,217,0.1);
+  }
+  .badge-timeslot.badge-13 {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+  }
+
   .course-name {
     font-size: 13.5px;
     font-weight: 800;
@@ -770,7 +794,7 @@ html_template = """<!DOCTYPE html>
     <div class="note-box">
       <h3>☑ 數據對齊指標（四維交叉驗證結果）</h3>
       <ul class="note-list" id="notesListRight">
-        <li><span class="check-icon">☑</span> <div><strong>固定上課時段：</strong>平日一三(18:30-21:30)、二四(18:30-21:30)、一三五(18:30 平日晚)。</div></li>
+        <li><span class="check-icon">☑</span> <div><strong>固定上課時段：</strong>平日一三/一三五(18:30-21:30 合併統整標示)、二四(18:30-21:30)。</div></li>
         <li><span class="check-icon">☑</span> <div><strong>週末固定時段：</strong>六(14-17 / 18-21 休一小)、日(10-13 / 14-17 休一小)。</div></li>
         <li><span class="check-icon">☑</span> <div><strong>自主彈性規劃：</strong>每個欄位皆可隨時「➕ 新增課程」或「🗑️ 刪除課程」，調整即時存檔。</div></li>
         <li><span class="check-icon">☑</span> <div><strong>落實產品部規範：</strong>6 成大排定案 ＋ 4 成彈性保留池，直攻未消耗庫存。</div></li>
@@ -804,8 +828,8 @@ html_template = """<!DOCTYPE html>
           <label>固定排課時段</label>
           <select id="selectTime">
             <option value="一三">一三 18:30-21:30 (平日晚)</option>
+            <option value="一三五">一三五 18:30 (平日晚・3天班)</option>
             <option value="二四">二四 18:30-21:30 (平日晚)</option>
-            <option value="一三五">一三五 18:30 (平日晚)</option>
             <option value="六">週六 14:00-17:00 (休一小) 18:00-21:00 (6h)</option>
             <option value="日">週日 10:00-13:00 (休一小) 14:00-17:00 (6h)</option>
           </select>
@@ -870,7 +894,7 @@ html_template = """<!DOCTYPE html>
             <option value="tag-green|● 進行中">綠色（進行中）</option>
             <option value="tag-orange|▲ 預排">橙色（預排）</option>
             <option value="tag-red|✖ 無法安排">紅色（無法安排）</option>
-            <option value="tag-empty|留加開">[ 保有空檔 ] 留加開</option>
+            <option value="tag-empty|保留">灰色（保留）</option>
           </select>
         </div>
 
@@ -909,9 +933,8 @@ let slotState = loadSlotsFromStorage() || JSON.parse(JSON.stringify(PRESET_DATA)
 let isCreatingNewSlot = false;
 
 const timeSlots = [
-  { id: "一三", label: "一三", hours: "18:30-21:30" },
-  { id: "二四", label: "二四", hours: "18:30-21:30" },
-  { id: "一三五", label: "一三五", hours: "18:30 (平日晚)" },
+  { id: "一三", label: "一三 / 一三五", hours: "18:30-21:30 (平日晚)", matchRows: ["一三", "一三五"] },
+  { id: "二四", label: "二四", hours: "18:30-21:30 (平日晚)" },
   { id: "六", label: "六", hours: "14-17 / 18-21 (6h)" },
   { id: "日", label: "日", hours: "10-13 / 14-17 (6h)" }
 ];
@@ -924,7 +947,63 @@ const quarters = [
   { id: "2027_q4", label: "2027 第 4 期", sub: "10-12月", isPast: false }
 ];
 
+function normalizeSlotStatus(slot) {
+  if (slot.isEmpty) {
+    slot.typeTag = "tag-empty";
+    slot.typeText = "保留";
+    return;
+  }
+  const tTag = slot.typeTag || "";
+  const tText = slot.typeText || "";
+
+  if (tTag === "tag-blue" || tText.includes("排定") || tTag === "tag-h1" || tText.includes("大排定案")) {
+    slot.typeTag = "tag-blue";
+    slot.typeText = "● 排定";
+  } else if (tTag === "tag-green" || tText.includes("進行中") || tTag === "tag-past" || tText.includes("實績")) {
+    slot.typeTag = "tag-green";
+    slot.typeText = "● 進行中";
+  } else if (tTag === "tag-orange" || tText.includes("預排") || tTag === "tag-h2" || tText.includes("保留池")) {
+    slot.typeTag = "tag-orange";
+    slot.typeText = "▲ 預排";
+  } else if (tTag === "tag-red" || tText.includes("無法安排")) {
+    slot.typeTag = "tag-red";
+    slot.typeText = "✖ 無法安排";
+  } else if (tTag === "tag-empty" || tText.includes("留加開") || tText.includes("保留")) {
+    slot.typeTag = "tag-empty";
+    slot.typeText = "保留";
+  } else {
+    slot.typeTag = "tag-blue";
+    slot.typeText = "● 排定";
+  }
+
+  // Ensure clean date
+  const qDates = {
+    "2026_q4": "2026-12-31",
+    "2027_q1": "2027-03-31",
+    "2027_q2": "2027-06-30",
+    "2027_q3": "2027-09-30",
+    "2027_q4": "2027-12-31"
+  };
+  if (!slot.endDate) {
+    if (slot.count && /^結業:\\s*\\d{4}-\\d{2}-\\d{2}/.test(slot.count)) {
+      slot.endDate = slot.count.replace(/^結業:\\s*/, '').trim();
+    } else {
+      slot.endDate = qDates[slot.quarter] || "2027-03-31";
+    }
+  }
+  slot.count = `結業: ${slot.endDate}`;
+}
+
+function normalizeAllSlots() {
+  for (const cat of ['anime', 'design', 'interior']) {
+    if (slotState[cat]) {
+      slotState[cat].forEach(s => normalizeSlotStatus(s));
+    }
+  }
+}
+
 function init() {
+  normalizeAllSlots();
   populateCourseDropdown();
   renderMatrix();
   renderFooterNotes();
@@ -1261,7 +1340,12 @@ function renderMatrix() {
     `;
 
     quarters.forEach(q => {
-      const slotMatches = list.filter(item => item.timeRow === ts.id && item.quarter === q.id);
+      const slotMatches = list.filter(item => {
+        if (ts.matchRows) {
+          return ts.matchRows.includes(item.timeRow) && item.quarter === q.id;
+        }
+        return item.timeRow === ts.id && item.quarter === q.id;
+      });
 
       html += `<td>`;
       html += `<div class="slot-cell-container">`;
@@ -1279,11 +1363,19 @@ function renderMatrix() {
       } else {
         slotMatches.forEach(slot => {
           if (slot.isEmpty) {
+            let emptyTimeBadge = "";
+            if (slot.timeRow === '一三五') {
+              emptyTimeBadge = `<span class="badge-timeslot badge-135" style="margin-bottom:4px;">一三五 (3天)</span><br>`;
+            } else if (slot.timeRow === '一三') {
+              emptyTimeBadge = `<span class="badge-timeslot badge-13" style="margin-bottom:4px;">一三</span><br>`;
+            }
+
             html += `
               <div class="slot-card is-empty" onclick="openEditModal('${slot.slotId}')">
                 <div class="empty-label">
+                  ${emptyTimeBadge}
                   <strong>[ 保有空檔 ]</strong><br>
-                  <span style="font-size:11px;">${slot.typeText || '留加開 / 4成保留'}</span>
+                  <span style="font-size:11px;">${slot.typeText || '保留'}</span>
                 </div>
                 <div class="card-btn-group" onclick="event.stopPropagation()">
                   <button type="button" class="btn-card-icon edit" title="設定此空檔" onclick="event.stopPropagation(); openEditModal('${slot.slotId}')">✏️ 設定</button>
@@ -1304,11 +1396,20 @@ function renderMatrix() {
               dateDisplay = ` (${slot.count})`;
             }
 
+            // Time badge to distinguish 一三 vs 一三五
+            let timeBadgeHtml = "";
+            if (slot.timeRow === '一三五') {
+              timeBadgeHtml = `<span class="badge-timeslot badge-135" title="每週三晚班">一三五 (3天)</span>`;
+            } else if (slot.timeRow === '一三') {
+              timeBadgeHtml = `<span class="badge-timeslot badge-13" title="每週雙晚班">一三</span>`;
+            }
+
             html += `
               <div class="slot-card" onclick="openEditModal('${slot.slotId}')">
                 <div class="sc-top">
-                  <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; flex: 1; padding-right: 4px;">
+                  <div style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap; flex: 1; padding-right: 4px;">
                     ${slot.badge ? `<span class="badge-level ${slot.badgeClass}">${slot.badgeText || slot.badge}</span>` : ''}
+                    ${timeBadgeHtml}
                     <span class="course-name">${slot.name}</span>
                   </div>
                   <div class="card-btn-group" onclick="event.stopPropagation()">
@@ -1357,7 +1458,7 @@ function renderFooterNotes() {
   const notesLeft = document.getElementById("notesListLeft");
   if (currentCategory === 'anime') {
     notesLeft.innerHTML = `
-      <li><span class="bullet-icon">•</span> <div><strong>固定時段嚴格對齊：</strong>一三(18:30-21:30)、二四(18:30-21:30)、一三五(18:30)、六(14-17 / 18-21)、日(10-13 / 14-17)。</div></li>
+      <li><span class="bullet-icon">•</span> <div><strong>固定時段嚴格對齊：</strong>平日一三/一三五(18:30-21:30 合併統整標示)、二四(18:30-21:30)、六(14-17 / 18-21)、日(10-13 / 14-17)。</div></li>
       <li><span class="bullet-icon">•</span> <div><strong>觀察 2026 Q4 銜接到 2027：</strong>曾建華漫畫班於 Q1 寒假強力回補，終結 231 筆補課民怨！</div></li>
       <li><span class="bullet-icon">•</span> <div><strong>黃俊傑 Vtuber 生態鏈：</strong>（A攻略 ➔ B立繪 ➔ C動畫）全年度運行兩大完整梯隊，完課率超群！</div></li>
       <li><span class="bullet-icon">•</span> <div><strong>柯光曜老師精準佈局：</strong>於 Q2 精準開出《IP角色人物創作》，一口氣清空 163 人完全未登記幽靈庫存！</div></li>
@@ -1531,15 +1632,14 @@ function openEditModal(slotId) {
     selType.value = "tag-blue|● 排定";
   } else if (tTag === "tag-past") {
     selType.value = "tag-green|● 進行中";
-  } else if (slot.isEmpty || tTag === "tag-empty") {
-    selType.value = "tag-empty|留加開";
+  } else if (slot.isEmpty || tTag === "tag-empty" || tText.includes("保留") || tText.includes("留加開")) {
+    selType.value = "tag-empty|保留";
   } else {
     selType.value = "tag-blue|● 排定";
   }
 
   // Note
-  const rawNote = slot.typeText || "";
-  document.getElementById("inputNote").value = rawNote ? rawNote.replace(/^[●▲✖]\\s*(排定|進行中|預排|無法安排|H[12]\\s*大排定案|H[12]\\s*保留池|\\d{4}\\s*實績)\\s*\\(/, '').replace(/\\)$/, '') : "";
+  document.getElementById("inputNote").value = slot.note || "";
 
   document.getElementById("slotModal").classList.add("active");
 }
@@ -1636,6 +1736,11 @@ function saveSlotForm(e) {
   activeEditingSlot.name = courseName || "[ 保有空檔 ]";
   activeEditingSlot.isEmpty = (courseName === "[ 保有空檔 ]" || tTag === "tag-empty");
   activeEditingSlot.timeRow = timeRow;
+  if (timeRow === '一三') activeEditingSlot.timeStr = '一三 18:30-21:30';
+  else if (timeRow === '一三五') activeEditingSlot.timeStr = '一三五 18:30 (平日晚)';
+  else if (timeRow === '二四') activeEditingSlot.timeStr = '二四 18:30-21:30';
+  else if (timeRow === '六') activeEditingSlot.timeStr = '六 14-17 / 18-21 (6h)';
+  else if (timeRow === '日') activeEditingSlot.timeStr = '日 10-13 / 14-17 (6h)';
   activeEditingSlot.quarter = quarter;
   activeEditingSlot.teacher = teacherName;
   activeEditingSlot.endDate = endDate;
@@ -1644,7 +1749,8 @@ function saveSlotForm(e) {
   activeEditingSlot.badgeClass = bClass;
   activeEditingSlot.badgeText = bText;
   activeEditingSlot.typeTag = tTag;
-  activeEditingSlot.typeText = note ? `${tPrefix} (${note})` : tPrefix;
+  activeEditingSlot.typeText = tPrefix;
+  activeEditingSlot.note = note;
 
   isCreatingNewSlot = false;
   saveSlotsToStorage();
@@ -1664,7 +1770,8 @@ function clearSlotToEmpty() {
   activeEditingSlot.badgeClass = "";
   activeEditingSlot.badgeText = "";
   activeEditingSlot.typeTag = "tag-empty";
-  activeEditingSlot.typeText = "留加開 / 4成保留";
+  activeEditingSlot.typeText = "保留";
+  activeEditingSlot.note = "";
 
   isCreatingNewSlot = false;
   saveSlotsToStorage();

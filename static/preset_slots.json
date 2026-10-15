@@ -12,10 +12,11 @@
       "badgeClass": "badge-a",
       "name": "數位漫畫班",
       "teacher": "曾建華",
-      "count": "71 人",
-      "typeTag": "tag-past",
-      "typeText": "2026 實績 (嚴重赤字)",
-      "isEmpty": false
+      "count": "結業: 2026-12-31",
+      "typeTag": "tag-green",
+      "typeText": "● 進行中",
+      "isEmpty": false,
+      "endDate": "2026-12-31"
     },
     {
       "slotId": "anime_r1_c2",
@@ -29,10 +30,11 @@
       "badgeClass": "badge-a",
       "name": "數位漫畫班·寒假",
       "teacher": "曾建華",
-      "count": "目標 130 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (強勢回補)",
-      "isEmpty": false
+      "count": "結業: 2027-03-31",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-03-31"
     },
     {
       "slotId": "anime_r1_c3",
@@ -48,8 +50,9 @@
       "teacher": "",
       "count": "",
       "typeTag": "tag-empty",
-      "typeText": "留加開 / 趨勢 / 4成保留",
-      "isEmpty": true
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "anime_r1_c4",
@@ -63,10 +66,11 @@
       "badgeClass": "badge-a",
       "name": "數位漫畫班·暑期",
       "teacher": "曾建華",
-      "count": "目標 120 人",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (暑期溢流)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "anime_r1_c5",
@@ -82,8 +86,9 @@
       "teacher": "",
       "count": "",
       "typeTag": "tag-empty",
-      "typeText": "留加開 / 趨勢 / 4成保留",
-      "isEmpty": true
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "anime_r2_c1",
@@ -97,10 +102,11 @@
       "badgeClass": "badge-b",
       "name": "Live2D 動畫製作",
       "teacher": "黃俊傑",
-      "count": "140 人",
-      "typeTag": "tag-past",
-      "typeText": "2026 實績 (完課率之王)",
-      "isEmpty": false
+      "count": "結業: 2026-12-31",
+      "typeTag": "tag-green",
+      "typeText": "● 進行中",
+      "isEmpty": false,
+      "endDate": "2026-12-31"
     },
     {
       "slotId": "anime_r2_c2",
@@ -114,10 +120,11 @@
       "badgeClass": "badge-a",
       "name": "數位繪畫班",
       "teacher": "柯光曜",
-      "count": "目標 110 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (吸納補課)",
-      "isEmpty": false
+      "count": "結業: 2027-03-31",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-03-31"
     },
     {
       "slotId": "anime_r2_c3",
@@ -131,10 +138,11 @@
       "badgeClass": "badge-b",
       "name": "IP 角色人物創作",
       "teacher": "柯光曜",
-      "count": "目標 95 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (幽靈庫存)",
-      "isEmpty": false
+      "count": "結業: 2027-06-30",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-06-30"
     },
     {
       "slotId": "anime_r2_c4",
@@ -148,10 +156,11 @@
       "badgeClass": "badge-a",
       "name": "數位繪畫班·暑期",
       "teacher": "柯光曜",
-      "count": "目標 110 人",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (電繪高峰)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "anime_r2_c5",
@@ -165,10 +174,11 @@
       "badgeClass": "badge-b",
       "name": "IP 角色人物創作",
       "teacher": "柯光曜",
-      "count": "目標 95 人",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (第二梯隊)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "anime_r3_c1",
@@ -182,10 +192,11 @@
       "badgeClass": "badge-b",
       "name": "V 皮角色繪製",
       "teacher": "黃俊傑",
-      "count": "141 人",
-      "typeTag": "tag-past",
-      "typeText": "2026 實績 (超高產能)",
-      "isEmpty": false
+      "count": "結業: 2026-12-31",
+      "typeTag": "tag-green",
+      "typeText": "● 進行中",
+      "isEmpty": false,
+      "endDate": "2026-12-31"
     },
     {
       "slotId": "anime_r3_c2",
@@ -199,10 +210,11 @@
       "badgeClass": "badge-a",
       "name": "Vtuber 創作全攻略",
       "teacher": "黃俊傑",
-      "count": "目標 130 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (王牌引流)",
-      "isEmpty": false
+      "count": "結業: 2027-03-31",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-03-31"
     },
     {
       "slotId": "anime_r3_c3",
@@ -216,10 +228,11 @@
       "badgeClass": "badge-b",
       "name": "V皮繪製 + Live2D",
       "teacher": "黃俊傑",
-      "count": "雙時段連開",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (B+C閉環)",
-      "isEmpty": false
+      "count": "結業: 2027-06-30",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-06-30"
     },
     {
       "slotId": "anime_r3_c4",
@@ -233,10 +246,11 @@
       "badgeClass": "badge-a",
       "name": "Vtuber 全攻略 (二梯)",
       "teacher": "黃俊傑",
-      "count": "目標 130 人",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (第二梯引流)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "anime_r3_c5",
@@ -250,10 +264,11 @@
       "badgeClass": "badge-b",
       "name": "V皮繪製 + Live2D",
       "teacher": "黃俊傑",
-      "count": "雙時段連開",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (二梯收斂)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "anime_r4_c1",
@@ -267,10 +282,11 @@
       "badgeClass": "badge-a",
       "name": "數位繪畫班",
       "teacher": "柯光曜",
-      "count": "86 人",
-      "typeTag": "tag-past",
-      "typeText": "2026 實績 (穩定常青)",
-      "isEmpty": false
+      "count": "結業: 2026-12-31",
+      "typeTag": "tag-green",
+      "typeText": "● 進行中",
+      "isEmpty": false,
+      "endDate": "2026-12-31"
     },
     {
       "slotId": "anime_r4_c2",
@@ -284,10 +300,11 @@
       "badgeClass": "badge-a",
       "name": "Procreate 數位繪畫",
       "teacher": "金芸萱",
-      "count": "目標 120 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (併入故事力)",
-      "isEmpty": false
+      "count": "結業: 2027-03-31",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-03-31"
     },
     {
       "slotId": "anime_r4_c3",
@@ -301,10 +318,11 @@
       "badgeClass": "badge-a",
       "name": "數位漫畫班",
       "teacher": "曾建華",
-      "count": "目標 110 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (春季大班)",
-      "isEmpty": false
+      "count": "結業: 2027-06-30",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-06-30"
     },
     {
       "slotId": "anime_r4_c4",
@@ -318,10 +336,11 @@
       "badgeClass": "badge-b",
       "name": "數位漫畫進階班",
       "teacher": "曾建華",
-      "count": "目標 90 人",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (作品集班)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "anime_r4_c5",
@@ -335,10 +354,11 @@
       "badgeClass": "badge-a",
       "name": "Procreate 數位繪畫",
       "teacher": "金芸萱",
-      "count": "目標 110 人",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (平板電繪)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     }
   ],
   "design": [
@@ -354,10 +374,11 @@
       "badgeClass": "badge-a",
       "name": "商用視覺平面設計",
       "teacher": "王仁駿",
-      "count": "104 人",
-      "typeTag": "tag-past",
-      "typeText": "2026 實績 (第一大戶)",
-      "isEmpty": false
+      "count": "結業: 2026-12-31",
+      "typeTag": "tag-green",
+      "typeText": "● 進行中",
+      "isEmpty": false,
+      "endDate": "2026-12-31"
     },
     {
       "slotId": "design_r1_c2",
@@ -371,10 +392,11 @@
       "badgeClass": "badge-a",
       "name": "After Effects 特效",
       "teacher": "戴禎儀",
-      "count": "目標 95 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (精實20堂)",
-      "isEmpty": false
+      "count": "結業: 2027-03-31",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-03-31"
     },
     {
       "slotId": "design_r1_c3",
@@ -388,10 +410,11 @@
       "badgeClass": "badge-a",
       "name": "商用視覺平面設計",
       "teacher": "戴禎儀",
-      "count": "目標 110 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (雙師分流)",
-      "isEmpty": false
+      "count": "結業: 2027-06-30",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-06-30"
     },
     {
       "slotId": "design_r1_c4",
@@ -405,10 +428,11 @@
       "badgeClass": "badge-a",
       "name": "商用視覺平面設計",
       "teacher": "王仁駿",
-      "count": "目標 120 人",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (暑期主力)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "design_r1_c5",
@@ -422,10 +446,11 @@
       "badgeClass": "badge-b",
       "name": "商用平面設計進階",
       "teacher": "王仁駿",
-      "count": "目標 95 人",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (轉化進階)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "design_r2_c1",
@@ -439,10 +464,11 @@
       "badgeClass": "badge-a",
       "name": "遊戲設計班",
       "teacher": "葉奕志",
-      "count": "160 人",
-      "typeTag": "tag-past",
-      "typeText": "2026 實績 (翻倍成長)",
-      "isEmpty": false
+      "count": "結業: 2026-12-31",
+      "typeTag": "tag-green",
+      "typeText": "● 進行中",
+      "isEmpty": false,
+      "endDate": "2026-12-31"
     },
     {
       "slotId": "design_r2_c2",
@@ -456,10 +482,11 @@
       "badgeClass": "badge-a",
       "name": "AI 遊戲設計班",
       "teacher": "葉奕志",
-      "count": "目標 120 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (AI全面升級)",
-      "isEmpty": false
+      "count": "結業: 2027-03-31",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-03-31"
     },
     {
       "slotId": "design_r2_c3",
@@ -473,10 +500,11 @@
       "badgeClass": "badge-b",
       "name": "商用平面設計進階",
       "teacher": "王仁駿",
-      "count": "目標 100 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (完課55.4%)",
-      "isEmpty": false
+      "count": "結業: 2027-06-30",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-06-30"
     },
     {
       "slotId": "design_r2_c4",
@@ -490,10 +518,11 @@
       "badgeClass": "badge-a",
       "name": "AI 遊戲設計班·暑期",
       "teacher": "葉奕志",
-      "count": "目標 120 人",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (電競高峰)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "design_r2_c5",
@@ -507,10 +536,11 @@
       "badgeClass": "badge-a",
       "name": "After Effects 特效",
       "teacher": "戴禎儀",
-      "count": "目標 95 人",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (後製第二波)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "design_r3_c1",
@@ -524,10 +554,11 @@
       "badgeClass": "badge-a",
       "name": "After Effects 特效",
       "teacher": "戴禎儀",
-      "count": "59 人",
-      "typeTag": "tag-past",
-      "typeText": "2026 實績 (穩健)",
-      "isEmpty": false
+      "count": "結業: 2026-12-31",
+      "typeTag": "tag-green",
+      "typeText": "● 進行中",
+      "isEmpty": false,
+      "endDate": "2026-12-31"
     },
     {
       "slotId": "design_r3_c2",
@@ -541,10 +572,11 @@
       "badgeClass": "badge-a",
       "name": "UI 視覺介面設計",
       "teacher": "戴禎儀",
-      "count": "目標 80 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (精實20堂)",
-      "isEmpty": false
+      "count": "結業: 2027-03-31",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-03-31"
     },
     {
       "slotId": "design_r3_c3",
@@ -558,10 +590,11 @@
       "badgeClass": "badge-b",
       "name": "AI 品牌系統創建",
       "teacher": "戴禎儀",
-      "count": "目標 90 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (首開爆滿)",
-      "isEmpty": false
+      "count": "結業: 2027-06-30",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-06-30"
     },
     {
       "slotId": "design_r3_c4",
@@ -575,10 +608,11 @@
       "badgeClass": "badge-b",
       "name": "AI 品牌系統創建",
       "teacher": "戴禎儀",
-      "count": "目標 90 人",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (企業品牌加開)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "design_r3_c5",
@@ -594,8 +628,9 @@
       "teacher": "",
       "count": "",
       "typeTag": "tag-empty",
-      "typeText": "留加開 / 趨勢 / 4成保留",
-      "isEmpty": true
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "design_r4_c1",
@@ -609,10 +644,11 @@
       "badgeClass": "badge-b",
       "name": "AI 品牌系統創建",
       "teacher": "戴禎儀",
-      "count": "91 人",
-      "typeTag": "tag-past",
-      "typeText": "2026 實績 (爆款新課)",
-      "isEmpty": false
+      "count": "結業: 2026-12-31",
+      "typeTag": "tag-green",
+      "typeText": "● 進行中",
+      "isEmpty": false,
+      "endDate": "2026-12-31"
     },
     {
       "slotId": "design_r4_c2",
@@ -626,10 +662,11 @@
       "badgeClass": "badge-a",
       "name": "商用視覺平面設計",
       "teacher": "王仁駿",
-      "count": "目標 120 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (清空249未登)",
-      "isEmpty": false
+      "count": "結業: 2027-03-31",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-03-31"
     },
     {
       "slotId": "design_r4_c3",
@@ -643,10 +680,11 @@
       "badgeClass": "badge-ocean",
       "name": "★全 AI 音樂創作",
       "teacher": "周岳澄",
-      "count": "目標 100 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (新藍海引流)",
-      "isEmpty": false
+      "count": "結業: 2027-06-30",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-06-30"
     },
     {
       "slotId": "design_r4_c4",
@@ -660,10 +698,11 @@
       "badgeClass": "badge-ocean",
       "name": "★數位音樂製作人",
       "teacher": "周岳澄",
-      "count": "目標 100 人",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (承接全AI音樂)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "design_r4_c5",
@@ -677,10 +716,11 @@
       "badgeClass": "badge-a",
       "name": "商用視覺平面設計",
       "teacher": "戴禎儀",
-      "count": "目標 100 人",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (年末轉職潮)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     }
   ],
   "interior": [
@@ -696,10 +736,11 @@
       "badgeClass": "badge-a",
       "name": "AutoCAD 建築空間製圖",
       "teacher": "廖韶吟",
-      "count": "72 人",
-      "typeTag": "tag-past",
-      "typeText": "2026 實績 (轉型線上)",
-      "isEmpty": false
+      "count": "結業: 2026-12-31",
+      "typeTag": "tag-green",
+      "typeText": "● 進行中",
+      "isEmpty": false,
+      "endDate": "2026-12-31"
     },
     {
       "slotId": "interior_r1_c2",
@@ -713,10 +754,11 @@
       "badgeClass": "badge-a",
       "name": "AutoCAD 建築空間製圖",
       "teacher": "廖韶吟",
-      "count": "目標 90 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (吸納未修庫存)",
-      "isEmpty": false
+      "count": "結業: 2027-03-31",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-03-31"
     },
     {
       "slotId": "interior_r1_c3",
@@ -732,8 +774,9 @@
       "teacher": "",
       "count": "",
       "typeTag": "tag-empty",
-      "typeText": "留加開 / 趨勢 / 4成保留",
-      "isEmpty": true
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "interior_r1_c4",
@@ -747,10 +790,11 @@
       "badgeClass": "badge-a",
       "name": "AutoCAD 建築空間製圖",
       "teacher": "戴旭斌",
-      "count": "目標 90 人",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (暑期進修班)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "interior_r1_c5",
@@ -766,8 +810,9 @@
       "teacher": "",
       "count": "",
       "typeTag": "tag-empty",
-      "typeText": "留加開 / 趨勢 / 4成保留",
-      "isEmpty": true
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "interior_r2_c1",
@@ -781,10 +826,11 @@
       "badgeClass": "badge-a",
       "name": "SketchUp 空間建模設計",
       "teacher": "張敬鴻",
-      "count": "68 人",
-      "typeTag": "tag-past",
-      "typeText": "2026 實績 (平穩)",
-      "isEmpty": false
+      "count": "結業: 2026-12-31",
+      "typeTag": "tag-green",
+      "typeText": "● 進行中",
+      "isEmpty": false,
+      "endDate": "2026-12-31"
     },
     {
       "slotId": "interior_r2_c2",
@@ -798,10 +844,11 @@
       "badgeClass": "badge-a",
       "name": "SketchUp 空間建模設計",
       "teacher": "林宜廷",
-      "count": "目標 85 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (3D空間建置)",
-      "isEmpty": false
+      "count": "結業: 2027-03-31",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-03-31"
     },
     {
       "slotId": "interior_r2_c3",
@@ -815,10 +862,11 @@
       "badgeClass": "badge-b",
       "name": "室內設計實務專案班",
       "teacher": "楊龍威",
-      "count": "目標 80 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (工程實務銜接)",
-      "isEmpty": false
+      "count": "結業: 2027-06-30",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-06-30"
     },
     {
       "slotId": "interior_r2_c4",
@@ -832,10 +880,11 @@
       "badgeClass": "badge-a",
       "name": "SketchUp 空間建模設計",
       "teacher": "蕭博宇",
-      "count": "目標 85 人",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (建模第二梯)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "interior_r2_c5",
@@ -849,10 +898,11 @@
       "badgeClass": "badge-b",
       "name": "室內設計實務專案班",
       "teacher": "鄧昌君",
-      "count": "目標 80 人",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (成案閉環)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "interior_r3_c1",
@@ -866,10 +916,11 @@
       "badgeClass": "badge-ocean",
       "name": "AI室內設計實務班",
       "teacher": "林延君團隊",
-      "count": "試點 85 人",
-      "typeTag": "tag-past",
-      "typeText": "2026 實績 (高口碑)",
-      "isEmpty": false
+      "count": "結業: 2026-12-31",
+      "typeTag": "tag-green",
+      "typeText": "● 進行中",
+      "isEmpty": false,
+      "endDate": "2026-12-31"
     },
     {
       "slotId": "interior_r3_c2",
@@ -883,10 +934,11 @@
       "badgeClass": "badge-ocean",
       "name": "AI室內設計實務班",
       "teacher": "林延君團隊",
-      "count": "目標 100 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (🔥全新AI空間生成首開)",
-      "isEmpty": false
+      "count": "結業: 2027-03-31",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-03-31"
     },
     {
       "slotId": "interior_r3_c3",
@@ -900,10 +952,11 @@
       "badgeClass": "badge-ocean",
       "name": "AI室內設計實務班",
       "teacher": "林延君團隊",
-      "count": "目標 100 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (AI空間落地實戰)",
-      "isEmpty": false
+      "count": "結業: 2027-06-30",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-06-30"
     },
     {
       "slotId": "interior_r3_c4",
@@ -917,10 +970,11 @@
       "badgeClass": "badge-ocean",
       "name": "AI室內設計實務班",
       "teacher": "林延君團隊",
-      "count": "目標 110 人",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (暑期高流量班)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "interior_r3_c5",
@@ -934,10 +988,11 @@
       "badgeClass": "badge-ocean",
       "name": "AI室內設計實務班",
       "teacher": "林延君團隊",
-      "count": "目標 100 人",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (年度完結作品集)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "interior_r4_c1",
@@ -951,10 +1006,11 @@
       "badgeClass": "badge-a",
       "name": "室內實務手繪與透視",
       "teacher": "曾逸華",
-      "count": "55 人",
-      "typeTag": "tag-past",
-      "typeText": "2026 實績 (穩健)",
-      "isEmpty": false
+      "count": "結業: 2026-12-31",
+      "typeTag": "tag-green",
+      "typeText": "● 進行中",
+      "isEmpty": false,
+      "endDate": "2026-12-31"
     },
     {
       "slotId": "interior_r4_c2",
@@ -968,10 +1024,11 @@
       "badgeClass": "badge-a",
       "name": "室內實務手繪與透視",
       "teacher": "曾逸華",
-      "count": "目標 80 人",
-      "typeTag": "tag-h1",
-      "typeText": "● H1 大排定案 (空間手繪基礎)",
-      "isEmpty": false
+      "count": "結業: 2027-03-31",
+      "typeTag": "tag-blue",
+      "typeText": "● 排定",
+      "isEmpty": false,
+      "endDate": "2027-03-31"
     },
     {
       "slotId": "interior_r4_c3",
@@ -987,8 +1044,9 @@
       "teacher": "",
       "count": "",
       "typeTag": "tag-empty",
-      "typeText": "留加開 / 趨勢 / 4成保留",
-      "isEmpty": true
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "interior_r4_c4",
@@ -1002,10 +1060,11 @@
       "badgeClass": "badge-a",
       "name": "室內實務手繪與透視",
       "teacher": "祝睿卿",
-      "count": "目標 80 人",
-      "typeTag": "tag-h2",
-      "typeText": "▲ H2 保留池 (手繪二梯)",
-      "isEmpty": false
+      "count": "",
+      "typeTag": "tag-empty",
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     },
     {
       "slotId": "interior_r4_c5",
@@ -1021,8 +1080,9 @@
       "teacher": "",
       "count": "",
       "typeTag": "tag-empty",
-      "typeText": "留加開 / 趨勢 / 4成保留",
-      "isEmpty": true
+      "typeText": "保留",
+      "isEmpty": true,
+      "endDate": ""
     }
   ],
   "courses_grouped": {
