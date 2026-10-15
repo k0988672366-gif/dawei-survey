@@ -258,6 +258,26 @@ class SurveyHandler(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         global current_state
 
+        # 接收瀏覽器本地排課落點設定並自動更新至 preset_slots.json
+        if parsed.path == "/api/sync-slots-to-cloud":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length).decode("utf-8")
+            try:
+                payload = json.loads(body)
+                with open("scratch/synced_user_slots.json", "w", encoding="utf-8") as f_sync:
+                    json.dump(payload, f_sync, ensure_ascii=False, indent=2)
+                with open("static/preset_slots.json", "r", encoding="utf-8") as f_p:
+                    preset = json.load(f_p)
+                for cat in ["anime", "design", "interior"]:
+                    if cat in payload:
+                        preset[cat] = payload[cat]
+                with open("static/preset_slots.json", "w", encoding="utf-8") as f_p:
+                    json.dump(preset, f_p, ensure_ascii=False, indent=2)
+                self.send_json(200, {"status": "success", "message": "Synced slots successfully"})
+            except Exception as e:
+                self.send_json(500, {"status": "error", "message": str(e)})
+            return
+
         # 接收雲端資料並快取至本機 (/api/sync-responses)
         if parsed.path == "/api/sync-responses":
             content_length = int(self.headers.get("Content-Length", 0))
