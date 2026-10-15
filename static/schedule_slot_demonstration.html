@@ -459,10 +459,16 @@
     font-weight: 700;
     margin-top: auto;
   }
-  .tag-past { color: #dc2626; }
-  .tag-h1 { color: #16a34a; }
-  .tag-h2 { color: #d97706; }
+  /* Updated Status Colors */
+  .tag-blue { color: #2563eb; font-weight: 700; }
+  .tag-green { color: #16a34a; font-weight: 700; }
+  .tag-orange { color: #ea580c; font-weight: 700; }
+  .tag-red { color: #dc2626; font-weight: 700; }
   .tag-empty { color: #94a3b8; font-weight: 500; }
+  /* Backwards compatibility */
+  .tag-h1 { color: #2563eb; }
+  .tag-h2 { color: #ea580c; }
+  .tag-past { color: #16a34a; }
 
   /* Footer Explanation Cards */
   .footer-notes {
@@ -756,7 +762,7 @@
     <div class="note-box">
       <h3>☑ 數據對齊指標（四維交叉驗證結果）</h3>
       <ul class="note-list" id="notesListRight">
-        <li><span class="check-icon">☑</span> <div><strong>固定上課時段：</strong>平日一三(18:30-21:30)、二四(18:30-21:30)。</div></li>
+        <li><span class="check-icon">☑</span> <div><strong>固定上課時段：</strong>平日一三(18:30-21:30)、二四(18:30-21:30)、一三五(18:30 平日晚)。</div></li>
         <li><span class="check-icon">☑</span> <div><strong>週末固定時段：</strong>六(14-17 / 18-21 休一小)、日(10-13 / 14-17 休一小)。</div></li>
         <li><span class="check-icon">☑</span> <div><strong>自主彈性規劃：</strong>每個欄位皆可隨時「➕ 新增課程」或「🗑️ 刪除課程」，調整即時存檔。</div></li>
         <li><span class="check-icon">☑</span> <div><strong>落實產品部規範：</strong>6 成大排定案 ＋ 4 成彈性保留池，直攻未消耗庫存。</div></li>
@@ -766,12 +772,12 @@
 
 </div>
 
-<!-- Modal: Edit Slot -->
-<div class="modal-overlay" id="slotModal" onclick="closeModalOnOverlay(event)">
+<!-- Modal: Edit Slot (Removed click-outside-to-close) -->
+<div class="modal-overlay" id="slotModal">
   <div class="modal-card">
     <div class="modal-header">
       <h3 id="modalTitle">⚙️ 設定排課落點</h3>
-      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <button class="modal-close" type="button" onclick="closeModal()">&times;</button>
     </div>
 
     <form id="slotForm" onsubmit="saveSlotForm(event)">
@@ -791,19 +797,20 @@
           <select id="selectTime">
             <option value="一三">一三 18:30-21:30 (平日晚)</option>
             <option value="二四">二四 18:30-21:30 (平日晚)</option>
+            <option value="一三五">一三五 18:30 (平日晚)</option>
             <option value="六">週六 14:00-17:00 (休一小) 18:00-21:00 (6h)</option>
             <option value="日">週日 10:00-13:00 (休一小) 14:00-17:00 (6h)</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label>排課季度 / 期別</label>
+          <label>排課月份</label>
           <select id="selectQuarter">
-            <option value="2026_q4">2026 第 4 期 10-12月 (參考)</option>
-            <option value="2027_q1">2027 第 1 期 1-3月 (H1 寒假/春季大排)</option>
-            <option value="2027_q2">2027 第 2 期 4-6月 (H1 初夏/進階大排)</option>
-            <option value="2027_q3">2027 第 3 期 7-9月 (H2 暑假加開/保留)</option>
-            <option value="2027_q4">2027 第 4 期 10-12月 (H2 秋季閉環/保留)</option>
+            <option value="2026_q4">2026年 10-12月</option>
+            <option value="2027_q1">2027年 1-3月</option>
+            <option value="2027_q2">2027年 4-6月</option>
+            <option value="2027_q3">2027年 7-9月</option>
+            <option value="2027_q4">2027年 10-12月</option>
           </select>
         </div>
       </div>
@@ -830,8 +837,8 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label>目標服務人數 / 實績備註</label>
-          <input type="text" id="inputCount" placeholder="例如：目標 100 人 或 140 人">
+          <label>結業日期（選擇預計結業日期）</label>
+          <input type="date" id="inputEndDate" style="padding: 8px 12px; font-size: 13px;">
         </div>
 
         <div class="form-group">
@@ -851,16 +858,17 @@
         <div class="form-group">
           <label>開班決策屬性標籤</label>
           <select id="selectType">
-            <option value="tag-h1|● H1 大排定案">● H1 大排定案 (綠色)</option>
-            <option value="tag-h2|▲ H2 保留池">▲ H2 保留池 (橙色)</option>
-            <option value="tag-past|2026 實績">2026 實績 (紅色)</option>
-            <option value="tag-empty|留加開 / 4成保留">[ 保有空檔 ] 留加開</option>
+            <option value="tag-blue|● 排定">藍色（排定）</option>
+            <option value="tag-green|● 進行中">綠色（進行中）</option>
+            <option value="tag-orange|▲ 預排">橙色（預排）</option>
+            <option value="tag-red|✖ 無法安排">紅色（無法安排）</option>
+            <option value="tag-empty|留加開">[ 保有空檔 ] 留加開</option>
           </select>
         </div>
 
         <div class="form-group">
           <label>戰略備註說明</label>
-          <input type="text" id="inputNote" placeholder="例如：AI空間生成首開！吸納未修庫存">
+          <input type="text" id="inputNote" placeholder="例如：首開大班！雙師分流">
         </div>
       </div>
 
@@ -895,16 +903,17 @@ let isCreatingNewSlot = false;
 const timeSlots = [
   { id: "一三", label: "一三", hours: "18:30-21:30" },
   { id: "二四", label: "二四", hours: "18:30-21:30" },
+  { id: "一三五", label: "一三五", hours: "18:30 (平日晚)" },
   { id: "六", label: "六", hours: "14-17 / 18-21 (6h)" },
   { id: "日", label: "日", hours: "10-13 / 14-17 (6h)" }
 ];
 
 const quarters = [
-  { id: "2026_q4", label: "2026 第 4 期", sub: "10-12 月 (參考)", isPast: true },
-  { id: "2027_q1", label: "第 1 期 1-3 月", sub: "(H1 寒假/春季大排)", isPast: false },
-  { id: "2027_q2", label: "第 2 期 4-6 月", sub: "(H1 初夏/進階大排)", isPast: false },
-  { id: "2027_q3", label: "第 3 期 7-9 月", sub: "(H2 暑假加開/保留)", isPast: false },
-  { id: "2027_q4", label: "第 4 期 10-12 月", sub: "(H2 秋季閉環/保留)", isPast: false }
+  { id: "2026_q4", label: "2026年", sub: "10-12月", isPast: true },
+  { id: "2027_q1", label: "2027 第 1 期", sub: "1-3月", isPast: false },
+  { id: "2027_q2", label: "2027 第 2 期", sub: "4-6月", isPast: false },
+  { id: "2027_q3", label: "2027 第 3 期", sub: "7-9月", isPast: false },
+  { id: "2027_q4", label: "2027 第 4 期", sub: "10-12月", isPast: false }
 ];
 
 function init() {
@@ -1191,7 +1200,7 @@ function switchCategory(cat) {
     statsEl.textContent = "全年度 14 班部署 ｜ AI室內設計實務班 (林延君團隊) 週六黃金時段旗艦首開";
   } else {
     titleEl.textContent = "落點示範：DATE 線上直播【全學系排課落點綜合檢視總表】";
-    statsEl.textContent = "42 班大排定案 ＋ 彈性保留全覽 ｜ 四大固定時段零衝突";
+    statsEl.textContent = "全學門大排定案 ＋ 彈性保留全覽 ｜ 固定時段零衝突";
   }
 
   renderMatrix();
@@ -1275,6 +1284,18 @@ function renderMatrix() {
               </div>
             `;
           } else {
+            // Format end date display
+            let dateDisplay = "";
+            if (slot.endDate) {
+              dateDisplay = ` (結業: ${slot.endDate})`;
+            } else if (slot.count && /^結業:/.test(slot.count)) {
+              dateDisplay = ` (${slot.count})`;
+            } else if (slot.count && /^\d{4}[-/]\d{2}[-/]\d{2}$/.test(slot.count.trim())) {
+              dateDisplay = ` (結業: ${slot.count.trim()})`;
+            } else if (slot.count) {
+              dateDisplay = ` (${slot.count})`;
+            }
+
             html += `
               <div class="slot-card" onclick="openEditModal('${slot.slotId}')">
                 <div class="sc-top">
@@ -1289,7 +1310,7 @@ function renderMatrix() {
                 </div>
                 <div class="sc-mid">
                   ${slot.teacher ? `<span class="teacher-name">師資: ${slot.teacher}</span>` : ''}
-                  ${slot.count ? `<span class="student-count"> (${slot.count})</span>` : ''}
+                  ${dateDisplay ? `<span class="student-count">${dateDisplay}</span>` : ''}
                 </div>
                 <div class="sc-bottom ${slot.typeTag}">
                   ${slot.typeText}
@@ -1328,10 +1349,10 @@ function renderFooterNotes() {
   const notesLeft = document.getElementById("notesListLeft");
   if (currentCategory === 'anime') {
     notesLeft.innerHTML = `
-      <li><span class="bullet-icon">•</span> <div><strong>固定時段嚴格對齊：</strong>一三(18:30-21:30)、二四(18:30-21:30)、六(14-17 / 18-21)、日(10-13 / 14-17)。</div></li>
-      <li><span class="bullet-icon">•</span> <div><strong>觀察 2026 Q4 銜接到 2027：</strong>曾建華漫畫班於 Q1 寒假(一三晚)強力回補 130 人，終結 231 筆補課民怨！</div></li>
+      <li><span class="bullet-icon">•</span> <div><strong>固定時段嚴格對齊：</strong>一三(18:30-21:30)、二四(18:30-21:30)、一三五(18:30)、六(14-17 / 18-21)、日(10-13 / 14-17)。</div></li>
+      <li><span class="bullet-icon">•</span> <div><strong>觀察 2026 Q4 銜接到 2027：</strong>曾建華漫畫班於 Q1 寒假強力回補，終結 231 筆補課民怨！</div></li>
       <li><span class="bullet-icon">•</span> <div><strong>黃俊傑 Vtuber 生態鏈：</strong>（A攻略 ➔ B立繪 ➔ C動畫）全年度運行兩大完整梯隊，完課率超群！</div></li>
-      <li><span class="bullet-icon">•</span> <div><strong>柯光曜老師精準佈局：</strong>於 Q2 (二四晚)精準開出《IP角色人物創作》，一口氣清空 163 人完全未登記幽靈庫存！</div></li>
+      <li><span class="bullet-icon">•</span> <div><strong>柯光曜老師精準佈局：</strong>於 Q2 精準開出《IP角色人物創作》，一口氣清空 163 人完全未登記幽靈庫存！</div></li>
     `;
   } else if (currentCategory === 'design') {
     notesLeft.innerHTML = `
@@ -1345,12 +1366,12 @@ function renderFooterNotes() {
       <li><span class="bullet-icon">•</span> <div><strong>首度導入《AI室內設計實務班》：</strong>由「林延君團隊」主力執教，於週六全日 6 小時時段（14:00-17:00 / 18:00-21:00 休一小）強勢首開！</div></li>
       <li><span class="bullet-icon">•</span> <div><strong>直攻空間生成式 AI 藍海：</strong>結合生成式空間渲染、CAD 與實務工程落地，打破傳統實體教室硬體瓶頸，預估年消化 400+ 人次。</div></li>
       <li><span class="bullet-icon">•</span> <div><strong>AutoCAD / SketchUp 平日雙晚分流：</strong>一三晚由廖韶吟、戴旭斌擔綱建築空間製圖；二四晚由林宜廷、蕭博宇擔綱建模，打造室內設計完整修課鏈。</div></li>
-      <li><span class="bullet-icon">•</span> <div><strong>完全符合 DATE 4 大固定時段規範：</strong>無教室時段衝突，嚴格落實 6 成大排定案 ＋ 4 成保留池彈性加開。</div></li>
+      <li><span class="bullet-icon">•</span> <div><strong>完全符合 DATE 固定時段規範：</strong>無教室時段衝突，嚴格落實 6 成大排定案 ＋ 4 成保留池彈性加開。</div></li>
     `;
   } else {
     notesLeft.innerHTML = `
       <li><span class="bullet-icon">•</span> <div><strong>全學系綜合排課全覽視圖：</strong>整合動漫、Vtuber、平面設計、AI遊戲、數位音樂與【空間建築與 AI 室內設計】六大課系。</div></li>
-      <li><span class="bullet-icon">•</span> <div><strong>四大時段百分百承載：</strong>平日雙晚間 ＋ 週末全日雙時段，落實「無實體座位上限、無教室時段衝突」。</div></li>
+      <li><span class="bullet-icon">•</span> <div><strong>全時段百分百承載：</strong>平日雙晚間、一三五三日班 ＋ 週末全日雙時段，落實「無實體座位上限、無教室時段衝突」。</div></li>
       <li><span class="bullet-icon">•</span> <div><strong>255 位在任師資陣容：</strong>合作中與培訓期名師全數就位，支援專長智慧推薦與一鍵選定。</div></li>
     `;
   }
@@ -1456,7 +1477,25 @@ function openEditModal(slotId) {
     customTeacher.style.display = "none";
   }
 
-  document.getElementById("inputCount").value = slot.count || "";
+  // 結業日期
+  const inputEndDate = document.getElementById("inputEndDate");
+  if (slot.endDate) {
+    inputEndDate.value = slot.endDate;
+  } else if (slot.count && /^\d{4}[-/]\d{2}[-/]\d{2}$/.test(slot.count.trim())) {
+    inputEndDate.value = slot.count.trim().replace(/\//g, '-');
+  } else if (slot.count && slot.count.includes("結業:")) {
+    const matched = slot.count.match(/\d{4}[-/]\d{2}[-/]\d{2}/);
+    inputEndDate.value = matched ? matched[0].replace(/\//g, '-') : "";
+  } else {
+    const qEndDates = {
+      "2026_q4": "2026-12-31",
+      "2027_q1": "2027-03-31",
+      "2027_q2": "2027-06-30",
+      "2027_q3": "2027-09-30",
+      "2027_q4": "2027-12-31"
+    };
+    inputEndDate.value = qEndDates[slot.quarter] || "2027-03-31";
+  }
 
   // Badge
   const selBadge = document.getElementById("selectBadge");
@@ -1467,16 +1506,32 @@ function openEditModal(slotId) {
   else if (slot.isEmpty) selBadge.value = "無||無標籤";
   else selBadge.value = "A|badge-a|A 基礎";
 
-  // Type Tag
+  // Type Tag (藍色（排定）綠色（進行中）橙色（預排）紅色（無法安排）)
   const selType = document.getElementById("selectType");
-  if (slot.typeTag === "tag-h1") selType.value = "tag-h1|● H1 大排定案";
-  else if (slot.typeTag === "tag-h2") selType.value = "tag-h2|▲ H2 保留池";
-  else if (slot.typeTag === "tag-past") selType.value = "tag-past|2026 實績";
-  else selType.value = "tag-empty|留加開 / 4成保留";
+  const tText = slot.typeText || "";
+  const tTag = slot.typeTag || "";
+
+  if (tTag === "tag-blue" || tText.includes("排定")) {
+    selType.value = "tag-blue|● 排定";
+  } else if (tTag === "tag-green" || tText.includes("進行中")) {
+    selType.value = "tag-green|● 進行中";
+  } else if (tTag === "tag-orange" || tText.includes("預排") || tTag === "tag-h2") {
+    selType.value = "tag-orange|▲ 預排";
+  } else if (tTag === "tag-red" || tText.includes("無法安排")) {
+    selType.value = "tag-red|✖ 無法安排";
+  } else if (tTag === "tag-h1") {
+    selType.value = "tag-blue|● 排定";
+  } else if (tTag === "tag-past") {
+    selType.value = "tag-green|● 進行中";
+  } else if (slot.isEmpty || tTag === "tag-empty") {
+    selType.value = "tag-empty|留加開";
+  } else {
+    selType.value = "tag-blue|● 排定";
+  }
 
   // Note
   const rawNote = slot.typeText || "";
-  document.getElementById("inputNote").value = rawNote ? rawNote.replace(/^[●▲]\s*(H[12]\s*大排定案|H[12]\s*保留池)\s*\(/, '').replace(/\)$/, '') : "";
+  document.getElementById("inputNote").value = rawNote ? rawNote.replace(/^[●▲✖]\s*(排定|進行中|預排|無法安排|H[12]\s*大排定案|H[12]\s*保留池|\d{4}\s*實績)\s*\(/, '').replace(/\)$/, '') : "";
 
   document.getElementById("slotModal").classList.add("active");
 }
@@ -1491,11 +1546,20 @@ function openCreateModal(timeRow, quarter) {
   let defaultCourse = (cat === 'interior') ? "AI室內設計實務班" : ((cat === 'design') ? "商用視覺平面設計" : "數位漫畫班");
   let defaultTeacher = (cat === 'interior') ? "林延君團隊" : ((cat === 'design') ? "王仁駿" : "曾建華");
   
+  const qEndDates = {
+    "2026_q4": "2026-12-31",
+    "2027_q1": "2027-03-31",
+    "2027_q2": "2027-06-30",
+    "2027_q3": "2027-09-30",
+    "2027_q4": "2027-12-31"
+  };
+  const defaultDate = qEndDates[quarter] || "2027-03-31";
+
   const newSlot = {
     slotId: newId,
     category: cat,
     timeRow: timeRow,
-    timeStr: timeRow === '一三' ? '一三 18:30-21:30' : (timeRow === '二四' ? '二四 18:30-21:30' : (timeRow === '六' ? '六 14-17 / 18-21 (6h)' : '日 10-13 / 14-17 (6h)')),
+    timeStr: timeRow === '一三' ? '一三 18:30-21:30' : (timeRow === '二四' ? '二四 18:30-21:30' : (timeRow === '一三五' ? '一三五 18:30 (平日晚)' : (timeRow === '六' ? '六 14-17 / 18-21 (6h)' : '日 10-13 / 14-17 (6h)'))),
     quarter: quarter,
     quarterLabel: quarter,
     badge: (cat === 'interior' && defaultCourse.includes("AI")) ? "★" : "A",
@@ -1503,9 +1567,10 @@ function openCreateModal(timeRow, quarter) {
     badgeClass: (cat === 'interior' && defaultCourse.includes("AI")) ? "badge-ocean" : "badge-a",
     name: defaultCourse,
     teacher: defaultTeacher,
-    count: "目標 100 人",
-    typeTag: quarter.includes('q1') || quarter.includes('q2') ? "tag-h1" : "tag-h2",
-    typeText: quarter.includes('q1') || quarter.includes('q2') ? "● H1 大排定案 (新設)" : "▲ H2 保留池 (新設)",
+    endDate: defaultDate,
+    count: `結業: ${defaultDate}`,
+    typeTag: "tag-blue",
+    typeText: "● 排定",
     isEmpty: false
   };
 
@@ -1534,17 +1599,12 @@ function onCourseSelectChange(sel) {
 
 function closeModal() {
   if (isCreatingNewSlot && activeEditingSlot) {
-    // If canceled without saving new slot, discard it
     removeSlotFromState(activeEditingSlot.slotId);
     isCreatingNewSlot = false;
     renderMatrix();
   }
   document.getElementById("slotModal").classList.remove("active");
   activeEditingSlot = null;
-}
-
-function closeModalOnOverlay(e) {
-  if (e.target.id === "slotModal") closeModal();
 }
 
 function saveSlotForm(e) {
@@ -1559,7 +1619,7 @@ function saveSlotForm(e) {
 
   const timeRow = document.getElementById("selectTime").value;
   const quarter = document.getElementById("selectQuarter").value;
-  const count = document.getElementById("inputCount").value.trim();
+  const endDate = document.getElementById("inputEndDate").value.trim();
 
   const [bCode, bClass, bText] = document.getElementById("selectBadge").value.split("|");
   const [tTag, tPrefix] = document.getElementById("selectType").value.split("|");
@@ -1570,7 +1630,8 @@ function saveSlotForm(e) {
   activeEditingSlot.timeRow = timeRow;
   activeEditingSlot.quarter = quarter;
   activeEditingSlot.teacher = teacherName;
-  activeEditingSlot.count = count;
+  activeEditingSlot.endDate = endDate;
+  activeEditingSlot.count = endDate ? `結業: ${endDate}` : "";
   activeEditingSlot.badge = bCode === "無" ? "" : bCode;
   activeEditingSlot.badgeClass = bClass;
   activeEditingSlot.badgeText = bText;
@@ -1589,12 +1650,13 @@ function clearSlotToEmpty() {
   activeEditingSlot.name = "[ 保有空檔 ]";
   activeEditingSlot.isEmpty = true;
   activeEditingSlot.teacher = "";
+  activeEditingSlot.endDate = "";
   activeEditingSlot.count = "";
   activeEditingSlot.badge = "";
   activeEditingSlot.badgeClass = "";
   activeEditingSlot.badgeText = "";
   activeEditingSlot.typeTag = "tag-empty";
-  activeEditingSlot.typeText = "留加開 / 趨勢 / 4成保留";
+  activeEditingSlot.typeText = "留加開 / 4成保留";
 
   isCreatingNewSlot = false;
   saveSlotsToStorage();
