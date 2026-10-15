@@ -522,6 +522,10 @@ html_template = """<!DOCTYPE html>
     color: var(--text-sub);
     margin: 4px 0 6px 0;
   }
+  .sc-mid:empty {
+    display: none;
+    margin: 0;
+  }
   .teacher-name { font-weight: 700; color: #1e293b; }
   .student-count { font-weight: 600; color: #64748b; }
 
@@ -1015,22 +1019,17 @@ function normalizeSlotStatus(slot) {
     slot.typeText = "● 排定";
   }
 
-  // Ensure clean date
-  const qDates = {
-    "2026_q4": "2026-12-31",
-    "2027_q1": "2027-03-31",
-    "2027_q2": "2027-06-30",
-    "2027_q3": "2027-09-30",
-    "2027_q4": "2027-12-31"
-  };
-  if (!slot.endDate) {
-    if (slot.count && /^結業:\\s*\\d{4}-\\d{2}-\\d{2}/.test(slot.count)) {
-      slot.endDate = slot.count.replace(/^結業:\\s*/, '').trim();
-    } else {
-      slot.endDate = qDates[slot.quarter] || "2027-03-31";
-    }
+  // Only format endDate if one is explicitly specified; do NOT force auto-date!
+  if (slot.endDate && slot.endDate.trim() !== "") {
+    slot.count = `結業: ${slot.endDate.trim()}`;
+  } else if (slot.count && /^結業:\\s*\\d{4}[-/]\\d{2}[-/]\\d{2}/.test(slot.count)) {
+    const m = slot.count.match(/\\d{4}[-/]\\d{2}[-/]\\d{2}/);
+    slot.endDate = m ? m[0].replace(/\\//g, '-') : "";
+    slot.count = slot.endDate ? `結業: ${slot.endDate}` : "";
+  } else {
+    slot.endDate = "";
+    slot.count = "";
   }
-  slot.count = `結業: ${slot.endDate}`;
 }
 
 function normalizeAllSlots() {
@@ -1048,9 +1047,11 @@ function init() {
   renderFooterNotes();
 }
 
+const STORAGE_KEY = "date_schedule_slots_custom_v3";
+
 function loadSlotsFromStorage() {
   try {
-    const saved = localStorage.getItem("date_schedule_slots_custom");
+    const saved = localStorage.getItem("date_schedule_slots_custom_v3");
     if (saved) {
       const parsed = JSON.parse(saved);
       if (!parsed.interior && PRESET_DATA.interior) {
@@ -1062,6 +1063,36 @@ function loadSlotsFromStorage() {
       if (!parsed.design && PRESET_DATA.design) {
         parsed.design = JSON.parse(JSON.stringify(PRESET_DATA.design));
       }
+      return parsed;
+    }
+
+    // Check legacy storage and migrate 2027 slots to blank teacher & blank endDate & 預排
+    const legacySaved = localStorage.getItem("date_schedule_slots_custom");
+    if (legacySaved) {
+      const parsed = JSON.parse(legacySaved);
+      for (const cat of ['anime', 'design', 'interior']) {
+        if (parsed[cat]) {
+          parsed[cat].forEach(s => {
+            if (s.quarter && s.quarter.startsWith("2027_") && !s.isEmpty && s.name !== "[ 保有空檔 ]") {
+              s.teacher = "";
+              s.endDate = "";
+              s.count = "";
+              s.typeTag = "tag-orange";
+              s.typeText = "▲ 預排";
+            }
+          });
+        }
+      }
+      if (!parsed.interior && PRESET_DATA.interior) {
+        parsed.interior = JSON.parse(JSON.stringify(PRESET_DATA.interior));
+      }
+      if (!parsed.anime && PRESET_DATA.anime) {
+        parsed.anime = JSON.parse(JSON.stringify(PRESET_DATA.anime));
+      }
+      if (!parsed.design && PRESET_DATA.design) {
+        parsed.design = JSON.parse(JSON.stringify(PRESET_DATA.design));
+      }
+      localStorage.setItem("date_schedule_slots_custom_v3", JSON.stringify(parsed));
       return parsed;
     }
   } catch (e) {
@@ -1189,6 +1220,12 @@ function populateTeachersDropdown(courseName, currentTeacherName, filterKeyword 
   const teacherSel = document.getElementById("selectTeacher");
   teacherSel.innerHTML = "";
 
+  // 0. Blank / Not specified option
+  const optNone = document.createElement("option");
+  optNone.value = "";
+  optNone.textContent = "⚪ 尚未指定師資（空白）";
+  teacherSel.appendChild(optNone);
+
   const allTeachers = PRESET_DATA.teachers || [];
   const keyword = filterKeyword.trim().toLowerCase();
 
@@ -1276,10 +1313,19 @@ function populateTeachersDropdown(courseName, currentTeacherName, filterKeyword 
   teacherSel.appendChild(optCustom);
 
   // Set selection
+  const customTeacher = document.getElementById("inputCustomTeacher");
   if (currentTeacherName && allTeachers.some(t => t.name === currentTeacherName)) {
     teacherSel.value = currentTeacherName;
-  } else if (matchedTeachers.length > 0 && !currentTeacherName) {
-    teacherSel.value = matchedTeachers[0].name;
+    if (customTeacher) customTeacher.style.display = "none";
+  } else if (currentTeacherName) {
+    teacherSel.value = "__custom__";
+    if (customTeacher) {
+      customTeacher.value = currentTeacherName;
+      customTeacher.style.display = "block";
+    }
+  } else {
+    teacherSel.value = "";
+    if (customTeacher) customTeacher.style.display = "none";
   }
 }
 
@@ -1929,14 +1975,7 @@ function openEditModal(slotId) {
     const matched = slot.count.match(/\\d{4}[-/]\\d{2}[-/]\\d{2}/);
     inputEndDate.value = matched ? matched[0].replace(/\\//g, '-') : "";
   } else {
-    const qEndDates = {
-      "2026_q4": "2026-12-31",
-      "2027_q1": "2027-03-31",
-      "2027_q2": "2027-06-30",
-      "2027_q3": "2027-09-30",
-      "2027_q4": "2027-12-31"
-    };
-    inputEndDate.value = qEndDates[slot.quarter] || "2027-03-31";
+    inputEndDate.value = "";
   }
 
   // Badge
@@ -1985,16 +2024,9 @@ function openCreateModal(timeRow, quarter) {
   const newId = cat + '_' + timeRow + '_' + quarter + '_' + Date.now();
   
   let defaultCourse = (cat === 'interior') ? "AI室內設計實務班" : ((cat === 'design') ? "商用視覺平面設計" : "數位漫畫班");
-  let defaultTeacher = (cat === 'interior') ? "林延君團隊" : ((cat === 'design') ? "王仁駿" : "曾建華");
-  
-  const qEndDates = {
-    "2026_q4": "2026-12-31",
-    "2027_q1": "2027-03-31",
-    "2027_q2": "2027-06-30",
-    "2027_q3": "2027-09-30",
-    "2027_q4": "2027-12-31"
-  };
-  const defaultDate = qEndDates[quarter] || "2027-03-31";
+  const is2027 = quarter.startsWith("2027_");
+  const defaultTeacher = is2027 ? "" : ((cat === 'interior') ? "林延君團隊" : ((cat === 'design') ? "王仁駿" : "曾建華"));
+  const defaultDate = is2027 ? "" : "2026-12-31";
 
   const newSlot = {
     slotId: newId,
@@ -2009,9 +2041,9 @@ function openCreateModal(timeRow, quarter) {
     name: defaultCourse,
     teacher: defaultTeacher,
     endDate: defaultDate,
-    count: `結業: ${defaultDate}`,
-    typeTag: "tag-blue",
-    typeText: "● 排定",
+    count: defaultDate ? `結業: ${defaultDate}` : "",
+    typeTag: is2027 ? "tag-orange" : "tag-blue",
+    typeText: is2027 ? "▲ 預排" : "● 排定",
     isEmpty: false
   };
 
@@ -2033,9 +2065,8 @@ function onCourseSelectChange(sel) {
     custom.style.display = "none";
   }
 
-  const matched = getMatchedTeachersForCourse(courseName);
-  let defaultTeacher = matched.length > 0 ? matched[0].name : "";
-  populateTeachersDropdown(courseName, defaultTeacher, document.getElementById("teacherSearchInput").value);
+  const currentTeacher = document.getElementById("selectTeacher").value;
+  populateTeachersDropdown(courseName, currentTeacher, document.getElementById("teacherSearchInput").value);
 }
 
 function closeModal() {
@@ -2115,7 +2146,7 @@ function clearSlotToEmpty() {
 
 function saveSlotsToStorage() {
   try {
-    localStorage.setItem("date_schedule_slots_custom", JSON.stringify(slotState));
+    localStorage.setItem("date_schedule_slots_custom_v3", JSON.stringify(slotState));
     showToast("💾 自訂落點設定已儲存至瀏覽器！");
   } catch (e) {
     console.warn("Storage error", e);
@@ -2126,7 +2157,10 @@ function saveSlotsToStorage() {
 function resetToPreset() {
   if (confirm("確定要還原為系統標準排課落點示範嗎？所有自訂修改將被重置。")) {
     slotState = JSON.parse(JSON.stringify(PRESET_DATA));
-    try { localStorage.removeItem("date_schedule_slots_custom"); } catch(e) {}
+    try {
+      localStorage.removeItem("date_schedule_slots_custom_v3");
+      localStorage.removeItem("date_schedule_slots_custom");
+    } catch(e) {}
     renderMatrix();
     showToast("🔄 已成功還原為標準落點示範！");
   }
