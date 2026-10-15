@@ -331,15 +331,54 @@ html_template = """<!DOCTYPE html>
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: all 0.15s;
-    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease, border-color 0.15s ease;
+    cursor: grab;
     position: relative;
     box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    user-select: none;
+    -webkit-user-select: none;
   }
   .slot-card:hover {
     border-color: var(--primary);
     box-shadow: 0 4px 12px rgba(37,99,235,0.12);
     transform: translateY(-2px);
+  }
+  .slot-card:active {
+    cursor: grabbing;
+  }
+  .slot-card.is-dragging {
+    opacity: 0.35 !important;
+    transform: scale(0.96) !important;
+    border: 2px dashed #2563eb !important;
+    box-shadow: 0 8px 24px rgba(37,99,235,0.2) !important;
+  }
+  .slot-card.drag-target-before {
+    border-top: 3px solid #2563eb !important;
+    transform: translateY(2px);
+  }
+  .slot-card.drag-target-after {
+    border-bottom: 3px solid #2563eb !important;
+    transform: translateY(-2px);
+  }
+  .slot-cell-container.cell-drag-over {
+    background: #f0fdf4 !important;
+    outline: 2px dashed #16a34a !important;
+    border-radius: 8px;
+  }
+  .drag-grip {
+    color: #94a3b8;
+    font-size: 13px;
+    font-weight: 900;
+    cursor: grab;
+    margin-right: 3px;
+    user-select: none;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.15s;
+  }
+  .slot-card:hover .drag-grip {
+    color: #2563eb;
   }
 
   .slot-card.is-empty {
@@ -765,7 +804,7 @@ html_template = """<!DOCTYPE html>
       </button>
     </div>
     <div class="tools-group">
-      <span class="tool-tag">💡 點選欄位「➕ 新增課程」可隨時加開班級；點選卡片「🗑️」或「✏️」可直接刪除或設定課程</span>
+      <span class="tool-tag">💡 長壓卡片可直接拖移排序或跨時段調動；點選「➕ 新增課程」可隨時加開班級；點選「🗑️」或「✏️」可刪除或設定</span>
     </div>
   </div>
 
@@ -1347,9 +1386,16 @@ function renderMatrix() {
         return item.timeRow === ts.id && item.quarter === q.id;
       });
 
+      // Sort by order
+      slotMatches.sort((a, b) => {
+        const oA = (typeof a.order === 'number') ? a.order : 999;
+        const oB = (typeof b.order === 'number') ? b.order : 999;
+        return oA - oB;
+      });
+
       html += `<td>`;
-      html += `<div class="slot-cell-container">`;
-      html += `<div class="slot-cards-list">`;
+      html += `<div class="slot-cell-container" data-time="${ts.id}" data-quarter="${q.id}" ondragover="onCellDragOver(event)" ondragleave="onCellDragLeave(event)" ondrop="onCellDrop(event, '${ts.id}', '${q.id}')">`;
+      html += `<div class="slot-cards-list" data-time="${ts.id}" data-quarter="${q.id}">`;
 
       if (slotMatches.length === 0) {
         html += `
@@ -1405,9 +1451,24 @@ function renderMatrix() {
             }
 
             html += `
-              <div class="slot-card" onclick="openEditModal('${slot.slotId}')">
+              <div class="slot-card"
+                   id="card_${slot.slotId}"
+                   draggable="true"
+                   data-slot-id="${slot.slotId}"
+                   data-time="${slot.timeRow}"
+                   data-quarter="${slot.quarter}"
+                   ondragstart="onCardDragStart(event, '${slot.slotId}')"
+                   ondragover="onCardDragOver(event, '${slot.slotId}')"
+                   ondragleave="onCardDragLeave(event, '${slot.slotId}')"
+                   ondrop="onCardDrop(event, '${slot.slotId}', '${ts.id}', '${q.id}')"
+                   ondragend="onCardDragEnd(event)"
+                   ontouchstart="onTouchStart(event, '${slot.slotId}')"
+                   ontouchmove="onTouchMove(event)"
+                   ontouchend="onTouchEnd(event)"
+                   onclick="onCardClick(event, '${slot.slotId}')">
                 <div class="sc-top">
-                  <div style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap; flex: 1; padding-right: 4px;">
+                  <div style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap; flex: 1; padding-right: 4px;">
+                    <span class="drag-grip" title="長壓拖移排序">⠿</span>
                     ${slot.badge ? `<span class="badge-level ${slot.badgeClass}">${slot.badgeText || slot.badge}</span>` : ''}
                     ${timeBadgeHtml}
                     <span class="course-name">${slot.name}</span>
@@ -1534,7 +1595,279 @@ function deleteCurrentSlot() {
   }
 }
 
+// ==========================================
+// Drag & Drop / Long-press Reordering System
+// ==========================================
+let draggedSlotId = null;
+let currentDropTargetSlotId = null;
+let currentDropPosition = null; // 'before' | 'after' | 'append'
+let hasJustDragged = false;
+
+// Desktop Drag Events
+function onCardDragStart(e, slotId) {
+  draggedSlotId = slotId;
+  hasJustDragged = false;
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', slotId);
+  const cardEl = document.getElementById("card_" + slotId);
+  if (cardEl) {
+    setTimeout(() => {
+      cardEl.classList.add("is-dragging");
+    }, 10);
+  }
+}
+
+function onCardDragOver(e, targetSlotId) {
+  e.preventDefault();
+  e.stopPropagation();
+  if (!draggedSlotId || draggedSlotId === targetSlotId) return;
+
+  const targetCard = document.getElementById("card_" + targetSlotId);
+  if (!targetCard) return;
+
+  const rect = targetCard.getBoundingClientRect();
+  const relY = e.clientY - rect.top;
+  const isBefore = relY < (rect.height / 2);
+
+  clearDragIndicators();
+
+  currentDropTargetSlotId = targetSlotId;
+  currentDropPosition = isBefore ? 'before' : 'after';
+
+  targetCard.classList.add(isBefore ? 'drag-target-before' : 'drag-target-after');
+}
+
+function onCardDragLeave(e, targetSlotId) {
+  const targetCard = document.getElementById("card_" + targetSlotId);
+  if (targetCard) {
+    targetCard.classList.remove('drag-target-before', 'drag-target-after');
+  }
+}
+
+function onCellDragOver(e) {
+  e.preventDefault();
+  const cell = e.currentTarget;
+  if (cell) cell.classList.add('cell-drag-over');
+}
+
+function onCellDragLeave(e) {
+  const cell = e.currentTarget;
+  if (cell) cell.classList.remove('cell-drag-over');
+}
+
+function clearDragIndicators() {
+  document.querySelectorAll('.drag-target-before').forEach(el => el.classList.remove('drag-target-before'));
+  document.querySelectorAll('.drag-target-after').forEach(el => el.classList.remove('drag-target-after'));
+  document.querySelectorAll('.cell-drag-over').forEach(el => el.classList.remove('cell-drag-over'));
+  document.querySelectorAll('.is-dragging').forEach(el => el.classList.remove('is-dragging'));
+}
+
+function onCardDrop(e, targetSlotId, cellTime, cellQuarter) {
+  e.preventDefault();
+  e.stopPropagation();
+  hasJustDragged = true;
+  executeDrop(draggedSlotId, targetSlotId, currentDropPosition || 'after', cellTime, cellQuarter);
+  cleanupDrag();
+}
+
+function onCellDrop(e, cellTime, cellQuarter) {
+  e.preventDefault();
+  e.stopPropagation();
+  hasJustDragged = true;
+  executeDrop(draggedSlotId, null, 'append', cellTime, cellQuarter);
+  cleanupDrag();
+}
+
+function onCardDragEnd(e) {
+  cleanupDrag();
+  setTimeout(() => { hasJustDragged = false; }, 250);
+}
+
+function cleanupDrag() {
+  clearDragIndicators();
+  draggedSlotId = null;
+  currentDropTargetSlotId = null;
+  currentDropPosition = null;
+}
+
+// Mobile / Tablet Touch Long-press to Drag System
+let touchTimer = null;
+let touchStartX = 0;
+let touchStartY = 0;
+let isTouchDragging = false;
+let touchDraggedSlotId = null;
+
+function onTouchStart(e, slotId) {
+  if (e.touches.length !== 1) return;
+  const t = e.touches[0];
+  touchStartX = t.clientX;
+  touchStartY = t.clientY;
+  touchDraggedSlotId = slotId;
+  isTouchDragging = false;
+
+  touchTimer = setTimeout(() => {
+    isTouchDragging = true;
+    draggedSlotId = slotId;
+    const cardEl = document.getElementById("card_" + slotId);
+    if (cardEl) {
+      cardEl.classList.add("is-dragging");
+    }
+    if (navigator.vibrate) {
+      try { navigator.vibrate(40); } catch(err) {}
+    }
+    showToast("🖐️ 已觸發長壓拖移，請滑動至目標位置！");
+  }, 300);
+}
+
+function onTouchMove(e) {
+  if (e.touches.length !== 1) return;
+  const t = e.touches[0];
+  const dist = Math.hypot(t.clientX - touchStartX, t.clientY - touchStartY);
+
+  if (!isTouchDragging) {
+    if (dist > 8) {
+      clearTimeout(touchTimer);
+    }
+    return;
+  }
+
+  e.preventDefault();
+
+  const el = document.elementFromPoint(t.clientX, t.clientY);
+  if (!el) return;
+
+  const targetCard = el.closest(".slot-card");
+  const targetCell = el.closest(".slot-cell-container");
+
+  clearDragIndicators();
+
+  if (targetCard && targetCard.dataset.slotId && targetCard.dataset.slotId !== touchDraggedSlotId) {
+    const rect = targetCard.getBoundingClientRect();
+    const relY = t.clientY - rect.top;
+    const isBefore = relY < (rect.height / 2);
+    currentDropTargetSlotId = targetCard.dataset.slotId;
+    currentDropPosition = isBefore ? 'before' : 'after';
+    targetCard.classList.add(isBefore ? 'drag-target-before' : 'drag-target-after');
+  } else if (targetCell) {
+    targetCell.classList.add("cell-drag-over");
+  }
+}
+
+function onTouchEnd(e) {
+  clearTimeout(touchTimer);
+  if (isTouchDragging && touchDraggedSlotId) {
+    hasJustDragged = true;
+    const t = e.changedTouches[0];
+    const el = document.elementFromPoint(t.clientX, t.clientY);
+    const targetCard = el ? el.closest(".slot-card") : null;
+    const targetCell = el ? el.closest(".slot-cell-container") : null;
+
+    if (targetCard && targetCard.dataset.slotId && targetCard.dataset.slotId !== touchDraggedSlotId) {
+      const cell = targetCard.closest(".slot-cell-container");
+      const cTime = cell ? cell.dataset.time : targetCard.dataset.time;
+      const cQuarter = cell ? cell.dataset.quarter : targetCard.dataset.quarter;
+      executeDrop(touchDraggedSlotId, targetCard.dataset.slotId, currentDropPosition || 'after', cTime, cQuarter);
+    } else if (targetCell) {
+      const cTime = targetCell.dataset.time;
+      const cQuarter = targetCell.dataset.quarter;
+      executeDrop(touchDraggedSlotId, null, 'append', cTime, cQuarter);
+    }
+    cleanupDrag();
+    isTouchDragging = false;
+    touchDraggedSlotId = null;
+    setTimeout(() => { hasJustDragged = false; }, 250);
+  }
+}
+
+// Core Drop Execution (updates order & positions in state)
+function executeDrop(draggedId, targetId, position, targetTime, targetQuarter) {
+  if (!draggedId) return;
+  const draggedSlot = findSlotById(draggedId);
+  if (!draggedSlot) return;
+
+  // 1. Update draggedSlot target location
+  draggedSlot.quarter = targetQuarter;
+  if (targetTime === '一三') {
+    if (draggedSlot.timeRow !== '一三' && draggedSlot.timeRow !== '一三五') {
+      draggedSlot.timeRow = '一三';
+      draggedSlot.timeStr = '一三 18:30-21:30';
+    }
+  } else {
+    draggedSlot.timeRow = targetTime;
+    if (targetTime === '二四') draggedSlot.timeStr = '二四 18:30-21:30';
+    else if (targetTime === '六') draggedSlot.timeStr = '六 14-17 / 18-21 (6h)';
+    else if (targetTime === '日') draggedSlot.timeStr = '日 10-13 / 14-17 (6h)';
+  }
+
+  // 2. Collect all non-empty cards in this target cell
+  let cellCards = [];
+  for (const cat of ['anime', 'design', 'interior']) {
+    if (slotState[cat]) {
+      for (const s of slotState[cat]) {
+        const matchesRow = (targetTime === '一三') ? (s.timeRow === '一三' || s.timeRow === '一三五') : (s.timeRow === targetTime);
+        if (matchesRow && s.quarter === targetQuarter && !s.isEmpty && s.slotId !== draggedId) {
+          cellCards.push(s);
+        }
+      }
+    }
+  }
+
+  // Sort by current order
+  cellCards.sort((a, b) => {
+    const oA = (typeof a.order === 'number') ? a.order : 999;
+    const oB = (typeof b.order === 'number') ? b.order : 999;
+    return oA - oB;
+  });
+
+  // 3. Insert draggedSlot at target position
+  if (targetId) {
+    const tIdx = cellCards.findIndex(s => s.slotId === targetId);
+    if (tIdx !== -1) {
+      const insertIdx = (position === 'before') ? tIdx : tIdx + 1;
+      cellCards.splice(insertIdx, 0, draggedSlot);
+    } else {
+      cellCards.push(draggedSlot);
+    }
+  } else {
+    cellCards.push(draggedSlot);
+  }
+
+  // 4. Assign sequential order indices (0, 1, 2, ...)
+  cellCards.forEach((s, idx) => {
+    s.order = idx;
+  });
+
+  // 5. If target cell had any empty placeholder slot, remove it
+  for (const cat of ['anime', 'design', 'interior']) {
+    if (slotState[cat]) {
+      slotState[cat] = slotState[cat].filter(s => {
+        const matchesRow = (targetTime === '一三') ? (s.timeRow === '一三' || s.timeRow === '一三五') : (s.timeRow === targetTime);
+        if (matchesRow && s.quarter === targetQuarter && s.isEmpty) {
+          return false;
+        }
+        return true;
+      });
+    }
+  }
+
+  saveSlotsToStorage();
+  renderMatrix();
+  showToast("↔️ 已成功更新卡片排序與落點！");
+}
+
+function onCardClick(e, slotId) {
+  if (hasJustDragged) {
+    hasJustDragged = false;
+    return;
+  }
+  openEditModal(slotId);
+}
+
 function openEditModal(slotId) {
+  if (hasJustDragged) {
+    hasJustDragged = false;
+    return;
+  }
   const slot = findSlotById(slotId);
   if (!slot) return;
   activeEditingSlot = slot;
