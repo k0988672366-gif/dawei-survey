@@ -244,6 +244,170 @@ class SurveyHandler(BaseHTTPRequestHandler):
             self.wfile.write(csv_bytes)
             return
 
+        # 8.2 API: 全部統整匯出 Excel 總表 CSV (/api/export-comprehensive-csv?class_id=...) (需要管理員密碼保護！)
+        if path == "/api/export-comprehensive-csv":
+            if not self.check_auth():
+                return
+            cid = query_params.get("class_id", [None])[0]
+            if cid == "":
+                cid = None
+            responses = self.get_all_responses(class_id=cid)
+            class_info = config.get_class_info(cid) if cid else {}
+            course_name = class_info.get("course_name", "直播課程")
+            teacher_name = class_info.get("teacher_name", "授課講師")
+            total = len(responses)
+
+            struggle_counts = {}
+            exp_counts = {}
+            promoters = 0
+            passives = 0
+            detractors = 0
+            inst_sum = 0
+            course_sum = 0
+            ta_sum = 0
+            count_inst = 0
+            count_course = 0
+            count_ta = 0
+            reward_counts = {}
+            sched_counts = {}
+
+            for r in responses:
+                s = (r.get("struggle_point") or "").strip()
+                if not s or s.lower() in ["無", "nan", "none", "-", "未填寫"]:
+                    s = "無卡關或未填寫"
+                struggle_counts[s] = struggle_counts.get(s, 0) + 1
+
+                e = (r.get("prior_experience") or "").strip() or "未填寫背景"
+                exp_counts[e] = exp_counts.get(e, 0) + 1
+
+                try:
+                    nps = float(r.get("nps_score") or 0)
+                    if nps >= 9:
+                        promoters += 1
+                    elif nps >= 7:
+                        passives += 1
+                    elif nps > 0:
+                        detractors += 1
+                except Exception:
+                    pass
+
+                try:
+                    ir = float(r.get("instructor_rating") or 0)
+                    if ir > 0:
+                        inst_sum += ir
+                        count_inst += 1
+                except Exception:
+                    pass
+
+                try:
+                    cr = float(r.get("course_rating") or 0)
+                    if cr > 0:
+                        course_sum += cr
+                        count_course += 1
+                except Exception:
+                    pass
+
+                try:
+                    tr = float(r.get("ta_rating") or 0)
+                    if tr > 0:
+                        ta_sum += tr
+                        count_ta += 1
+                except Exception:
+                    pass
+
+                rew = (r.get("selected_reward_course") or "").strip() or "無需兌換 (純回饋)"
+                reward_counts[rew] = reward_counts.get(rew, 0) + 1
+
+                sch = (r.get("followup_schedules_selected") or "").strip() or "未勾選時段"
+                sched_counts[sch] = sched_counts.get(sch, 0) + 1
+
+            nps_total = promoters + passives + detractors
+            nps_score = round(((promoters - detractors) / nps_total) * 100) if nps_total > 0 else 0
+            avg_inst = f"{(inst_sum / count_inst):.2f}" if count_inst > 0 else "-"
+            avg_course = f"{(course_sum / count_course):.2f}" if count_course > 0 else "-"
+            avg_ta = f"{(ta_sum / count_ta):.2f}" if count_ta > 0 else "-"
+
+            sorted_struggles = sorted(struggle_counts.items(), key=lambda x: x[1], reverse=True)
+            sorted_exp = sorted(exp_counts.items(), key=lambda x: x[1], reverse=True)
+            sorted_rewards = sorted(reward_counts.items(), key=lambda x: x[1], reverse=True)
+            sorted_scheds = sorted(sched_counts.items(), key=lambda x: x[1], reverse=True)
+
+            out = io.StringIO()
+            w = csv.writer(out)
+
+            w.writerow(["=== 【結業問卷全維度統計分析總表】 ==="])
+            w.writerow(["班級代碼", cid or "all", "課程名稱", course_name, "授課講師", teacher_name])
+            w.writerow(["有效填答總數", f"{total} 人", "淨推薦值(NPS)", f"+{nps_score}" if nps_score >= 0 else str(nps_score), "講師均分", f"{avg_inst}★"])
+            w.writerow([])
+
+            w.writerow(["=== 【維度一】課綱卡關痛點排行統計 ==="])
+            w.writerow(["排名", "卡關單元 / 痛點描述", "人數", "佔比(%)"])
+            for idx, (s, cnt) in enumerate(sorted_struggles, 1):
+                pct = f"{(cnt / total * 100):.1f}%" if total > 0 else "0.0%"
+                w.writerow([idx, s, cnt, pct])
+            w.writerow([])
+
+            w.writerow(["=== 【維度二】學員起點背景分布統計 ==="])
+            w.writerow(["背景梯隊", "起點背景程度", "人數", "佔比(%)"])
+            for idx, (e, cnt) in enumerate(sorted_exp, 1):
+                pct = f"{(cnt / total * 100):.1f}%" if total > 0 else "0.0%"
+                w.writerow([f"梯隊 {idx}", e, cnt, pct])
+            w.writerow([])
+
+            w.writerow(["=== 【維度三】綜合指標與 NPS 滿意度統計 ==="])
+            w.writerow(["評估指標", "統計數值 / 人數", "佔比 / 說明"])
+            w.writerow(["淨推薦值 (NPS)", f"+{nps_score}" if nps_score >= 0 else str(nps_score), "淨推薦分數 (-100 ~ +100)"])
+            w.writerow(["推薦者 (Promoters: 9-10分)", f"{promoters} 人", f"{(promoters/nps_total*100):.1f}%" if nps_total > 0 else "0%"])
+            w.writerow(["被動者 (Passives: 7-8分)", f"{passives} 人", f"{(passives/nps_total*100):.1f}%" if nps_total > 0 else "0%"])
+            w.writerow(["批評者 (Detractors: 0-6分)", f"{detractors} 人", f"{(detractors/nps_total*100):.1f}%" if nps_total > 0 else "0%"])
+            w.writerow(["講師授課均分", f"{avg_inst} ★", "滿分 5.00 星"])
+            w.writerow(["課程內容均分", f"{avg_course} ★", "滿分 5.00 星"])
+            w.writerow(["助教支援均分", f"{avg_ta} ★", "滿分 5.00 星"])
+            w.writerow([])
+
+            w.writerow(["=== 【維度四】線上單元課贈禮兌換意向統計 ==="])
+            w.writerow(["排名", "贈品單元課名稱", "兌換登記人數", "佔比(%)"])
+            for idx, (rew, cnt) in enumerate(sorted_rewards, 1):
+                pct = f"{(cnt / total * 100):.1f}%" if total > 0 else "0.0%"
+                w.writerow([idx, rew, cnt, pct])
+            w.writerow([])
+
+            w.writerow(["=== 【維度五】即將開課時段預約統計 ==="])
+            w.writerow(["排名", "預約開課時段", "預約登記人數", "佔比(%)"])
+            for idx, (sch, cnt) in enumerate(sorted_scheds, 1):
+                pct = f"{(cnt / total * 100):.1f}%" if total > 0 else "0.0%"
+                w.writerow([idx, sch, cnt, pct])
+            w.writerow([])
+
+            w.writerow(["=== 【維度六】學員完整填答總表 ==="])
+            fieldnames = [
+                "timestamp", "class_id", "student_name", "phone", "line_id", "email",
+                "prior_experience", "key_progress", "struggle_point", "instructor_rating", 
+                "instructor_comment", "course_rating", "ta_rating", "ta_comment", 
+                "platform_experience", "nps_score", "selected_reward_course", "wants_reward",
+                "followup_interest_topic", "followup_schedules_selected", "feedback_text"
+            ]
+            header_labels = [
+                "填答時間", "班級代碼", "學員姓名", "手機號碼", "LINE ID", "Email",
+                "起點背景", "核心進步收穫", "主要卡關點", "講師授課評分",
+                "講師原聲評語", "整體課程評分", "助教支援評分", "助教反饋評語",
+                "直播平台體驗", "淨推薦值(NPS)", "勾選兌換之線上單元課", "是否有意願兌換",
+                "延伸進階主題意願", "預約即將開課時段", "學員心聲建議"
+            ]
+            w.writerow(header_labels)
+            for r in responses:
+                w.writerow([r.get(fn, "") for fn in fieldnames])
+
+            csv_bytes = ("\ufeff" + out.getvalue()).encode("utf-8-sig")
+            filename = f"comprehensive_stats_{cid or 'all'}.csv"
+            self.send_response(200)
+            self.send_header("Content-Type", "text/csv; charset=utf-8")
+            self.send_header("Content-Disposition", f'attachment; filename="{filename}"')
+            self.send_header("Content-Length", str(len(csv_bytes)))
+            self.end_headers()
+            self.wfile.write(csv_bytes)
+            return
+
         self.send_error(404, "Not Found")
 
     def do_HEAD(self):
