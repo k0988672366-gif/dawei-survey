@@ -1198,6 +1198,10 @@
             <button class="btn btn-secondary" onclick="exportResponsesCsv()" title="匯出完整學員回覆為 CSV 檔案" style="padding: 7px 13px; font-size: 0.84rem;">📥 匯出明細 CSV</button>
             <button class="btn btn-secondary" onclick="syncCloudNow()" title="自 Render 雲端主機立即拉取最新學員填答" style="color: #0284c7; border-color: #0284c7; padding: 7px 13px; font-size: 0.84rem;">☁️ 同步雲端</button>
             <button class="btn btn-secondary" onclick="autoSyncAndRefresh()" title="重新載入填答資料" style="padding: 7px 13px; font-size: 0.84rem;">🔄 重新整理</button>
+            <!-- 刪除鍵移至重新整理後方 -->
+            <button class="btn" id="batchDeleteResponsesBtn" onclick="handleBatchDeleteResponses()" title="刪除所有勾選之學員回覆記錄" style="background: #fef2f2; color: #dc2626; border: 1.5px solid #fecaca; padding: 7px 14px; font-size: 0.84rem; font-weight: 700; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.15s ease;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fef2f2'">
+              🗑️ 刪除 <span id="selectedResponsesCountBadge" style="background: #dc2626; color: #fff; font-size: 0.72rem; padding: 1px 7px; border-radius: 10px; font-weight: 800; display: none;">0</span>
+            </button>
           </div>
         </div>
 
@@ -1242,6 +1246,9 @@
           <table class="redemption-table" id="responsesListTable">
             <thead>
               <tr>
+                <th style="width: 40px; text-align: center; white-space: nowrap;">
+                  <input type="checkbox" id="selectAllResponsesHeaderCheckbox" onchange="toggleSelectAllResponses(this.checked)" title="全選 / 取消全選" style="cursor: pointer; width: 16px; height: 16px; accent-color: #dc2626;">
+                </th>
                 <th style="width: 48px; text-align: center; white-space: nowrap;">#</th>
                 <th style="white-space: nowrap;">填答時間</th>
                 <th style="min-width: 140px;">學員姓名 / 聯絡資訊</th>
@@ -2134,7 +2141,7 @@
         if (tbody) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="10" style="text-align: center; color: #94a3b8; padding: 36px 16px;">
+              <td colspan="11" style="text-align: center; color: #94a3b8; padding: 36px 16px;">
                 <div style="font-weight: 600; color: #475569; font-size: 0.95rem;">尚無回覆資料</div>
               </td>
             </tr>
@@ -2233,6 +2240,7 @@
             <!-- 卡片頂部：學員身分、背景、時間與刪除按鈕 -->
             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
               <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <input type="checkbox" class="response-card-checkbox" data-index="${index}" data-timestamp="${encodeURIComponent(row.timestamp || '')}" data-class-id="${encodeURIComponent(row.class_id || currentClassId)}" data-student-name="${encodeURIComponent(row.student_name || '')}" onchange="syncCardRowCheckbox(this)" style="cursor: pointer; width: 18px; height: 18px; accent-color: #dc2626;" title="選取此筆回覆以利刪除">
                 <span style="background: #eff6ff; color: #1d4ed8; font-weight: 700; font-size: 0.82rem; padding: 3px 10px; border-radius: 6px; border: 1px solid #dbeafe;">#${index + 1}</span>
                 <span style="font-size: 1.15rem; font-weight: 700; color: #0f172a;">${escapeHtml(name)}</span>
                 <span class="badge-nowrap" style="font-size: 0.78rem; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 3px 10px; border-radius: 14px; font-weight: 500;">
@@ -2372,6 +2380,9 @@
           }
 
           tr.innerHTML = `
+            <td style="text-align: center; white-space: nowrap;">
+              <input type="checkbox" class="response-row-checkbox" data-index="${index}" data-timestamp="${encodeURIComponent(row.timestamp || '')}" data-class-id="${encodeURIComponent(row.class_id || currentClassId)}" data-student-name="${encodeURIComponent(row.student_name || '')}" onchange="updateSelectedResponsesCount()" style="cursor: pointer; width: 16px; height: 16px; accent-color: #dc2626;" title="選取此筆回覆以利刪除">
+            </td>
             <td style="text-align: center; color: #64748b; font-weight: 600; font-size: 0.82rem; white-space: nowrap;">${index + 1}</td>
             <td style="color: #475569; font-size: 0.8rem; white-space: nowrap;">${escapeHtml(timeStr)}</td>
             <td>${contactCellHtml}</td>
@@ -2431,6 +2442,114 @@
       renderResponsesListRows(filtered);
       const badge = document.getElementById('responsesCountBadge');
       if (badge) badge.textContent = `篩選出 ${filtered.length} / ${currentSortedResponses.length} 筆`;
+    }
+
+    function toggleSelectAllResponses(checked) {
+      const tableCheckboxes = document.querySelectorAll('.response-row-checkbox');
+      const cardCheckboxes = document.querySelectorAll('.response-card-checkbox');
+      tableCheckboxes.forEach(cb => { cb.checked = checked; });
+      cardCheckboxes.forEach(cb => { cb.checked = checked; });
+      updateSelectedResponsesCount();
+    }
+
+    function syncCardRowCheckbox(cardCb) {
+      const idx = cardCb.dataset.index;
+      const rowCb = document.querySelector(`.response-row-checkbox[data-index="${idx}"]`);
+      if (rowCb) rowCb.checked = cardCb.checked;
+      updateSelectedResponsesCount();
+    }
+
+    function updateSelectedResponsesCount() {
+      const checkedBoxes = Array.from(document.querySelectorAll('.response-row-checkbox:checked, .response-card-checkbox:checked'));
+      const selectedMap = new Map();
+      checkedBoxes.forEach(cb => {
+        const key = (cb.dataset.timestamp || '') + '___' + (cb.dataset.studentName || '');
+        if (!selectedMap.has(key)) {
+          selectedMap.set(key, {
+            timestamp: decodeURIComponent(cb.dataset.timestamp || ''),
+            class_id: decodeURIComponent(cb.dataset.classId || currentClassId),
+            student_name: decodeURIComponent(cb.dataset.studentName || '')
+          });
+        }
+      });
+
+      const count = selectedMap.size;
+      const btn = document.getElementById('batchDeleteResponsesBtn');
+      const headerCb = document.getElementById('selectAllResponsesHeaderCheckbox');
+
+      if (btn) {
+        if (count > 0) {
+          btn.style.background = '#dc2626';
+          btn.style.color = '#ffffff';
+          btn.style.borderColor = '#b91c1c';
+          btn.innerHTML = `🗑️ 刪除選取 (${count}) <span id="selectedResponsesCountBadge" style="background: rgba(255,255,255,0.25); color: #fff; font-size: 0.72rem; padding: 1px 7px; border-radius: 10px; font-weight: 800;">${count}</span>`;
+        } else {
+          btn.style.background = '#fef2f2';
+          btn.style.color = '#dc2626';
+          btn.style.borderColor = '#fecaca';
+          btn.innerHTML = `🗑️ 刪除 <span id="selectedResponsesCountBadge" style="background: #dc2626; color: #fff; font-size: 0.72rem; padding: 1px 7px; border-radius: 10px; font-weight: 800; display: none;">0</span>`;
+        }
+      }
+
+      const allRowCheckboxes = document.querySelectorAll('.response-row-checkbox');
+      if (headerCb) {
+        if (allRowCheckboxes.length > 0) {
+          headerCb.checked = Array.from(allRowCheckboxes).every(cb => cb.checked);
+        } else {
+          headerCb.checked = false;
+        }
+      }
+    }
+
+    async function handleBatchDeleteResponses() {
+      const checkedBoxes = Array.from(document.querySelectorAll('.response-row-checkbox:checked, .response-card-checkbox:checked'));
+      const selectedMap = new Map();
+      checkedBoxes.forEach(cb => {
+        const key = (cb.dataset.timestamp || '') + '___' + (cb.dataset.studentName || '');
+        if (!selectedMap.has(key)) {
+          selectedMap.set(key, {
+            timestamp: decodeURIComponent(cb.dataset.timestamp || ''),
+            class_id: decodeURIComponent(cb.dataset.classId || currentClassId),
+            student_name: decodeURIComponent(cb.dataset.studentName || '')
+          });
+        }
+      });
+
+      const items = Array.from(selectedMap.values());
+      if (items.length === 0) {
+        alert('請先在列表「勾選」欲刪除的學員回覆記錄！');
+        return;
+      }
+
+      const namesSummary = items.map(it => it.student_name || '匿名學員').slice(0, 5).join('、') + (items.length > 5 ? ` 等共 ${items.length} 筆` : '');
+      const confirmed = confirm(`⚠️ 確定要刪除選取的【${items.length} 筆】學員回覆記錄嗎？\n\n欲刪除對象：${namesSummary}\n\n【注意】此操作將直接從資料庫徹底移除，並即時重算所有滿意度指標與報表。\n此操作無法復原，您確定要繼續刪除嗎？`);
+      if (!confirmed) return;
+
+      const btn = document.getElementById('batchDeleteResponsesBtn');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '⏳ 刪除中...';
+      }
+
+      try {
+        const res = await fetch('/api/delete-response', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items: items })
+        });
+        const result = await res.json();
+        if (res.ok && result.status === 'success') {
+          showToast(`✅ ${result.message || '已成功刪除選取的學員回覆！'}`);
+          await autoSyncAndRefresh();
+        } else {
+          alert(`❌ 刪除失敗：${result.message || '未知錯誤'}`);
+        }
+      } catch (err) {
+        alert(`❌ 刪除請求發生網路異常：${err.message}`);
+      } finally {
+        if (btn) btn.disabled = false;
+        updateSelectedResponsesCount();
+      }
     }
 
     function handleDeleteResponseClick(btn) {
@@ -4312,6 +4431,10 @@
     window.handleModalBackdropClick = handleModalBackdropClick;
     window.copyModalStudentNames = copyModalStudentNames;
     window.copyTextToClipboard = copyTextToClipboard;
+    window.toggleSelectAllResponses = toggleSelectAllResponses;
+    window.syncCardRowCheckbox = syncCardRowCheckbox;
+    window.updateSelectedResponsesCount = updateSelectedResponsesCount;
+    window.handleBatchDeleteResponses = handleBatchDeleteResponses;
   </script>
   <!-- 學員名冊彈跳視窗 (Dimension Students Modal) -->
   <div id="dimensionStudentsModal" class="modal-overlay" onclick="handleModalBackdropClick(event)">

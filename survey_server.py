@@ -744,11 +744,21 @@ class SurveyHandler(BaseHTTPRequestHandler):
             body = self.rfile.read(content_length).decode("utf-8")
             try:
                 payload = json.loads(body)
-                target_timestamp = payload.get("timestamp")
-                target_class_id = payload.get("class_id")
-                target_student_name = payload.get("student_name")
+                items = payload.get("items")
+                if items is None:
+                    target_timestamp = payload.get("timestamp")
+                    target_class_id = payload.get("class_id")
+                    target_student_name = payload.get("student_name")
+                    if target_timestamp or target_student_name:
+                        items = [{
+                            "timestamp": target_timestamp,
+                            "class_id": target_class_id,
+                            "student_name": target_student_name
+                        }]
+                    else:
+                        items = []
 
-                if not target_timestamp and not target_student_name:
+                if not items:
                     self.send_json(400, {"status": "error", "message": "未提供欲刪除的回覆識別資訊"})
                     return
 
@@ -756,27 +766,51 @@ class SurveyHandler(BaseHTTPRequestHandler):
                     self.send_json(404, {"status": "error", "message": "問卷資料庫不存在"})
                     return
 
+                # 建立待刪除項目清單 (支援多筆匹配)
+                delete_targets = []
+                for itm in items:
+                    delete_targets.append({
+                        "timestamp": itm.get("timestamp") or "",
+                        "class_id": itm.get("class_id") or "",
+                        "student_name": itm.get("student_name") or ""
+                    })
+
                 all_rows = []
-                deleted = False
+                deleted_count = 0
                 fieldnames = None
                 with open(config.RESPONSES_CSV_PATH, mode="r", encoding="utf-8-sig") as f:
                     reader = csv.DictReader(f)
                     fieldnames = reader.fieldnames
                     for row in reader:
-                        match = True
-                        if target_timestamp and row.get("timestamp") != target_timestamp:
-                            match = False
-                        if target_class_id and row.get("class_id") != target_class_id:
-                            match = False
-                        if target_student_name and row.get("student_name") != target_student_name:
-                            match = False
+                        r_ts = row.get("timestamp") or ""
+                        r_cid = row.get("class_id") or ""
+                        r_name = row.get("student_name") or ""
 
-                        if match and not deleted:
-                            deleted = True
+                        # 檢查此列是否命中任何一個待刪除項目
+                        matched_idx = -1
+                        for idx, target in enumerate(delete_targets):
+                            t_ts = target["timestamp"]
+                            t_cid = target["class_id"]
+                            t_name = target["student_name"]
+                            match = True
+                            if t_ts and r_ts != t_ts:
+                                match = False
+                            if t_cid and r_cid != t_cid:
+                                match = False
+                            if t_name and r_name != t_name:
+                                match = False
+                            if match:
+                                matched_idx = idx
+                                break
+
+                        if matched_idx >= 0:
+                            deleted_count += 1
+                            # 移除已消耗的目標以防重複匹配
+                            delete_targets.pop(matched_idx)
                             continue  # 移除此筆記錄
                         all_rows.append(row)
 
-                if deleted and fieldnames:
+                if deleted_count > 0 and fieldnames:
                     with open(config.RESPONSES_CSV_PATH, mode="w", encoding="utf-8-sig", newline="") as f:
                         writer = csv.DictWriter(f, fieldnames=fieldnames)
                         writer.writeheader()
@@ -787,7 +821,7 @@ class SurveyHandler(BaseHTTPRequestHandler):
                     except:
                         current_state.df = pd.DataFrame(all_rows)
 
-                    # 若在本機端刪除，同步轉發通知雲端 Render 刪除該筆資料
+                    # 若在本機端刪除，同步轉發通知雲端 Render 刪除該筆/批資料
                     if not os.getenv("RENDER"):
                         try:
                             cloud_url = os.getenv("CLOUD_URL", "https://dawei-survey.onrender.com").rstrip("/")
@@ -798,14 +832,15 @@ class SurveyHandler(BaseHTTPRequestHandler):
                                 data=json.dumps(payload).encode("utf-8"),
                                 headers={"Authorization": f"Basic {auth}", "Content-Type": "application/json"}
                             )
-                            with urllib.request.urlopen(del_req, context=ctx, timeout=6) as r:
+                            with urllib.request.urlopen(del_req, context=ctx, timeout=8) as r:
                                 pass
                         except Exception as err:
                             print(f"[CloudSync Warning] 雲端刪除同步失敗: {err}", flush=True)
 
                     self.send_json(200, {
                         "status": "success",
-                        "message": "已成功刪除該筆學員回覆記錄！"
+                        "message": f"已成功刪除 {deleted_count} 筆學員回覆記錄！",
+                        "deleted_count": deleted_count
                     })
                 else:
                     self.send_json(404, {
