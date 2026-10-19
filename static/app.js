@@ -519,7 +519,7 @@ function updateDynamicContactVisibility() {
 
       if (submitBtn) submitBtn.innerHTML = '<span>🚀 送出匿名結業回饋</span>';
       if (secNote) {
-        secNote.textContent = '🔒 本問卷為 100% 匿名填答，無須填寫任何個人資料，請安心表達真實感受';
+        secNote.textContent = '🔒 我們嚴格保護您的隱私，所有回饋僅供教學檢討與開課通知使用';
       }
     } else {
       // 需留個資（後台強制 或 學員主動預約聯繫/時段/好禮）
@@ -564,7 +564,7 @@ function updateDynamicContactVisibility() {
         if (submitBtn) submitBtn.innerHTML = '<span>🚀 送出結業回饋問卷</span>';
       }
       if (secNote) {
-        secNote.textContent = '🔒 我們嚴格保護您的個資，資訊僅用於教學檢討、聯繫開通與開課資訊通知';
+        secNote.textContent = '🔒 我們嚴格保護您的隱私，所有回饋僅供教學檢討與開課通知使用';
       }
     }
   }
