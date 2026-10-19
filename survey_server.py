@@ -86,6 +86,11 @@ class SurveyHandler(BaseHTTPRequestHandler):
             self.serve_file(demo_path, "text/html; charset=utf-8")
             return
 
+        # 2.2 輕量保活探針 API (/api/health, /api/ping)
+        if path in ("/api/health", "/api/ping", "/ping"):
+            self.send_json(200, {"status": "ok", "service": "dawei-survey", "keep_alive": True})
+            return
+
         # 3. 班級設定 API (/api/class-info?class_id=...) (公開)
         if path == "/api/class-info":
             cid = query_params.get("class_id", [None])[0]
