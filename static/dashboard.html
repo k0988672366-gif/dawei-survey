@@ -752,16 +752,16 @@
             <textarea id="editFollowupTopics" rows="3" class="chat-input" style="height: auto; font-family: monospace; width: 100%; margin-top: 6px;" placeholder="例如：&#10;進階 A：商業場景氛圍光影 ✕ 概念美術完稿實戰班&#10;進階 B：日系動畫 Layout 分鏡 ✕ 鏡頭空間透視大師班"></textarea>
           </div>
 
-          <!-- 13. 開課課表梯次 ＆ 舊生早鳥優惠 (獨立開關與手動時段) -->
+          <!-- 13. 即將開課課表 (獨立開關與手動時段) -->
           <div style="grid-column: span 2; background: #ffffff; border: 1.5px solid var(--card-border); border-radius: 8px; padding: 16px;">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed var(--card-border);">
               <div>
                 <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 0; user-select: none;">
                   <input type="checkbox" id="editEnableFollowupSchedulesCheckbox" style="width: 20px; height: 20px; accent-color: var(--primary-accent); cursor: pointer;">
-                  <strong style="font-size: 1rem; color: var(--text);">📅 13. 開啟「即將開課課表 ＆ 線上直播班預約」（打勾啟用 / 取消即隱藏）</strong>
+                  <strong style="font-size: 1rem; color: var(--text);">📅 13. 開啟「即將開課課表」（打勾啟用 / 取消即隱藏）</strong>
                 </label>
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; margin-left: 30px; margin-bottom: 0; line-height: 1.45;">
-                  💡 <strong>線上直播班時段設定</strong>：僅保留線上直播班時段供學員勾選，方便精準推播開課梯次與舊生早鳥折價券！
+                  💡 <strong>線上直播班時段設定</strong>：僅保留線上直播班時段供學員勾選，方便精準安排後續開課名額與聯繫！
                 </p>
               </div>
             </div>
@@ -779,7 +779,7 @@
                 <strong style="font-size: 0.95rem; color: var(--text); display: block;">📋 14. 開啟此班「學員個資與聯絡資訊收集」（是否全面強制留個資）</strong>
                 <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; line-height: 1.5;">
                   • <strong>打勾啟用（全面強制留個資）</strong>：無論學員是否兌換好禮或預約課程，所有人送出問卷前均<strong>強制填寫個人資料</strong>（姓名與聯絡電話為必填 *，LINE ID 與 Email 為選填）。<br>
-                  • <strong>取消勾選（智慧彈性模式 / 預約才留個資）</strong>：平時預設為純匿名問卷。但若學員主動勾選了「線上單元課兌換」、「延伸進階學習（是／可專員聯繫）」或「開課時段／早鳥優惠」，問卷會自動智慧彈出個資欄位，確保專員能聯絡到學員；其餘純回饋學員免填任何個資直接送出！兩者完全不衝突。
+                  • <strong>取消勾選（智慧彈性模式 / 預約才留個資）</strong>：平時預設為純匿名問卷。但若學員主動勾選了「線上單元課兌換」、「延伸進階學習（是／可專員聯繫）」或「即將開課時段」，問卷會自動智慧彈出個資欄位，確保專員能聯絡到學員；其餘純回饋學員免填任何個資直接送出！兩者完全不衝突。
                 </p>
               </div>
             </label>
@@ -1746,7 +1746,7 @@
         const tr = document.createElement('tr');
         const wants = row.wants_reward !== 'no';
         const hasContact = Boolean((row.phone && row.phone !== '-') || (row.line_id && row.line_id !== '-'));
-        const course = wants ? (row.selected_reward_course || '單元課') : (hasContact ? '預約延伸課表/早鳥' : '無需兌換 (純回饋)');
+        const course = wants ? (row.selected_reward_course || '單元課') : (hasContact ? '預約即將開課時段' : '無需兌換 (純回饋)');
         const phone = row.phone || '-';
         const line = row.line_id || '-';
         const name = row.student_name || (hasContact ? '學員' : '匿名學員');
@@ -1754,7 +1754,7 @@
         if (wants) {
           statusBadge = '<span class="status-badge">待通知開通</span>';
         } else if (hasContact) {
-          statusBadge = '<span class="status-badge" style="background:rgba(56,189,248,0.2); color:#38bdf8; border-color:rgba(56,189,248,0.3);">預約推課/早鳥</span>';
+          statusBadge = '<span class="status-badge" style="background:rgba(56,189,248,0.2); color:#38bdf8; border-color:rgba(56,189,248,0.3);">預約開課時段</span>';
         } else {
           statusBadge = '<span class="status-badge" style="background:rgba(148,163,184,0.2); color:#94a3b8; border-color:rgba(148,163,184,0.3);">純意見回饋</span>';
         }
@@ -2044,11 +2044,11 @@
               </div>
             ` : ''}
 
-            <!-- 13. 開課課表梯次 ＆ 舊生早鳥優惠 (獨立顯示) -->
+            <!-- 13. 即將開課課表 (獨立顯示) -->
             ${(row.followup_schedules_selected && row.followup_schedules_selected !== '未開啟此項調查' && row.followup_schedules_selected !== '未勾選時段') ? `
               <div style="background: #fefce8; border: 1px solid #fef08a; border-radius: 8px; padding: 10px 14px;">
                 <div style="font-size: 0.8rem; font-weight: 700; color: #a16207; display: flex; align-items: center; gap: 4px; margin-bottom: 3px;">
-                  <span>📅 13. 預約開課梯次 ＆ 舊生早鳥優惠</span>
+                  <span>📅 13. 預約即將開課時段</span>
                 </div>
                 <div style="font-size: 0.86rem; color: #713f12; line-height: 1.45; font-weight: 500;">
                   ${escapeHtml(row.followup_schedules_selected)}
@@ -2193,7 +2193,7 @@
         alert('目前無可匯出的回覆資料！');
         return;
       }
-      let csvContent = "\uFEFF填答時間,班級代碼,學員姓名,手機號碼,LINE ID,Email,起點背景,核心進步收穫,主要卡關點,講師授課評分,講師原聲評語,整體課程評分,助教支援評分,助教反饋評語,直播平台體驗,淨推薦值(NPS),勾選兌換之線上單元課,是否有意願兌換,延伸進階主題意願,預約開課梯次與早鳥優惠\n";
+      let csvContent = "\uFEFF填答時間,班級代碼,學員姓名,手機號碼,LINE ID,Email,起點背景,核心進步收穫,主要卡關點,講師授課評分,講師原聲評語,整體課程評分,助教支援評分,助教反饋評語,直播平台體驗,淨推薦值(NPS),勾選兌換之線上單元課,是否有意願兌換,延伸進階主題意願,預約即將開課時段\n";
       allResponsesData.forEach(r => {
         const time = (r.timestamp || '').replace(/"/g, '""');
         const cid = (r.class_id || '').replace(/"/g, '""');

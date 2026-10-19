@@ -338,30 +338,20 @@
         </div>
       </section>
 
-      <!-- 區塊: 線上直播開課課表 ＆ 舊生早鳥優惠預約 (後台 13 可獨立開關與手動修改) -->
+      <!-- 區塊: 即將開課課表 (後台 13 可獨立開關與手動修改) -->
       <section class="form-section" id="followupScheduleSection">
         <div class="section-title">
           <span class="step-num" id="followupScheduleStepNum">06</span>
-          <h3>即將開課課表 ＆ 線上直播班預約</h3>
+          <h3>即將開課課表</h3>
         </div>
 
         <div class="question-group">
           <label class="question-label">
-            🎁 【舊生專屬早鳥優惠】您有興趣接收最新「線上直播班」開課梯次 ＆ 早鳥折價券嗎？
-            <small class="hint">（開課前專員將以 LINE / 簡訊優先發送直播開課梯次通知與專屬折價券）</small>
+            🗓️ 【即將開課課表】後續「線上直播班」梯次時段：
+            <small class="hint">（可複選您方便上課的時間；若無適合時段可免勾選）</small>
           </label>
           <div id="followupSchedulesContainer" style="display: flex; flex-direction: column; gap: 8px;">
-            <!-- 由 JS 依後台設定動態渲染 -->
-          </div>
-          <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
-            <label class="radio-item" style="border-color: #cbd5e1; background: #f8fafc;">
-              <input type="checkbox" id="followupOfferAllCheckbox" value="全部直播時段都想收到通知" style="accent-color: var(--accent-primary); width: 17px; height: 17px;">
-              <span style="font-weight: 600; color: #1e293b;">🔥 線上直播只要有開課，都請第一時間傳送舊生專屬早鳥優惠通知我</span>
-            </label>
-            <label class="radio-item" style="border-color: #e2e8f0;">
-              <input type="checkbox" id="followupNotNeededCheckbox" value="暫不需要" style="accent-color: #64748b; width: 16px; height: 16px;">
-              <span style="color: #64748b; font-size: 0.88rem;">暫不需要，有需求再自行至官網查詢</span>
-            </label>
+            <!-- 由 JS 依後台設定動態渲染線上直播班時段 -->
           </div>
           <input type="hidden" name="followup_schedules_selected" id="followupSchedulesInput" value="">
         </div>
@@ -456,11 +446,11 @@
             🛡️ 個人資料蒐集與隱私保護告知（符合個人資料保護法規定）
           </div>
           <p class="privacy-notice-text">
-            依據《個人資料保護法》第八條規定，本問卷所蒐集之個人資料（姓名、電話、LINE ID、Email），僅供主辦單位進行本次教學滿意度分析、以及後台專員優先為您傳送開課通知、舊生早鳥優惠碼或單元課兌換開通使用。本單位嚴格遵循資訊安全與隱私規範，絕不向第三方洩漏或移作未授權之推銷用途，請安心填寫。
+            依據《個人資料保護法》第八條規定，本問卷所蒐集之個人資料（姓名、電話、LINE ID、Email），僅供主辦單位進行本次教學滿意度分析、以及後台專員優先為您傳送開課通知、最新課表資訊或單元課兌換開通使用。本單位嚴格遵循資訊安全與隱私規範，絕不向第三方洩漏或移作未授權之推銷用途，請安心填寫。
           </p>
           <label class="privacy-notice-agree">
             <input type="checkbox" name="privacy_agree" id="privacyAgreeCheckbox" checked style="accent-color: var(--accent-primary); width: 16px; height: 16px;">
-            <span id="privacyAgreeText">我已詳細閱讀並同意上述個人資料蒐集與優惠聯繫條款 <span class="req">*</span></span>
+            <span id="privacyAgreeText">我已詳細閱讀並同意上述個人資料蒐集與開課聯繫條款 <span class="req">*</span></span>
           </label>
         </div>
       </section>

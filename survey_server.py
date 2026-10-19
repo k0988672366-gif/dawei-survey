@@ -374,7 +374,7 @@ class SurveyHandler(BaseHTTPRequestHandler):
 
             if is_pure_feedback:
                 if data.get("phone") or data.get("line_id"):
-                    msg = "感謝您的回饋！開課通知與舊生早鳥優惠預約已受理。"
+                    msg = "感謝您的回饋！即將開課時段通知已受理。"
                 else:
                     msg = "感謝您的寶貴回饋！問卷已成功送出。"
             else:

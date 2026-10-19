@@ -185,7 +185,7 @@ async function loadClassConfig() {
     window.isFollowupTopicEnabled = isTopicEnabled;
     const topicSection = document.getElementById('followupTopicSection');
 
-    // 獨立處理 13. 開課課表梯次 ＆ 舊生早鳥優惠
+    // 獨立處理 13. 即將開課課表
     const isScheduleEnabled = (data.enable_followup_schedules !== false);
     window.isFollowupScheduleEnabled = isScheduleEnabled;
     const scheduleSection = document.getElementById('followupScheduleSection');
@@ -301,11 +301,9 @@ async function loadClassConfig() {
   }
 }
 
-// 課表多選與舊生早鳥折價券勾選互動邏輯
+// 課表多選勾選互動邏輯
 function initScheduleCheckboxEvents() {
   const scheduleCheckboxes = document.querySelectorAll('.schedule-checkbox');
-  const offerAllChk = document.getElementById('followupOfferAllCheckbox');
-  const notNeededChk = document.getElementById('followupNotNeededCheckbox');
   const hiddenInput = document.getElementById('followupSchedulesInput');
 
   function updateFollowupHiddenInput() {
@@ -313,12 +311,6 @@ function initScheduleCheckboxEvents() {
     scheduleCheckboxes.forEach(cb => {
       if (cb.checked) selected.push(cb.value);
     });
-    if (offerAllChk && offerAllChk.checked) {
-      selected.push("🔥 願意接收舊生專屬早鳥優惠與開課通知");
-    }
-    if (notNeededChk && notNeededChk.checked) {
-      selected.push("暫不需要");
-    }
     if (hiddenInput) {
       hiddenInput.value = selected.join(" 、 ");
     }
@@ -328,32 +320,8 @@ function initScheduleCheckboxEvents() {
   }
 
   scheduleCheckboxes.forEach(cb => {
-    cb.addEventListener('change', () => {
-      if (cb.checked && notNeededChk) {
-        notNeededChk.checked = false;
-      }
-      updateFollowupHiddenInput();
-    });
+    cb.addEventListener('change', updateFollowupHiddenInput);
   });
-
-  if (offerAllChk) {
-    offerAllChk.addEventListener('change', () => {
-      if (offerAllChk.checked && notNeededChk) {
-        notNeededChk.checked = false;
-      }
-      updateFollowupHiddenInput();
-    });
-  }
-
-  if (notNeededChk) {
-    notNeededChk.addEventListener('change', () => {
-      if (notNeededChk.checked) {
-        scheduleCheckboxes.forEach(cb => { cb.checked = false; });
-        if (offerAllChk) offerAllChk.checked = false;
-      }
-      updateFollowupHiddenInput();
-    });
-  }
 }
 
 // 初始化 NPS 評分刻度
@@ -507,12 +475,11 @@ function updateDynamicContactVisibility() {
     }
   }
 
-  // 4. 判斷 13. 開課課表梯次與早鳥優惠是否有勾選 (勾選直播時段或想要舊生優惠)
+  // 4. 判斷 13. 即將開課課表是否有勾選 (勾選直播時段)
   let hasScheduleInterest = false;
   if (window.isFollowupScheduleEnabled) {
     const checkedSchedules = document.querySelectorAll('.schedule-checkbox:checked');
-    const offerAllChk = document.getElementById('followupOfferAllCheckbox');
-    if ((checkedSchedules && checkedSchedules.length > 0) || (offerAllChk && offerAllChk.checked)) {
+    if (checkedSchedules && checkedSchedules.length > 0) {
       hasScheduleInterest = true;
     }
   }
@@ -578,11 +545,11 @@ function updateDynamicContactVisibility() {
         }
         if (submitBtn) submitBtn.innerHTML = '<span>🎁 登記兌換 ＆ 送出結業問卷</span>';
       } else if (hasScheduleInterest) {
-        if (contactTitle) contactTitle.innerHTML = '📮 接收開課通知 ＆ 領取舊生早鳥優惠：學員聯絡資訊';
+        if (contactTitle) contactTitle.innerHTML = '📮 接收開課課表通知 ＆ 學員聯絡資訊';
         if (contactReminder) {
-          contactReminder.innerHTML = '📞 <strong>早鳥優惠碼與梯次通知</strong>：請填寫正確的手機號碼（LINE ID 與 Email 為選填），開課前專員將在第一時間優先為您傳送【最新課綱大綱、開課梯次通知與舊生專屬早鳥優惠碼】！';
+          contactReminder.innerHTML = '📞 <strong>開課梯次通知</strong>：請填寫正確的手機號碼（LINE ID 與 Email 為選填），開課前專員將在第一時間優先為您傳送【最新開課梯次與課表時段資訊】！';
         }
-        if (submitBtn) submitBtn.innerHTML = '<span>🚀 預約開課優惠 ＆ 送出結業問卷</span>';
+        if (submitBtn) submitBtn.innerHTML = '<span>🚀 預約開課時段 ＆ 送出結業問卷</span>';
       } else if (hasTopicInterest) {
         if (contactTitle) contactTitle.innerHTML = '📮 接收進階主題開課通知 ＆ 學員聯絡資訊';
         if (contactReminder) {
@@ -597,7 +564,7 @@ function updateDynamicContactVisibility() {
         if (submitBtn) submitBtn.innerHTML = '<span>🚀 送出結業回饋問卷</span>';
       }
       if (secNote) {
-        secNote.textContent = '🔒 我們嚴格保護您的個資，資訊僅用於教學檢討、聯繫開通與專屬優惠通知';
+        secNote.textContent = '🔒 我們嚴格保護您的個資，資訊僅用於教學檢討、聯繫開通與開課資訊通知';
       }
     }
   }
