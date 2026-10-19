@@ -490,9 +490,9 @@
       <div style="display: flex; align-items: center; gap: 10px; background: #f8fafc; padding: 6px 14px; border-radius: 8px; border: 1px solid var(--card-border);">
         <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.88rem; font-weight: 600; color: var(--text); margin: 0; user-select: none;">
           <input type="checkbox" id="headerContactCheckbox" style="width: 17px; height: 17px; accent-color: var(--primary-accent); cursor: pointer;">
-          <span>📋 強制留個資 (姓名/電話)</span>
+          <span>📋 全面強制留個資</span>
         </label>
-        <span id="headerContactStatusBadge" style="font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; font-weight: 600; background: var(--primary-light); color: #0369a1; border: 1px solid #bae6fd;">已啟用 (強制留姓名/電話)</span>
+        <span id="headerContactStatusBadge" style="font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; font-weight: 600; background: var(--primary-light); color: #0369a1; border: 1px solid #bae6fd;">已啟用 (全面強制)</span>
       </div>
       <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
         <span style="font-size: 0.82rem; color: var(--text-muted);">學員填答網址 (雲端公開，支援縮網址)：</span>
@@ -776,10 +776,10 @@
             <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; margin: 0; user-select: none;">
               <input type="checkbox" id="editEnableContactCheckbox" style="width: 20px; height: 20px; accent-color: var(--primary-accent); margin-top: 2px; cursor: pointer;">
               <div>
-                <strong style="font-size: 0.95rem; color: var(--text); display: block;">📋 14. 開啟此班「學員個資與聯絡資訊收集」（是否需要強制留個資）</strong>
+                <strong style="font-size: 0.95rem; color: var(--text); display: block;">📋 14. 開啟此班「學員個資與聯絡資訊收集」（是否全面強制留個資）</strong>
                 <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; line-height: 1.5;">
-                  • <strong>打勾啟用（強制填寫個資）</strong>：無論學員是否兌換好禮或預約課程，送出問卷前均<strong>強制填寫個人資料</strong>。其中「姓名」與「聯絡電話」為必填（*），「LINE ID」與「Email」為非必填（選填）。<br>
-                  • <strong>取消勾選（無需留個資 / 100% 全匿名問卷）</strong>：問卷將「徹底隱藏個人資料填寫區塊」，完全不要求填寫任何姓名、電話或 Email，以純匿名方式直接提交，適合降低戒心、大幅衝高填答率。
+                  • <strong>打勾啟用（全面強制留個資）</strong>：無論學員是否兌換好禮或預約課程，所有人送出問卷前均<strong>強制填寫個人資料</strong>（姓名與聯絡電話為必填 *，LINE ID 與 Email 為選填）。<br>
+                  • <strong>取消勾選（智慧彈性模式 / 預約才留個資）</strong>：平時預設為純匿名問卷。但若學員主動勾選了「線上單元課兌換」、「延伸進階學習（是／可專員聯繫）」或「開課時段／早鳥優惠」，問卷會自動智慧彈出個資欄位，確保專員能聯絡到學員；其餘純回饋學員免填任何個資直接送出！兩者完全不衝突。
                 </p>
               </div>
             </label>
@@ -1148,12 +1148,12 @@
       if (chk) chk.checked = !!enableContact;
       if (badge) {
         if (enableContact) {
-          badge.textContent = '📋 已啟用 (強制留姓名/電話)';
+          badge.textContent = '📋 已啟用 (全面強制留個資)';
           badge.style.background = 'var(--primary-light)';
           badge.style.color = '#0369a1';
           badge.style.borderColor = '#bae6fd';
         } else {
-          badge.textContent = '🔒 已關閉 (100% 全匿名問卷)';
+          badge.textContent = '🔒 智慧模式 (有預約才彈出個資)';
           badge.style.background = '#f1f5f9';
           badge.style.color = '#475569';
           badge.style.borderColor = '#cbd5e1';
@@ -1169,7 +1169,7 @@
       const currentEnable = classInfo.enable_contact !== false;
       const newEnable = (targetEnable !== undefined) ? !!targetEnable : !currentEnable;
       const courseName = classInfo.course_name || classId;
-      const actionName = newEnable ? '【📋 開啟學員個資收集】（學員送出問卷前強制填寫姓名與電話，LINE/Email選填）' : '【🔒 關閉個資收集（100% 全匿名模式）】（問卷完全不收集任何個人姓名或電話）';
+      const actionName = newEnable ? '【📋 開啟全面強制留個資】（無論是否預約，全員送出前一律強制填寫姓名與電話）' : '【🔒 切換為智慧彈性模式】（預設純匿名，但學員主動預約好禮/延伸/時段時自動彈出個資欄位）';
 
       if (!skipConfirm) {
         const confirmed = confirm(`確定要將班級【${courseName}】切換為：\n${actionName} 嗎？`);

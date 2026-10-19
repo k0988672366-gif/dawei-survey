@@ -258,6 +258,9 @@ async function loadClassConfig() {
               customTopicWrap.style.display = 'none';
             }
           }
+
+          // 即時連動更新聯絡資訊區塊顯隱 (若勾選 是 或 可專員聯繫 即智慧展開個資)
+          updateDynamicContactVisibility();
         }
 
         choiceRadios.forEach(r => {
@@ -511,18 +514,36 @@ function updateDynamicContactVisibility() {
     });
   }
 
-  // 3. 判斷 12. 延伸進階主題是否有開啟
-  const isTopicEnabled = (window.isFollowupTopicEnabled === true);
-  // 4. 判斷 13. 開課課表梯次與早鳥優惠是否有開啟
-  const isScheduleEnabled = (window.isFollowupScheduleEnabled === true);
+  // 3. 判斷 12. 延伸進階主題是否有勾選需要深入學習或聯繫 (是 / 目前沒想法，可專員聯繫)
+  let hasTopicInterest = false;
+  if (window.isFollowupTopicEnabled) {
+    const checkedTopicChoice = document.querySelector('input[name="followup_interest_choice"]:checked')?.value;
+    if (checkedTopicChoice === 'yes' || checkedTopicChoice === 'contact') {
+      hasTopicInterest = true;
+    }
+  }
 
-  // 5. 個資收集模式：後台勾選「需留個資」時為強制填寫（姓名/電話必填，LINE/Email選填，不管是否兌換或了解其他課程都必須填）；未勾選時為 100% 全匿名問卷
-  const isContactEnabled = (window.isContactCollectionEnabled !== false);
-  window.isContactRequired = isContactEnabled;
+  // 4. 判斷 13. 開課課表梯次與早鳥優惠是否有勾選 (勾選直播時段或想要舊生優惠)
+  let hasScheduleInterest = false;
+  if (window.isFollowupScheduleEnabled) {
+    const checkedSchedules = document.querySelectorAll('.schedule-checkbox:checked');
+    const offerAllChk = document.getElementById('followupOfferAllCheckbox');
+    if ((checkedSchedules && checkedSchedules.length > 0) || (offerAllChk && offerAllChk.checked)) {
+      hasScheduleInterest = true;
+    }
+  }
+
+  // 5. 雙層智慧連動邏輯（與後台設定不衝突）：
+  // (A) 後台勾選「需留個資 / 強制留個資」時：所有人一律強制留個資
+  // (B) 後台未勾選「需留個資」（預設純匿名問卷）時：若學員主動選了「好禮兌換」、「延伸學習(是/專員聯繫)」或「開課時段/早鳥通知」，自動智慧彈性展開個資填寫區！
+  const isBackendContactMandatory = (window.isContactCollectionEnabled !== false);
+  const hasStudentRequestedFollowup = (hasRewardInterest || hasTopicInterest || hasScheduleInterest);
+  const shouldRequireContact = isBackendContactMandatory || hasStudentRequestedFollowup;
+  window.isContactRequired = shouldRequireContact;
 
   if (contactSection) {
-    if (!isContactEnabled) {
-      // 後台設定「關閉留個資 / 100% 全匿名問卷」
+    if (!shouldRequireContact) {
+      // 100% 全匿名問卷：學員未勾選好禮、未勾選時段、未要求專員聯繫，且後台未強制留個資
       contactSection.style.display = 'none';
 
       // 移除必填限制並清空欄位
@@ -550,7 +571,7 @@ function updateDynamicContactVisibility() {
         secNote.textContent = '🔒 本問卷為 100% 匿名填答，無須填寫任何個人資料，請安心表達真實感受';
       }
     } else {
-      // 後台設定「開啟學員個資收集」：強制填寫（姓名與電話必填，LINE ID 與 Email 為選填）
+      // 需留個資（後台強制 或 學員主動預約聯繫/時段/好禮）
       contactSection.style.display = 'block';
 
       // 設置必填 (姓名、手機、個資同意必填；LINE ID 與 Email 為非必填)
@@ -572,6 +593,18 @@ function updateDynamicContactVisibility() {
           contactReminder.innerHTML = '📞 <strong>學員聯絡資料填寫</strong>：請填寫您的稱呼與聯絡電話（LINE ID 與 Email 為選填），專員將於 1~2 工作天內主動聯繫為您開通所選線上單元課！';
         }
         if (submitBtn) submitBtn.innerHTML = '<span>🎁 登記兌換 ＆ 送出結業問卷</span>';
+      } else if (hasScheduleInterest) {
+        if (contactTitle) contactTitle.innerHTML = '📮 接收開課通知 ＆ 領取舊生早鳥優惠：學員聯絡資訊';
+        if (contactReminder) {
+          contactReminder.innerHTML = '📞 <strong>早鳥優惠碼與梯次通知</strong>：請填寫正確的手機號碼（LINE ID 與 Email 為選填），開課前專員將在第一時間優先為您傳送【最新課綱大綱、開課梯次通知與舊生專屬早鳥優惠碼】！';
+        }
+        if (submitBtn) submitBtn.innerHTML = '<span>🚀 預約開課優惠 ＆ 送出結業問卷</span>';
+      } else if (hasTopicInterest) {
+        if (contactTitle) contactTitle.innerHTML = '📮 接收進階主題開課通知 ＆ 學員聯絡資訊';
+        if (contactReminder) {
+          contactReminder.innerHTML = '📞 <strong>新課梯次優先通知</strong>：請填寫您的稱呼與聯絡電話（LINE ID 與 Email 為選填），後續若開設您感興趣的進階延伸主題，專員將在第一時間為您發送開課資訊！';
+        }
+        if (submitBtn) submitBtn.innerHTML = '<span>🚀 登記新課通知 ＆ 送出結業問卷</span>';
       } else {
         if (contactTitle) contactTitle.innerHTML = '📮 學員聯絡資訊';
         if (contactReminder) {
