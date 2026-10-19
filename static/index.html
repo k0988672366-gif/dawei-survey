@@ -253,6 +253,14 @@
           </div>
         </div>
 
+        <!-- 我想要說 (文字輸入框，選填 / 不強制填寫) -->
+        <div class="question-group" style="margin-top: 20px;">
+          <label class="question-label">
+            💬 我想要說 <small class="hint">（選填 / 不強制填寫，對課程、講師或教學團隊想說的心聲與建議）</small>
+          </label>
+          <textarea name="feedback_text" id="feedbackTextInput" rows="3" class="text-input" style="height: auto; width: 100%; border-radius: var(--radius-md); padding: 12px 14px; font-family: inherit; font-size: 0.92rem; border: 1.5px solid var(--border-color); resize: vertical; box-sizing: border-box;" placeholder="想對老師、助教或團隊說的心聲，或是任何學習上的收穫與建議都可以寫在這裡喔..."></textarea>
+        </div>
+
         <!-- 結業好禮兌換意願 -->
         <div class="question-group" id="q11WantsRewardContainer" style="margin-top: 24px; padding-top: 18px; border-top: 1px dashed var(--border-color);">
           <label class="question-label">
@@ -273,52 +281,82 @@
               <div class="card-body">
                 <span class="emoji">🚀</span>
                 <strong>無需兌換，直接送出</strong>
-                <small>免填個人聯絡資料</small>
+                <small>免選課直接送出</small>
               </div>
             </label>
           </div>
         </div>
       </section>
 
-      <!-- 區塊: 延伸進階主題意願調查 (後台 12 可獨立開關與手動修改) -->
+      <!-- 區塊: 未來延伸學習意願調查 (後台 12 可獨立開關) -->
       <section class="form-section" id="followupTopicSection">
         <div class="section-title">
           <span class="step-num" id="followupTopicStepNum">05</span>
-          <h3>未來學習成長 ＆ 延伸進階主題調查</h3>
+          <h3>未來學習成長 ＆ 延伸進階學習意願</h3>
         </div>
 
-        <!-- Q: 延伸進階主題 (單選) -->
         <div class="question-group">
           <label class="question-label" id="followupTopicQuestionLabel">
-            未來若由講師開設進階主題，您最希望深入挑戰的方向是？
-            <small class="hint">（可協助教學團隊為大家規劃下梯次進階大綱）</small>
+            未來若由講師開設進階延伸主題或相關課程，您是否有興趣繼續深入學習？
+            <small class="hint">（可協助教學團隊規劃後續梯次大綱）</small>
           </label>
-          <div class="radio-cards horizontal" id="followupTopicsContainer">
-            <!-- 由 JS 依後台設定動態渲染 -->
+          <div class="radio-cards horizontal" id="followupTopicOptions">
+            <label class="radio-card compact" id="topicYesLabel">
+              <input type="radio" name="followup_interest_choice" value="yes">
+              <div class="card-body">
+                <span class="emoji">✨</span>
+                <strong>是，我想繼續深入學習</strong>
+                <small>勾選可填寫想學內容（選填）</small>
+              </div>
+            </label>
+            <label class="radio-card compact" id="topicNoLabel">
+              <input type="radio" name="followup_interest_choice" value="no">
+              <div class="card-body">
+                <span class="emoji">🌱</span>
+                <strong>否，目前暫無規劃</strong>
+                <small>先吸收本次課程為主</small>
+              </div>
+            </label>
+            <label class="radio-card compact" id="topicContactLabel">
+              <input type="radio" name="followup_interest_choice" value="contact">
+              <div class="card-body">
+                <span class="emoji">💬</span>
+                <strong>目前沒想法，可專員聯繫</strong>
+                <small>有適合主題再由專員介紹</small>
+              </div>
+            </label>
           </div>
+
+          <!-- 勾選「是」即跳出輸入文字框 (非必填) -->
+          <div id="followupCustomTopicWrap" style="display: none; margin-top: 14px; animation: fadeIn 0.25s ease;">
+            <label class="question-label" style="font-size: 0.9rem; color: var(--accent-primary); font-weight: 600;">
+              ✍️ 請輸入您未來想深入學習的方向或內容 <small class="hint" style="color: var(--text-muted); font-weight: normal;">（選填 / 不強制填寫）</small>：
+            </label>
+            <textarea id="followupCustomTopicInput" rows="2" class="text-input" style="height: auto; width: 100%; border-radius: var(--radius-md); padding: 10px 14px; font-family: inherit; font-size: 0.92rem; border: 1.5px solid var(--accent-primary); resize: vertical; box-sizing: border-box;" placeholder="例如：日夜光影氛圍、日系分鏡透視、商業接案技巧、角色骨架速繪..."></textarea>
+          </div>
+          <input type="hidden" name="followup_interest_topic" id="followupInterestTopicHidden" value="">
         </div>
       </section>
 
-      <!-- 區塊: 開課課表梯次 ＆ 舊生早鳥優惠 (後台 13 可獨立開關與手動修改) -->
+      <!-- 區塊: 線上直播開課課表 ＆ 舊生早鳥優惠預約 (後台 13 可獨立開關與手動修改) -->
       <section class="form-section" id="followupScheduleSection">
         <div class="section-title">
           <span class="step-num" id="followupScheduleStepNum">06</span>
-          <h3>即將開課課表梯次 ＆ 舊生專屬早鳥優惠預約</h3>
+          <h3>即將開課課表 ＆ 線上直播班預約</h3>
         </div>
 
-        <!-- Q: 開課課表梯次 ✕ 舊生早鳥優惠 (可複選晶片) -->
         <div class="question-group">
           <label class="question-label">
-            🎁 【舊生專屬續報優惠】您有興趣接收哪一梯次的最新開課課表 ＆ 早鳥折價券？
-            <small class="hint">（可複選，開課前專員將以 LINE / 簡訊優先發送專屬優惠碼與報名連結）</small>
+            🎁 【舊生專屬早鳥優惠】您有興趣接收最新「線上直播班」開課梯次 ＆ 早鳥折價券嗎？
+            <small class="hint">（開課前專員將以 LINE / 簡訊優先發送直播開課梯次通知與專屬折價券）</small>
           </label>
           <div id="followupSchedulesContainer" style="display: flex; flex-direction: column; gap: 8px;">
             <!-- 由 JS 依後台設定動態渲染 -->
           </div>
           <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
             <label class="radio-item" style="border-color: #cbd5e1; background: #f8fafc;">
-              <input type="checkbox" id="followupOfferAllCheckbox" value="全部時段都想收到通知" style="accent-color: var(--accent-primary); width: 17px; height: 17px;">
-              <span style="font-weight: 600; color: #1e293b;">🔥 以上只要有開課，都請第一時間傳送舊生專屬早鳥優惠通知我</span>
+              <input type="checkbox" id="followupOfferAllCheckbox" value="全部直播時段都想收到通知" style="accent-color: var(--accent-primary); width: 17px; height: 17px;">
+              <span style="font-weight: 600; color: #1e293b;">🔥 線上直播只要有開課，都請第一時間傳送舊生專屬早鳥優惠通知我</span>
             </label>
             <label class="radio-item" style="border-color: #e2e8f0;">
               <input type="checkbox" id="followupNotNeededCheckbox" value="暫不需要" style="accent-color: #64748b; width: 16px; height: 16px;">
@@ -382,33 +420,33 @@
         </div>
       </section>
 
-      <!-- 區塊: 學員聯絡資訊 (智能連動：有選延伸主題/課表/早鳥/好禮時自動展開並設為必填) -->
-      <section class="form-section" id="contactInfoSection" style="display: none;">
+      <!-- 區塊: 學員聯絡資訊 (強制填寫：姓名與聯絡電話為必填，LINE ID 與 Email 為非必填) -->
+      <section class="form-section" id="contactInfoSection">
         <div class="section-title">
-          <span class="step-num" id="contactStepNum">06</span>
-          <h3 id="contactSectionTitle">📮 領取開課優惠 ＆ 學員聯絡資訊</h3>
+          <span class="step-num" id="contactStepNum">07</span>
+          <h3 id="contactSectionTitle">📮 學員聯絡資訊</h3>
         </div>
 
         <div class="gift-reminder" id="contactSectionReminder" style="margin-bottom: 18px;">
-          📞 <strong>專屬開課通知與早鳥優惠領取</strong>：請填寫正確的聯繫方式，開課前專員將以 LINE / 簡訊優先為您傳送【最新課綱大綱、開課梯次通知與舊生專屬早鳥優惠碼】！
+          📞 <strong>學員聯絡資料填寫</strong>：請填寫您的稱呼與聯絡電話，以便教學團隊為您建立學員檔案、開通線上服務或發送課後資訊！（LINE ID 與 Email 為選填）
         </div>
 
         <div class="input-grid">
           <div class="question-group">
             <label class="question-label">您的稱呼／姓名 <span class="req" id="nameReqMark">*</span></label>
-            <input type="text" name="student_name" id="studentNameInput" class="text-input" placeholder="例如：陳小艾、Tom">
+            <input type="text" name="student_name" id="studentNameInput" class="text-input" placeholder="例如：陳小艾、Tom" required>
           </div>
           <div class="question-group">
-            <label class="question-label">手機號碼 (接收簡訊早鳥碼與開課通知) <span class="req" id="phoneReqMark">*</span></label>
-            <input type="tel" name="phone" id="studentPhoneInput" class="text-input" placeholder="例如：0912-345-678">
+            <label class="question-label">聯絡電話／手機號碼 <span class="req" id="phoneReqMark">*</span></label>
+            <input type="tel" name="phone" id="studentPhoneInput" class="text-input" placeholder="例如：0912-345-678" required>
           </div>
           <div class="question-group">
-            <label class="question-label">LINE ID (方便專員傳送課表與一對一客服) <span class="req" id="lineReqMark">*</span></label>
-            <input type="text" name="line_id" id="studentLineInput" class="text-input" placeholder="例如：line_user123 (若無可填手機)">
+            <label class="question-label">LINE ID <small class="hint">（非必填，選填）</small></label>
+            <input type="text" name="line_id" id="studentLineInput" class="text-input" placeholder="例如：line_user123 (選填)">
           </div>
           <div class="question-group">
-            <label class="question-label">Email 電子信箱 (選填，寄送開通信件)</label>
-            <input type="email" name="email" id="studentEmailInput" class="text-input" placeholder="例如：name@example.com">
+            <label class="question-label">Email 電子信箱 <small class="hint">（非必填，選填）</small></label>
+            <input type="email" name="email" id="studentEmailInput" class="text-input" placeholder="例如：name@example.com (選填)">
           </div>
         </div>
 

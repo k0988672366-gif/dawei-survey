@@ -224,7 +224,7 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 "prior_experience", "key_progress", "struggle_point", "instructor_rating", 
                 "instructor_comment", "course_rating", "ta_rating", "ta_comment", 
                 "platform_experience", "nps_score", "selected_reward_course", "wants_reward",
-                "followup_interest_topic", "followup_schedules_selected"
+                "followup_interest_topic", "followup_schedules_selected", "feedback_text"
             ]
             writer = csv.DictWriter(output, fieldnames=fieldnames, extrasaction="ignore")
             writer.writeheader()
@@ -290,7 +290,7 @@ class SurveyHandler(BaseHTTPRequestHandler):
                     "prior_experience", "key_progress", "struggle_point", "instructor_rating",
                     "instructor_comment", "course_rating", "ta_rating", "ta_comment",
                     "platform_experience", "nps_score", "selected_reward_course", "wants_reward",
-                    "followup_interest_topic", "followup_schedules_selected"
+                    "followup_interest_topic", "followup_schedules_selected", "feedback_text"
                 ]
                 with open(config.RESPONSES_CSV_PATH, "w", newline="", encoding="utf-8-sig") as f:
                     writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
@@ -335,6 +335,15 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 data["phone"] = data.get("phone", "")
                 data["line_id"] = data.get("line_id", "")
                 data["email"] = data.get("email", "")
+
+            # 處理「我想要說」文字匡 (feedback_text)
+            fb_text = (data.get("feedback_text") or "").strip()
+            data["feedback_text"] = fb_text
+            if fb_text:
+                if not data.get("instructor_comment"):
+                    data["instructor_comment"] = fb_text
+                elif fb_text not in data.get("instructor_comment", ""):
+                    data["instructor_comment"] = f"{data['instructor_comment']} ｜ 我想要說：{fb_text}"
 
             self.append_to_csv(data)
 
@@ -843,7 +852,7 @@ class SurveyHandler(BaseHTTPRequestHandler):
             "prior_experience", "key_progress", "struggle_point", "instructor_rating", 
             "instructor_comment", "course_rating", "ta_rating", "ta_comment", 
             "platform_experience", "nps_score", "selected_reward_course", "wants_reward",
-            "followup_interest_topic", "followup_schedules_selected"
+            "followup_interest_topic", "followup_schedules_selected", "feedback_text"
         ]
         file_exists = file_path.exists()
         
@@ -884,7 +893,7 @@ class SurveyHandler(BaseHTTPRequestHandler):
                     "prior_experience", "key_progress", "struggle_point", "instructor_rating",
                     "instructor_comment", "course_rating", "ta_rating", "ta_comment",
                     "platform_experience", "nps_score", "selected_reward_course", "wants_reward",
-                    "followup_interest_topic", "followup_schedules_selected"
+                    "followup_interest_topic", "followup_schedules_selected", "feedback_text"
                 ]
 
                 local_rows = []

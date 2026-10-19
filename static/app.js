@@ -224,57 +224,45 @@ async function loadClassConfig() {
         const topicQuestionLabel = document.getElementById('followupTopicQuestionLabel');
         const teacherName = data.teacher_name || '講師';
         if (topicQuestionLabel) {
-          topicQuestionLabel.innerHTML = `未來若由【${teacherName}老師】開設進階主題，您最希望深入挑戰的方向是？ <small class="hint">（可協助教學團隊為大家規劃下梯次進階大綱）</small>`;
+          topicQuestionLabel.innerHTML = `未來若由【${teacherName}老師】或團隊開設進階延伸主題，您是否有興趣繼續深入學習？ <small class="hint">（可協助教學團隊規劃後續梯次大綱）</small>`;
         }
 
-        // 動態渲染延伸進階主題選項 (單選)
-        const topicsContainer = document.getElementById('followupTopicsContainer');
-        if (topicsContainer) {
-          topicsContainer.innerHTML = '';
-          const topics = (data.followup_topics && data.followup_topics.length > 0)
-            ? data.followup_topics
-            : [
-                "進階 A：商業場景氛圍光影 ✕ 概念美術完稿實戰班",
-                "進階 B：日系動畫 Layout 分鏡 ✕ 鏡頭空間透視大師班",
-                "進階 C：數位繪畫商業接案與作品集專案指導班"
-              ];
+        // 綁定 是／否／目前沒想法，可專員聯繫 互動事件
+        const choiceRadios = document.querySelectorAll('input[name="followup_interest_choice"]');
+        const customTopicWrap = document.getElementById('followupCustomTopicWrap');
+        const customTopicInput = document.getElementById('followupCustomTopicInput');
+        const yesLbl = document.getElementById('topicYesLabel');
+        const noLbl = document.getElementById('topicNoLabel');
+        const contactLbl = document.getElementById('topicContactLabel');
 
-          topics.forEach(top => {
-            const lbl = document.createElement('label');
-            lbl.className = 'radio-card compact';
-            lbl.innerHTML = `
-              <input type="radio" name="followup_interest_topic" value="${top}">
-              <div class="card-body">
-                <span class="emoji">🎨</span>
-                <strong>${top}</strong>
-              </div>
-            `;
-            topicsContainer.appendChild(lbl);
-          });
+        function updateChoiceStyle() {
+          const checkedVal = document.querySelector('input[name="followup_interest_choice"]:checked')?.value;
+          if (yesLbl) {
+            yesLbl.style.borderColor = (checkedVal === 'yes') ? 'var(--accent-primary)' : 'var(--border-color)';
+            yesLbl.style.background = (checkedVal === 'yes') ? 'var(--accent-soft)' : '#ffffff';
+          }
+          if (noLbl) {
+            noLbl.style.borderColor = (checkedVal === 'no') ? 'var(--border-color)' : 'var(--border-color)';
+            noLbl.style.background = (checkedVal === 'no') ? '#f8fafc' : '#ffffff';
+          }
+          if (contactLbl) {
+            contactLbl.style.borderColor = (checkedVal === 'contact') ? 'var(--accent-primary)' : 'var(--border-color)';
+            contactLbl.style.background = (checkedVal === 'contact') ? 'var(--accent-soft)' : '#ffffff';
+          }
 
-          // 複訓與暫無規劃
-          const extraOptions = [
-            { val: "同一門課複習梯次（想再聽一次或推薦朋友）", emoji: "🔄" },
-            { val: "暫無規劃（先吸收本次內容為主）", emoji: "🌱" }
-          ];
-          extraOptions.forEach(opt => {
-            const lbl = document.createElement('label');
-            lbl.className = 'radio-card compact';
-            lbl.innerHTML = `
-              <input type="radio" name="followup_interest_topic" value="${opt.val}">
-              <div class="card-body">
-                <span class="emoji">${opt.emoji}</span>
-                <strong>${opt.val}</strong>
-              </div>
-            `;
-            topicsContainer.appendChild(lbl);
-          });
-
-          // 綁定 12 主題選擇變更事件以智能動態控制個資區塊
-          topicsContainer.querySelectorAll('input[name="followup_interest_topic"]').forEach(r => {
-            r.addEventListener('change', updateDynamicContactVisibility);
-          });
+          if (customTopicWrap) {
+            if (checkedVal === 'yes') {
+              customTopicWrap.style.display = 'block';
+              if (customTopicInput) customTopicInput.focus();
+            } else {
+              customTopicWrap.style.display = 'none';
+            }
+          }
         }
+
+        choiceRadios.forEach(r => {
+          r.addEventListener('change', updateChoiceStyle);
+        });
       }
     }
 
@@ -287,15 +275,13 @@ async function loadClassConfig() {
         if (stepNumEl) stepNumEl.textContent = String(currentStep).padStart(2, '0');
         currentStep++;
 
-        // 動態渲染開課時段／課表晶片 (多選)
+        // 動態渲染開課時段／課表晶片 (僅線上直播班時段)
         const schedulesContainer = document.getElementById('followupSchedulesContainer');
         if (schedulesContainer) {
           schedulesContainer.innerHTML = '';
           const schedules = (data.followup_schedules && data.followup_schedules.length > 0)
             ? data.followup_schedules
             : [
-                "🏛️【實體講座】11/15 (六) 14:00 - 16:00 台北站（實體面對面交流）",
-                "🎨【實體單元課】11/22 (日) 13:30 - 16:30 台中教室精實班",
                 "💻【線上直播班】12/01 起 每週三晚間 19:30 - 21:30"
               ];
 
@@ -525,29 +511,14 @@ function updateDynamicContactVisibility() {
     });
   }
 
-  // 3. 判斷 12. 延伸進階主題是否有選 (且不是暫無規劃)
-  let hasTopicInterest = false;
-  if (window.isFollowupTopicEnabled) {
-    const checkedTopicRadio = document.querySelector('input[name="followup_interest_topic"]:checked');
-    if (checkedTopicRadio && checkedTopicRadio.value && checkedTopicRadio.value !== '暫無規劃（先吸收本次內容為主）') {
-      hasTopicInterest = true;
-    }
-  }
+  // 3. 判斷 12. 延伸進階主題是否有開啟
+  const isTopicEnabled = (window.isFollowupTopicEnabled === true);
+  // 4. 判斷 13. 開課課表梯次與早鳥優惠是否有開啟
+  const isScheduleEnabled = (window.isFollowupScheduleEnabled === true);
 
-  // 4. 判斷 13. 開課課表梯次與早鳥優惠是否有勾選 (且不是暫不需要)
-  let hasScheduleInterest = false;
-  if (window.isFollowupScheduleEnabled) {
-    const checkedSchedules = document.querySelectorAll('.schedule-checkbox:checked');
-    const offerAllChk = document.getElementById('followupOfferAllCheckbox');
-    if ((checkedSchedules && checkedSchedules.length > 0) || (offerAllChk && offerAllChk.checked)) {
-      hasScheduleInterest = true;
-    }
-  }
-
-  // 5. 綜合判斷是否需要留下個人資料
+  // 5. 個資收集模式：後台勾選「需留個資」時為強制填寫（姓名/電話必填，LINE/Email選填，不管是否兌換或了解其他課程都必須填）；未勾選時為 100% 全匿名問卷
   const isContactEnabled = (window.isContactCollectionEnabled !== false);
-  const isContactRequired = isContactEnabled && (hasRewardInterest || hasTopicInterest || hasScheduleInterest);
-  window.isContactRequired = isContactRequired;
+  window.isContactRequired = isContactEnabled;
 
   if (contactSection) {
     if (!isContactEnabled) {
@@ -567,54 +538,49 @@ function updateDynamicContactVisibility() {
         studentLineInput.removeAttribute('required');
         studentLineInput.value = '';
       }
+      const studentEmailInput = document.getElementById('studentEmailInput');
+      if (studentEmailInput) {
+        studentEmailInput.removeAttribute('required');
+        studentEmailInput.value = '';
+      }
       if (privacyAgreeCheckbox) privacyAgreeCheckbox.removeAttribute('required');
 
       if (submitBtn) submitBtn.innerHTML = '<span>🚀 送出匿名結業回饋</span>';
       if (secNote) {
         secNote.textContent = '🔒 本問卷為 100% 匿名填答，無須填寫任何個人資料，請安心表達真實感受';
       }
-    } else if (isContactRequired) {
+    } else {
+      // 後台設定「開啟學員個資收集」：強制填寫（姓名與電話必填，LINE ID 與 Email 為選填）
       contactSection.style.display = 'block';
 
-      // 設置必填 (姓名、手機、LINE、個資同意)
+      // 設置必填 (姓名、手機、個資同意必填；LINE ID 與 Email 為非必填)
       if (studentNameInput) studentNameInput.setAttribute('required', 'required');
       if (studentPhoneInput) studentPhoneInput.setAttribute('required', 'required');
-      if (studentLineInput) studentLineInput.setAttribute('required', 'required');
+      if (studentLineInput) studentLineInput.removeAttribute('required');
+      const studentEmailInput = document.getElementById('studentEmailInput');
+      if (studentEmailInput) studentEmailInput.removeAttribute('required');
       if (privacyAgreeCheckbox) privacyAgreeCheckbox.setAttribute('required', 'required');
 
       if (nameReqMark) nameReqMark.style.display = 'inline';
       if (phoneReqMark) phoneReqMark.style.display = 'inline';
-      if (lineReqMark) lineReqMark.style.display = 'inline';
+      if (lineReqMark) lineReqMark.style.display = 'none';
 
       // 依情境切換文案與提交按鈕
       if (hasRewardInterest) {
-        if (contactTitle) contactTitle.innerHTML = '🎁 登記單元課兌換 ＆ 領取開課通知：學員聯絡資訊';
+        if (contactTitle) contactTitle.innerHTML = '🎁 登記單元課兌換 ＆ 學員聯絡資訊';
         if (contactReminder) {
-          contactReminder.innerHTML = '📞 <strong>開通通知與專屬優惠</strong>：請填寫正確的手機號碼與 LINE ID，專員將於 1~2 工作天內主動聯繫為您開通所選線上單元課，並優先傳送最新開課梯次通知與早鳥折價券！';
+          contactReminder.innerHTML = '📞 <strong>學員聯絡資料填寫</strong>：請填寫您的稱呼與聯絡電話（LINE ID 與 Email 為選填），專員將於 1~2 工作天內主動聯繫為您開通所選線上單元課！';
         }
         if (submitBtn) submitBtn.innerHTML = '<span>🎁 登記兌換 ＆ 送出結業問卷</span>';
       } else {
-        if (contactTitle) contactTitle.innerHTML = '📮 接收開課通知 ＆ 領取舊生早鳥優惠：學員聯絡資訊';
+        if (contactTitle) contactTitle.innerHTML = '📮 學員聯絡資訊';
         if (contactReminder) {
-          contactReminder.innerHTML = '📞 <strong>早鳥優惠碼與梯次通知</strong>：請填寫正確的手機號碼與 LINE ID，開課前專員將在第一時間優先透過 LINE / 簡訊為您傳送【最新課綱大綱、開課梯次通知與舊生專屬早鳥優惠碼】！';
+          contactReminder.innerHTML = '📞 <strong>學員聯絡資料填寫</strong>：請填寫您的稱呼與聯絡電話（LINE ID 與 Email 為選填），以便教學團隊為您建立學員檔案、開通線上服務或發送課後資訊！';
         }
-        if (submitBtn) submitBtn.innerHTML = '<span>🚀 預約開課優惠 ＆ 送出結業問卷</span>';
+        if (submitBtn) submitBtn.innerHTML = '<span>🚀 送出結業回饋問卷</span>';
       }
       if (secNote) {
-        secNote.textContent = '🔒 我們嚴格保護您的個資，資訊僅用於教學檢討、開課通知與專屬早鳥優惠發送';
-      }
-    } else {
-      contactSection.style.display = 'none';
-
-      // 移除必填限制
-      if (studentNameInput) studentNameInput.removeAttribute('required');
-      if (studentPhoneInput) studentPhoneInput.removeAttribute('required');
-      if (studentLineInput) studentLineInput.removeAttribute('required');
-      if (privacyAgreeCheckbox) privacyAgreeCheckbox.removeAttribute('required');
-
-      if (submitBtn) submitBtn.innerHTML = '<span>🚀 送出匿名結業回饋</span>';
-      if (secNote) {
-        secNote.textContent = '🔒 我們嚴格保護您的回饋，資訊僅用於教學檢討與持續優化課程品質';
+        secNote.textContent = '🔒 我們嚴格保護您的個資，資訊僅用於教學檢討、聯繫開通與專屬優惠通知';
       }
     }
   }
@@ -745,6 +711,14 @@ function initFormSubmit() {
       }
     }
 
+    // 處理「💬 我想要說」文字框 (選填 / 不強制填寫)
+    const feedbackInput = document.getElementById('feedbackTextInput');
+    if (feedbackInput && feedbackInput.value.trim()) {
+      data.feedback_text = feedbackInput.value.trim();
+    } else {
+      data.feedback_text = (data.feedback_text || '').trim();
+    }
+
     const isGiftEnabled = window.isGiftEnabled === true;
     const wantsReward = isGiftEnabled && (data.wants_reward !== 'no');
     const isContactRequired = window.isContactRequired === true;
@@ -766,10 +740,21 @@ function initFormSubmit() {
       data.email = data.email ? data.email.trim() : '';
     }
 
+    // 處理 12. 延伸進階主題意願 (是 / 否 / 目前沒想法，可專員聯繫)
     if (!window.isFollowupTopicEnabled) {
       data.followup_interest_topic = "未開啟此項調查";
     } else {
-      data.followup_interest_topic = data.followup_interest_topic || "未填寫";
+      const choice = document.querySelector('input[name="followup_interest_choice"]:checked')?.value;
+      const customTopic = document.getElementById('followupCustomTopicInput')?.value.trim();
+      if (choice === 'yes') {
+        data.followup_interest_topic = customTopic ? `是：${customTopic}` : '是（未填寫具體內容）';
+      } else if (choice === 'no') {
+        data.followup_interest_topic = '否，目前暫無規劃';
+      } else if (choice === 'contact') {
+        data.followup_interest_topic = '目前沒想法，可專員聯繫';
+      } else {
+        data.followup_interest_topic = data.followup_interest_topic || '未勾選';
+      }
     }
 
     if (!window.isFollowupScheduleEnabled) {
@@ -781,7 +766,7 @@ function initFormSubmit() {
     submitBtn.disabled = true;
     submitBtn.innerHTML = wantsReward 
       ? '<span>🚀 兌換申請送出中...</span>' 
-      : (isContactRequired ? '<span>🚀 預約優惠送出中...</span>' : '<span>🚀 問卷送出中...</span>');
+      : (isContactRequired ? '<span>🚀 問卷送出中...</span>' : '<span>🚀 匿名問卷送出中...</span>');
 
     try {
       const response = await fetch('/api/submit', {
@@ -817,8 +802,8 @@ function initFormSubmit() {
             completedRewardCourseName.textContent = data.selected_reward_course;
           }
         } else if (isContactRequired) {
-          const t = '🎉 問卷回饋與開課早鳥優惠預約已受理！';
-          const s = '感謝您的認真填寫！專員將在開課前優先以 LINE / 簡訊為您傳送最新開課通知與專屬早鳥優惠碼 ✨';
+          const t = '🎉 結業問卷已成功送出！';
+          const s = '非常感謝您撥冗填寫寶貴意見，您的回饋將幫助教學團隊持續打磨更好的學習體驗 ✨';
           if (modalTitle) modalTitle.textContent = t;
           if (modalSub) modalSub.textContent = s;
           if (modalGiftBox) modalGiftBox.style.display = 'none';
@@ -826,7 +811,7 @@ function initFormSubmit() {
           if (completedSub) completedSub.textContent = s;
           if (completedGiftBox) completedGiftBox.style.display = 'none';
         } else {
-          const t = '🎉 問卷回饋已成功送出！';
+          const t = '🎉 匿名結業問卷已成功送出！';
           const s = '非常感謝您撥冗填寫寶貴意見，您的回饋將幫助教學團隊持續打磨更好的學習體驗 ✨';
           if (modalTitle) modalTitle.textContent = t;
           if (modalSub) modalSub.textContent = s;

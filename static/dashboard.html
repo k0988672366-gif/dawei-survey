@@ -490,9 +490,9 @@
       <div style="display: flex; align-items: center; gap: 10px; background: #f8fafc; padding: 6px 14px; border-radius: 8px; border: 1px solid var(--card-border);">
         <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.88rem; font-weight: 600; color: var(--text); margin: 0; user-select: none;">
           <input type="checkbox" id="headerContactCheckbox" style="width: 17px; height: 17px; accent-color: var(--primary-accent); cursor: pointer;">
-          <span>📋 需留個資 (收集名冊)</span>
+          <span>📋 強制留個資 (姓名/電話)</span>
         </label>
-        <span id="headerContactStatusBadge" style="font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; font-weight: 600; background: var(--primary-light); color: #0369a1; border: 1px solid #bae6fd;">已啟用 (收集個資)</span>
+        <span id="headerContactStatusBadge" style="font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; font-weight: 600; background: var(--primary-light); color: #0369a1; border: 1px solid #bae6fd;">已啟用 (強制留姓名/電話)</span>
       </div>
       <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
         <span style="font-size: 0.82rem; color: var(--text-muted);">學員填答網址 (雲端公開，支援縮網址)：</span>
@@ -739,17 +739,17 @@
               <div>
                 <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 0; user-select: none;">
                   <input type="checkbox" id="editEnableFollowupTopicsCheckbox" style="width: 20px; height: 20px; accent-color: var(--primary-accent); cursor: pointer;">
-                  <strong style="font-size: 1rem; color: var(--text);">🎨 12. 開啟「延伸進階主題意願調查」（打勾啟用 / 取消即隱藏）</strong>
+                  <strong style="font-size: 1rem; color: var(--text);">🎨 12. 開啟「未來延伸學習意願調查」（打勾啟用 / 取消即隱藏）</strong>
                 </label>
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; margin-left: 30px; margin-bottom: 0; line-height: 1.45;">
-                  💡 <strong>獨立課綱研發與主題調查</strong>：專門調查學員未來想學什麼進階方向，可單獨開啟，不需等待課表排定。
+                  💡 <strong>主題意向調查</strong>：問卷端提供『是，我想繼續深入學習（點選即跳出自訂輸入框，可填寫想學內容，非必填）』、『否，目前暫無規劃』、『目前沒想法，可專員聯繫』三種選項。打勾啟用此題，取消則完全隱藏。
                 </p>
               </div>
             </div>
             <label style="font-size: 0.88rem; font-weight: 600; color: var(--text); margin: 0; display: block;">
-              進階主題清單（每行一個主題，直接在下方打字或貼上新名稱即可手動修改）：
+              進階主題清單（可填寫預設主題或課程方向，每行一個主題）：
             </label>
-            <textarea id="editFollowupTopics" rows="4" class="chat-input" style="height: auto; font-family: monospace; width: 100%; margin-top: 6px;" placeholder="例如：&#10;進階 A：商業場景氛圍光影 ✕ 概念美術完稿實戰班&#10;進階 B：日系動畫 Layout 分鏡 ✕ 鏡頭空間透視大師班&#10;進階 C：數位繪畫商業接案與作品集專案指導班"></textarea>
+            <textarea id="editFollowupTopics" rows="3" class="chat-input" style="height: auto; font-family: monospace; width: 100%; margin-top: 6px;" placeholder="例如：&#10;進階 A：商業場景氛圍光影 ✕ 概念美術完稿實戰班&#10;進階 B：日系動畫 Layout 分鏡 ✕ 鏡頭空間透視大師班"></textarea>
           </div>
 
           <!-- 13. 開課課表梯次 ＆ 舊生早鳥優惠 (獨立開關與手動時段) -->
@@ -758,17 +758,17 @@
               <div>
                 <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 0; user-select: none;">
                   <input type="checkbox" id="editEnableFollowupSchedulesCheckbox" style="width: 20px; height: 20px; accent-color: var(--primary-accent); cursor: pointer;">
-                  <strong style="font-size: 1rem; color: var(--text);">📅 13. 開啟「開課課表梯次 ＆ 舊生早鳥優惠預約」（打勾啟用 / 取消即隱藏）</strong>
+                  <strong style="font-size: 1rem; color: var(--text);">📅 13. 開啟「即將開課課表 ＆ 線上直播班預約」（打勾啟用 / 取消即隱藏）</strong>
                 </label>
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; margin-left: 30px; margin-bottom: 0; line-height: 1.45;">
-                  💡 <strong>獨立精準推課/促購轉化</strong>：包含實體講座、單元課與線上直播課表時段及早鳥折價券領取，可單獨開啟，直接收集意願預約名單！
+                  💡 <strong>線上直播班時段設定</strong>：僅保留線上直播班時段供學員勾選，方便精準推播開課梯次與舊生早鳥折價券！
                 </p>
               </div>
             </div>
             <label style="font-size: 0.88rem; font-weight: 600; color: var(--text); margin: 0; display: block;">
-              開課課表與梯次時段（每行一個時段，包含實體講座地點、單元課、直播時段，直接修改即可）：
+              線上直播班課表與時段（每行一個時段，直接修改即可）：
             </label>
-            <textarea id="editFollowupSchedules" rows="4" class="chat-input" style="height: auto; font-family: monospace; width: 100%; margin-top: 6px;" placeholder="例如：&#10;🏛️【實體講座】11/15 (六) 14:00 - 16:00 台北站（實體交流）&#10;🎨【實體單元課】11/22 (日) 13:30 - 16:30 台中教室精實班&#10;💻【線上直播班】12/01 起 每週三晚間 19:30 - 21:30"></textarea>
+            <textarea id="editFollowupSchedules" rows="3" class="chat-input" style="height: auto; font-family: monospace; width: 100%; margin-top: 6px;" placeholder="例如：&#10;💻【線上直播班】12/01 起 每週三晚間 19:30 - 21:30"></textarea>
           </div>
 
           <!-- 14. 是否需要留個資 (學員個資與聯絡資訊收集開關) -->
@@ -776,10 +776,10 @@
             <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; margin: 0; user-select: none;">
               <input type="checkbox" id="editEnableContactCheckbox" style="width: 20px; height: 20px; accent-color: var(--primary-accent); margin-top: 2px; cursor: pointer;">
               <div>
-                <strong style="font-size: 0.95rem; color: var(--text); display: block;">📋 14. 開啟此班「學員個資與聯絡資訊收集」（是否需要留個資）</strong>
+                <strong style="font-size: 0.95rem; color: var(--text); display: block;">📋 14. 開啟此班「學員個資與聯絡資訊收集」（是否需要強制留個資）</strong>
                 <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; line-height: 1.5;">
-                  • <strong>打勾啟用（需要留個資）</strong>：當學員欲兌換線上單元課、預約延伸主題或領取開課早鳥優惠時，問卷將引導學員留下姓名、手機號碼與 LINE ID，方便專員後續聯繫推課與發送好禮。<br>
-                  • <strong>取消勾選（無需留個資 / 100% 全匿名）</strong>：問卷將「徹底隱藏個人資料填寫區塊」，即使學員選填了延伸主題或開課時段，也完全不詢問、不要求留任何姓名或電話，以純匿名方式直接提交！適合降低學生戒心、大幅衝高填答率。
+                  • <strong>打勾啟用（強制填寫個資）</strong>：無論學員是否兌換好禮或預約課程，送出問卷前均<strong>強制填寫個人資料</strong>。其中「姓名」與「聯絡電話」為必填（*），「LINE ID」與「Email」為非必填（選填）。<br>
+                  • <strong>取消勾選（無需留個資 / 100% 全匿名問卷）</strong>：問卷將「徹底隱藏個人資料填寫區塊」，完全不要求填寫任何姓名、電話或 Email，以純匿名方式直接提交，適合降低戒心、大幅衝高填答率。
                 </p>
               </div>
             </label>
@@ -1148,12 +1148,12 @@
       if (chk) chk.checked = !!enableContact;
       if (badge) {
         if (enableContact) {
-          badge.textContent = '📋 已啟用 (需要留個資)';
+          badge.textContent = '📋 已啟用 (強制留姓名/電話)';
           badge.style.background = 'var(--primary-light)';
           badge.style.color = '#0369a1';
           badge.style.borderColor = '#bae6fd';
         } else {
-          badge.textContent = '🔒 已關閉 (全匿名問卷)';
+          badge.textContent = '🔒 已關閉 (100% 全匿名問卷)';
           badge.style.background = '#f1f5f9';
           badge.style.color = '#475569';
           badge.style.borderColor = '#cbd5e1';
@@ -1169,7 +1169,7 @@
       const currentEnable = classInfo.enable_contact !== false;
       const newEnable = (targetEnable !== undefined) ? !!targetEnable : !currentEnable;
       const courseName = classInfo.course_name || classId;
-      const actionName = newEnable ? '【📋 開啟學員個資收集】（學員勾選好禮或延伸課時將引導填寫聯絡方式）' : '【🔒 關閉個資收集（全匿名模式）】（問卷完全不收集任何個人姓名或電話）';
+      const actionName = newEnable ? '【📋 開啟學員個資收集】（學員送出問卷前強制填寫姓名與電話，LINE/Email選填）' : '【🔒 關閉個資收集（100% 全匿名模式）】（問卷完全不收集任何個人姓名或電話）';
 
       if (!skipConfirm) {
         const confirmed = confirm(`確定要將班級【${courseName}】切換為：\n${actionName} 嗎？`);
@@ -1592,6 +1592,18 @@
             isAlert: false
           });
         }
+
+        const feedbackText = (r.feedback_text || '').trim();
+        if (feedbackText && !['無', 'none', 'nan', '沒有', '-'].includes(feedbackText.toLowerCase()) && feedbackText.length >= 2) {
+          const score = parseFloat(r.nps_score || r.instructor_rating || 5);
+          quotes.push({
+            name: r.student_name || '學員',
+            exp: r.prior_experience || '學員',
+            score: score,
+            quote: `[我想要說] ${feedbackText}`,
+            isAlert: alertKeywords.some(k => feedbackText.includes(k)) || score <= 7
+          });
+        }
       });
 
       if (badge) badge.textContent = `${quotes.length} 則精選`;
@@ -1909,13 +1921,16 @@
         // 學員原聲留言
         const instComment = (row.instructor_comment || '').trim();
         const taComment = (row.ta_comment || '').trim();
+        const feedbackText = (row.feedback_text || '').trim();
         const hasTaComm = taComment && !['無', 'none', '沒有', '-'].includes(taComment.toLowerCase());
+        const hasFeedback = feedbackText && !['無', 'none', '沒有', '-'].includes(feedbackText.toLowerCase());
 
         let quoteBlockHtml = '';
-        if (instComment || hasTaComm) {
+        if (instComment || hasTaComm || hasFeedback) {
           quoteBlockHtml = `
             <div style="background: #f8fafc; border-left: 4px solid #2563eb; border-radius: 0 8px 8px 0; padding: 12px 18px; border-top: 1px solid #edf2f7; border-right: 1px solid #edf2f7; border-bottom: 1px solid #edf2f7;">
-              ${instComment ? `<div style="font-size: 0.98rem; color: #0f172a; line-height: 1.6; font-weight: 500;">💬 「${escapeHtml(instComment)}」</div>` : '<div style="font-size: 0.85rem; color: #94a3b8; font-style: italic;">(學員未留下文字評語)</div>'}
+              ${instComment ? `<div style="font-size: 0.98rem; color: #0f172a; line-height: 1.6; font-weight: 500;">💬 「${escapeHtml(instComment)}」</div>` : '<div style="font-size: 0.85rem; color: #94a3b8; font-style: italic;">(學員未留下老師評語)</div>'}
+              ${hasFeedback ? `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #e2e8f0; font-size: 0.92rem; color: #0369a1; line-height: 1.5;"><strong style="color: #0284c7;">💬 我想要說：</strong>「${escapeHtml(feedbackText)}」</div>` : ''}
               ${hasTaComm ? `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #e2e8f0; font-size: 0.85rem; color: #475569; line-height: 1.5;"><strong style="color: #6366f1;">🤝 助教反饋：</strong>「${escapeHtml(taComment)}」</div>` : ''}
             </div>
           `;
@@ -2065,6 +2080,9 @@
           if (instComment) {
             tableCommentHtml += `<div style="font-size: 0.85rem; color: #1e293b; line-height: 1.45;">「${escapeHtml(instComment)}」</div>`;
           }
+          if (hasFeedback) {
+            tableCommentHtml += `<div style="font-size: 0.78rem; color: #0284c7; margin-top: 3px; padding-left: 6px; border-left: 2px solid #0284c7;">心聲: ${escapeHtml(feedbackText)}</div>`;
+          }
           if (hasTaComm) {
             tableCommentHtml += `<div style="font-size: 0.78rem; color: #64748b; margin-top: 3px; padding-left: 6px; border-left: 2px solid #cbd5e1;">助教: ${escapeHtml(taComment)}</div>`;
           }
@@ -2117,6 +2135,7 @@
           r.email,
           r.prior_experience,
           r.instructor_comment,
+          r.feedback_text,
           r.ta_comment,
           r.struggle_point,
           r.key_progress,
