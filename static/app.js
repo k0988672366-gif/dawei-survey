@@ -42,6 +42,9 @@ async function loadClassConfig() {
     window.isGiftEnabled = (data.enable_gift === true);
     const isGift = window.isGiftEnabled;
 
+    // 判斷是否開啟學員個資收集 (預設為 true，關閉則為 100% 全匿名問卷)
+    window.isContactCollectionEnabled = (data.enable_contact !== false);
+
     const badgeEl = document.getElementById('badgeText');
     const titleEl = document.getElementById('courseTitle');
     const subtitleEl = document.getElementById('courseSubtitle');
@@ -542,11 +545,35 @@ function updateDynamicContactVisibility() {
   }
 
   // 5. 綜合判斷是否需要留下個人資料
-  const isContactRequired = hasRewardInterest || hasTopicInterest || hasScheduleInterest;
+  const isContactEnabled = (window.isContactCollectionEnabled !== false);
+  const isContactRequired = isContactEnabled && (hasRewardInterest || hasTopicInterest || hasScheduleInterest);
   window.isContactRequired = isContactRequired;
 
   if (contactSection) {
-    if (isContactRequired) {
+    if (!isContactEnabled) {
+      // 後台設定「關閉留個資 / 100% 全匿名問卷」
+      contactSection.style.display = 'none';
+
+      // 移除必填限制並清空欄位
+      if (studentNameInput) {
+        studentNameInput.removeAttribute('required');
+        studentNameInput.value = '';
+      }
+      if (studentPhoneInput) {
+        studentPhoneInput.removeAttribute('required');
+        studentPhoneInput.value = '';
+      }
+      if (studentLineInput) {
+        studentLineInput.removeAttribute('required');
+        studentLineInput.value = '';
+      }
+      if (privacyAgreeCheckbox) privacyAgreeCheckbox.removeAttribute('required');
+
+      if (submitBtn) submitBtn.innerHTML = '<span>🚀 送出匿名結業回饋</span>';
+      if (secNote) {
+        secNote.textContent = '🔒 本問卷為 100% 匿名填答，無須填寫任何個人資料，請安心表達真實感受';
+      }
+    } else if (isContactRequired) {
       contactSection.style.display = 'block';
 
       // 設置必填 (姓名、手機、LINE、個資同意)
@@ -728,7 +755,7 @@ function initFormSubmit() {
     }
 
     if (!isContactRequired) {
-      data.student_name = data.student_name ? data.student_name.trim() : '匿名學員';
+      data.student_name = '匿名學員';
       data.phone = '';
       data.line_id = '';
       data.email = '';

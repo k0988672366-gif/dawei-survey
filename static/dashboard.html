@@ -486,6 +486,14 @@
         </label>
         <span id="headerGiftStatusBadge" style="font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; font-weight: 600; background: var(--success-bg); color: #166534; border: 1px solid var(--success-border);">已啟用 (行銷模式)</span>
       </div>
+      <!-- 學員個資收集模式切換 (核取方塊 Checkbox Switch) -->
+      <div style="display: flex; align-items: center; gap: 10px; background: #f8fafc; padding: 6px 14px; border-radius: 8px; border: 1px solid var(--card-border);">
+        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.88rem; font-weight: 600; color: var(--text); margin: 0; user-select: none;">
+          <input type="checkbox" id="headerContactCheckbox" style="width: 17px; height: 17px; accent-color: var(--primary-accent); cursor: pointer;">
+          <span>📋 需留個資 (收集名冊)</span>
+        </label>
+        <span id="headerContactStatusBadge" style="font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; font-weight: 600; background: var(--primary-light); color: #0369a1; border: 1px solid #bae6fd;">已啟用 (收集個資)</span>
+      </div>
       <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
         <span style="font-size: 0.82rem; color: var(--text-muted);">學員填答網址 (雲端公開，支援縮網址)：</span>
         <code id="activeClassUrlDisplay" style="background: #f1f5f9; padding: 4px 10px; border-radius: 6px; color: var(--text); font-family: monospace; font-size: 0.85rem; border: 1px solid var(--card-border);">載入中...</code>
@@ -761,6 +769,20 @@
               開課課表與梯次時段（每行一個時段，包含實體講座地點、單元課、直播時段，直接修改即可）：
             </label>
             <textarea id="editFollowupSchedules" rows="4" class="chat-input" style="height: auto; font-family: monospace; width: 100%; margin-top: 6px;" placeholder="例如：&#10;🏛️【實體講座】11/15 (六) 14:00 - 16:00 台北站（實體交流）&#10;🎨【實體單元課】11/22 (日) 13:30 - 16:30 台中教室精實班&#10;💻【線上直播班】12/01 起 每週三晚間 19:30 - 21:30"></textarea>
+          </div>
+
+          <!-- 14. 是否需要留個資 (學員個資與聯絡資訊收集開關) -->
+          <div style="grid-column: span 2; background: #f8fafc; border: 1.5px solid var(--card-border); border-radius: 8px; padding: 14px 18px; margin-top: 4px;">
+            <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; margin: 0; user-select: none;">
+              <input type="checkbox" id="editEnableContactCheckbox" style="width: 20px; height: 20px; accent-color: var(--primary-accent); margin-top: 2px; cursor: pointer;">
+              <div>
+                <strong style="font-size: 0.95rem; color: var(--text); display: block;">📋 14. 開啟此班「學員個資與聯絡資訊收集」（是否需要留個資）</strong>
+                <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; line-height: 1.5;">
+                  • <strong>打勾啟用（需要留個資）</strong>：當學員欲兌換線上單元課、預約延伸主題或領取開課早鳥優惠時，問卷將引導學員留下姓名、手機號碼與 LINE ID，方便專員後續聯繫推課與發送好禮。<br>
+                  • <strong>取消勾選（無需留個資 / 100% 全匿名）</strong>：問卷將「徹底隱藏個人資料填寫區塊」，即使學員選填了延伸主題或開課時段，也完全不詢問、不要求留任何姓名或電話，以純匿名方式直接提交！適合降低學生戒心、大幅衝高填答率。
+                </p>
+              </div>
+            </label>
           </div>
         </form>
       </div>
@@ -1120,6 +1142,72 @@
     }
     window.toggleGiftForClass = toggleGiftForClass;
 
+    function updateContactToggleUI(enableContact) {
+      const chk = document.getElementById('headerContactCheckbox');
+      const badge = document.getElementById('headerContactStatusBadge');
+      if (chk) chk.checked = !!enableContact;
+      if (badge) {
+        if (enableContact) {
+          badge.textContent = '📋 已啟用 (需要留個資)';
+          badge.style.background = 'var(--primary-light)';
+          badge.style.color = '#0369a1';
+          badge.style.borderColor = '#bae6fd';
+        } else {
+          badge.textContent = '🔒 已關閉 (全匿名問卷)';
+          badge.style.background = '#f1f5f9';
+          badge.style.color = '#475569';
+          badge.style.borderColor = '#cbd5e1';
+        }
+      }
+      const editContactChk = document.getElementById('editEnableContactCheckbox');
+      if (editContactChk) editContactChk.checked = !!enableContact;
+    }
+
+    async function toggleContactForClass(classId, targetEnable = undefined, skipConfirm = false) {
+      if (!classId) return;
+      const classInfo = allClassesData[classId] || {};
+      const currentEnable = classInfo.enable_contact !== false;
+      const newEnable = (targetEnable !== undefined) ? !!targetEnable : !currentEnable;
+      const courseName = classInfo.course_name || classId;
+      const actionName = newEnable ? '【📋 開啟學員個資收集】（學員勾選好禮或延伸課時將引導填寫聯絡方式）' : '【🔒 關閉個資收集（全匿名模式）】（問卷完全不收集任何個人姓名或電話）';
+
+      if (!skipConfirm) {
+        const confirmed = confirm(`確定要將班級【${courseName}】切換為：\n${actionName} 嗎？`);
+        if (!confirmed) {
+          updateContactToggleUI(currentEnable);
+          return;
+        }
+      }
+
+      try {
+        const res = await fetch('/api/toggle-contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ class_id: classId, enable_contact: newEnable })
+        });
+        const data = await res.json();
+        if (res.ok && data.status === 'success') {
+          if (allClassesData[classId]) {
+            allClassesData[classId].enable_contact = data.enable_contact;
+          }
+          if (classId === currentClassId) {
+            updateContactToggleUI(data.enable_contact);
+          }
+          renderPublishedClassesList(allClassesData, currentClassId);
+          if (!skipConfirm) {
+            alert(`✅ ${data.message}`);
+          }
+        } else {
+          alert(`❌ 切換失敗：${data.message || '未知錯誤'}`);
+          updateContactToggleUI(currentEnable);
+        }
+      } catch (err) {
+        alert(`❌ 連線異常：${err.message}`);
+        updateContactToggleUI(currentEnable);
+      }
+    }
+    window.toggleContactForClass = toggleContactForClass;
+
     // 單元課個別勾選與清單管理 (因有些我想送有些不想)
     let currentRewardItems = [];
 
@@ -1259,8 +1347,10 @@
       const teacherDisp = document.getElementById('activeClassTeacherDisplay');
       if (teacherDisp) teacherDisp.textContent = `(授課講師: ${teacherName})`;
 
-      // 更新好禮開關按鈕狀態
+      // 更新好禮與個資開關按鈕狀態
       updateGiftToggleUI(enableGift);
+      const enableContact = classInfo.enable_contact !== false;
+      updateContactToggleUI(enableContact);
 
       // 2. 更新學員問卷網址
       const targetSurveyUrl = `/?class=${classId}`;
@@ -1348,12 +1438,18 @@
           ? '<span style="background:var(--success-bg); color:#166534; border:1px solid var(--success-border); padding:2px 8px; border-radius:6px; font-size:0.75rem; font-weight:600;">🎁 好禮贈送中</span>'
           : '<span style="background:var(--gold-bg); color:#92400e; border:1px solid var(--gold-border); padding:2px 8px; border-radius:6px; font-size:0.75rem; font-weight:600;">📝 純回饋模式</span>';
 
+        const isContactEnabled = c.enable_contact !== false;
+        const contactBadge = isContactEnabled
+          ? '<span style="background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; padding:2px 8px; border-radius:6px; font-size:0.75rem; font-weight:600;">📋 需留個資</span>'
+          : '<span style="background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; padding:2px 8px; border-radius:6px; font-size:0.75rem; font-weight:600;">🔒 全匿名(免留個資)</span>';
+
         card.innerHTML = `
           <div>
             <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
               <strong style="color: var(--text); font-size: 1rem;">${c.course_name || cid}</strong>
               ${isActive ? '<span style="background:var(--success-bg); color:#166534; border:1px solid var(--success-border); padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:600;">● 現正檢視</span>' : ''}
               ${giftBadge}
+              ${contactBadge}
               <span style="color: var(--text-muted); font-size: 0.82rem;">(講師: ${c.teacher_name || '老師'})</span>
             </div>
             <div style="margin-top: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
@@ -1364,6 +1460,9 @@
           <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
             <button type="button" class="btn btn-secondary" onclick="toggleGiftForClass('${cid}')" style="padding: 7px 12px; font-size: 0.84rem; border-color: ${isGiftEnabled ? 'var(--gold-border)' : 'var(--success-border)'}; color: ${isGiftEnabled ? '#92400e' : '#166534'};" title="切換此班的好禮贈送模式">
               ${isGiftEnabled ? '⛔ 切換為純回饋' : '🎁 開啟好禮贈送'}
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="toggleContactForClass('${cid}')" style="padding: 7px 12px; font-size: 0.84rem; border-color: ${isContactEnabled ? '#bae6fd' : '#cbd5e1'}; color: ${isContactEnabled ? '#0369a1' : '#475569'};" title="切換此班是否收集學員個資">
+              ${isContactEnabled ? '🔒 切換為免留個資' : '📋 開啟收集個資'}
             </button>
             <button type="button" class="btn btn-secondary" onclick="copyClassLink('${cid}', '${(c.course_name||cid).replace(/'/g, "\\'")}')" style="padding: 7px 14px; font-size: 0.84rem; border-color: var(--primary-accent); color: var(--primary-accent);">
               🔗 複製本班問卷連結
@@ -2243,6 +2342,10 @@
         if (editFollowupSchedulesChk) {
           editFollowupSchedulesChk.checked = (data.enable_followup_schedules !== false);
         }
+        const editContactChk = document.getElementById('editEnableContactCheckbox');
+        if (editContactChk) {
+          editContactChk.checked = (data.enable_contact !== false);
+        }
       } catch (e) {
         console.error('Failed to load class config to editor:', e);
       }
@@ -2401,6 +2504,14 @@
         });
       }
 
+      // 頂部常駐個資收集模式核取方塊切換 (一秒即時更新，免跳彈窗)
+      const headerContactCheckbox = document.getElementById('headerContactCheckbox');
+      if (headerContactCheckbox) {
+        headerContactCheckbox.addEventListener('change', (e) => {
+          toggleContactForClass(currentClassId, e.target.checked, true);
+        });
+      }
+
       // 單元課新增按鈕
       const addRewardBtn = document.getElementById('addRewardCourseBtn');
       if (addRewardBtn) {
@@ -2476,6 +2587,9 @@
           const enableFollowupSchedulesVal = document.getElementById('editEnableFollowupSchedulesCheckbox')
             ? document.getElementById('editEnableFollowupSchedulesCheckbox').checked
             : true;
+          const enableContactVal = document.getElementById('editEnableContactCheckbox')
+            ? document.getElementById('editEnableContactCheckbox').checked
+            : true;
 
           const payload = {
             class_id: document.getElementById('editClassId').value,
@@ -2491,6 +2605,7 @@
             pill_2: document.getElementById('editPill2').value,
             pill_3: document.getElementById('editPill3').value,
             enable_gift: enableGiftVal,
+            enable_contact: enableContactVal,
             reward_courses: enabledCourses,
             reward_course_items: currentRewardItems,
             enable_followup_topics: enableFollowupTopicsVal,
@@ -2511,6 +2626,7 @@
               document.getElementById('topTitle').textContent = `🎨 ${payload.course_name} ✕ 多代理協同 AI 結業分析師`;
               if (allClassesData[payload.class_id]) {
                 allClassesData[payload.class_id].enable_gift = payload.enable_gift;
+                allClassesData[payload.class_id].enable_contact = payload.enable_contact;
                 allClassesData[payload.class_id].course_name = payload.course_name;
                 allClassesData[payload.class_id].reward_courses = payload.reward_courses;
                 allClassesData[payload.class_id].reward_course_items = payload.reward_course_items;
@@ -2521,6 +2637,7 @@
               }
               if (payload.class_id === currentClassId) {
                 updateGiftToggleUI(payload.enable_gift);
+                updateContactToggleUI(payload.enable_contact);
               }
               renderPublishedClassesList(allClassesData, currentClassId);
             } else {

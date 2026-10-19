@@ -410,6 +410,43 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 self.send_json(500, {"status": "error", "message": f"好禮切換異常: {str(e)}"})
             return
 
+        # 快速切換學員個資收集開關 API (/api/toggle-contact) (需要管理員密碼保護！)
+        if parsed.path == "/api/toggle-contact":
+            if not self.check_auth():
+                return
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length).decode("utf-8")
+            try:
+                payload = json.loads(body)
+                cid = payload.get("class_id")
+                if not cid:
+                    self.send_json(400, {"status": "error", "message": "未指定班級 ID"})
+                    return
+                cfg = config.load_classes_config()
+                classes = cfg.get("classes", {})
+                if cid not in classes:
+                    self.send_json(404, {"status": "error", "message": "找不到指定班級"})
+                    return
+
+                # 若指定 enable_contact 則套用，若無則反轉 toggle
+                current_val = classes[cid].get("enable_contact", True)
+                new_val = payload["enable_contact"] if "enable_contact" in payload else (not current_val)
+                classes[cid]["enable_contact"] = bool(new_val)
+                cfg["classes"] = classes
+
+                with open(config.CLASSES_JSON_PATH, "w", encoding="utf-8") as f:
+                    json.dump(cfg, f, ensure_ascii=False, indent=2)
+
+                self.send_json(200, {
+                    "status": "success",
+                    "class_id": cid,
+                    "enable_contact": classes[cid]["enable_contact"],
+                    "message": "📋 學員個資收集已開啟！學員勾選好禮或延伸課時將引導填寫聯絡方式。" if classes[cid]["enable_contact"] else "🔒 學員個資收集已關閉！已切換為 100% 全匿名問卷（免留任何個資直接送出）。"
+                })
+            except Exception as e:
+                self.send_json(500, {"status": "error", "message": f"個資開關切換異常: {str(e)}"})
+            return
+
         # 更新班級與問卷文案設定 (/api/update-class) (需要管理員密碼保護！)
         if parsed.path == "/api/update-class":
             if not self.check_auth():
@@ -428,6 +465,10 @@ class SurveyHandler(BaseHTTPRequestHandler):
                     existing["enable_gift"] = bool(payload["enable_gift"])
                 elif "enable_gift" not in existing:
                     existing["enable_gift"] = True
+                if "enable_contact" in payload:
+                    existing["enable_contact"] = bool(payload["enable_contact"])
+                elif "enable_contact" not in existing:
+                    existing["enable_contact"] = True
                 if "enable_followup_topics" in payload:
                     existing["enable_followup_topics"] = bool(payload["enable_followup_topics"])
                 elif "enable_followup_topics" not in existing:
