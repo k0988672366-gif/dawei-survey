@@ -493,6 +493,12 @@ class SurveyHandler(BaseHTTPRequestHandler):
                     existing["enable_followup_schedules"] = existing.get("enable_followup", True)
                 # 保持向後相容
                 existing["enable_followup"] = existing.get("enable_followup_topics", True) or existing.get("enable_followup_schedules", True)
+                if "pill_1" not in existing or not existing["pill_1"]:
+                    existing["pill_1"] = "⏱ 只需 1 分鐘"
+                if "pill_2" not in existing or not existing["pill_2"]:
+                    existing["pill_2"] = "📋 課綱痛點健檢"
+                if "pill_3" not in existing or not existing["pill_3"]:
+                    existing["pill_3"] = "🛡 資料僅供教學"
                 cfg["classes"][cid] = existing
                 cfg["active_class_id"] = cid
 
@@ -800,6 +806,13 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 reward_courses = new_class_data.get("reward_courses", [])
                 if "reward_course_items" not in new_class_data or not new_class_data["reward_course_items"]:
                     new_class_data["reward_course_items"] = [{"name": rc, "enabled": True} for rc in reward_courses]
+
+                if "pill_1" not in new_class_data or not new_class_data["pill_1"]:
+                    new_class_data["pill_1"] = "⏱ 只需 1 分鐘"
+                if "pill_2" not in new_class_data or not new_class_data["pill_2"]:
+                    new_class_data["pill_2"] = "📋 課綱痛點健檢"
+                if "pill_3" not in new_class_data or not new_class_data["pill_3"]:
+                    new_class_data["pill_3"] = "🛡 資料僅供教學"
 
                 cfg = config.load_classes_config()
                 if "classes" not in cfg:

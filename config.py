@@ -39,6 +39,9 @@ def load_classes_config():
                     "單元課 C：【調色秘笈】色彩心理學與私房調色盤全解析 (市價 $1,200)",
                     "單元課 D：【動態人體】角色五官比例與肢體骨架速繪 (市價 $1,600)"
                 ],
+                "pill_1": "⏱ 只需 1 分鐘",
+                "pill_2": "📋 課綱痛點健檢",
+                "pill_3": "🛡 資料僅供教學",
                 "enable_gift": True
             }
         }
@@ -62,6 +65,9 @@ def get_class_info(class_id: str = None) -> dict:
             "platform_name": "OKBOM直播平台",
             "syllabus_topics": [],
             "reward_courses": [],
+            "pill_1": "⏱ 只需 1 分鐘",
+            "pill_2": "📋 課綱痛點健檢",
+            "pill_3": "🛡 資料僅供教學",
             "enable_gift": True
         }
     if "enable_gift" not in info:
@@ -82,6 +88,12 @@ def get_class_info(class_id: str = None) -> dict:
         info["followup_schedules"] = [
             "💻【線上直播班】12/01 起 每週三晚間 19:30 - 21:30"
         ]
+    if "pill_1" not in info or not info["pill_1"]:
+        info["pill_1"] = "⏱ 只需 1 分鐘"
+    if "pill_2" not in info or not info["pill_2"]:
+        info["pill_2"] = "📋 課綱痛點健檢"
+    if "pill_3" not in info or not info["pill_3"]:
+        info["pill_3"] = "🛡 資料僅供教學"
     return info
 
 _default_info = get_class_info()

@@ -104,25 +104,9 @@ async function loadClassConfig() {
       document.getElementById('giftBannerDesc').textContent = data.gift_banner_desc;
     }
 
-    if (data.pill_1 && pill1El) pill1El.textContent = data.pill_1;
-    if (data.pill_2 && pill2El) pill2El.textContent = data.pill_2;
-    if (pill3El) {
-      if (isGift) {
-        if (data.pill_3 && /好禮|贈|單元課/.test(data.pill_3)) {
-          pill3El.textContent = data.pill_3;
-        } else if (data.pill_3 && !/匿名/.test(data.pill_3)) {
-          pill3El.textContent = data.pill_3;
-        } else {
-          pill3El.textContent = '🎁 完填即贈單元課';
-        }
-      } else {
-        if (data.pill_3 && !/好禮|贈|單元課/.test(data.pill_3)) {
-          pill3El.textContent = data.pill_3;
-        } else {
-          pill3El.textContent = '✨ 匿名填答';
-        }
-      }
-    }
+    if (pill1El) pill1El.textContent = data.pill_1 || '⏱ 只需 1 分鐘';
+    if (pill2El) pill2El.textContent = data.pill_2 || '📋 課綱痛點健檢';
+    if (pill3El) pill3El.textContent = data.pill_3 || '🛡 資料僅供教學';
 
     if (data.teacher_name) {
       document.querySelectorAll('.teacher-name-span').forEach(el => {

@@ -60,10 +60,15 @@ class SyllabusSurveyAgent:
 
         if enable_gift:
             result["badge_text"] = "🎁 結業學習回饋 ✕ 限時專屬好禮"
-            result["pill_3"] = "🎁 完填即贈單元課"
         else:
             result["badge_text"] = "📝 結業學習成果回饋"
-            result["pill_3"] = "✨ 匿名填答"
+
+        if "pill_1" not in result or not result["pill_1"]:
+            result["pill_1"] = "⏱ 只需 1 分鐘"
+        if "pill_2" not in result or not result["pill_2"]:
+            result["pill_2"] = "📋 課綱痛點健檢"
+        if "pill_3" not in result or not result["pill_3"]:
+            result["pill_3"] = "🛡 資料僅供教學"
 
         return result
 
@@ -100,9 +105,9 @@ class SyllabusSurveyAgent:
   "platform_name": "OKBOM直播平台",
   "gift_banner_title": "完課專屬好禮：任選一門線上單元課！",
   "gift_banner_desc": "感謝您的認真參與，填寫完畢即可於文末免費勾選一門量身打造的進階單元課，將由專員聯繫為您開通！",
-  "pill_1": "⏱ 只需 90 秒",
-  "pill_2": "📱 手機極速點選",
-  "pill_3": "✨ 匿名填答",
+  "pill_1": "⏱ 只需 1 分鐘",
+  "pill_2": "📋 課綱痛點健檢",
+  "pill_3": "🛡 資料僅供教學",
   "syllabus_topics": [
     "單元 1：核心單元名稱與實作重點",
     "單元 2：核心單元名稱與實作重點",
@@ -272,9 +277,9 @@ class SyllabusSurveyAgent:
             "teacher_name": detected_teacher,
             "organizer": org or "赫綵設計學院",
             "platform_name": "OKBOM直播平台",
-            "pill_1": "⏱ 只需 90 秒",
-            "pill_2": "📱 手機極速點選",
-            "pill_3": "✨ 匿名填答",
+            "pill_1": "⏱ 只需 1 分鐘",
+            "pill_2": "📋 課綱痛點健檢",
+            "pill_3": "🛡 資料僅供教學",
             "syllabus_topics": topics,
             "struggle_options": struggle_options,
             "reward_courses": reward_courses,

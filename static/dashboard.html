@@ -685,9 +685,9 @@
           <div>
             <label style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 4px; font-weight: 500;">8. 底部三個小膠囊標籤</label>
             <div style="display: flex; gap: 8px;">
-              <input type="text" id="editPill1" class="chat-input" value="⏱ 只需 90 秒">
-              <input type="text" id="editPill2" class="chat-input" value="📱 手機極速點選">
-              <input type="text" id="editPill3" class="chat-input" value="🎁 完填即贈單元課">
+              <input type="text" id="editPill1" class="chat-input" value="⏱ 只需 1 分鐘">
+              <input type="text" id="editPill2" class="chat-input" value="📋 課綱痛點健檢">
+              <input type="text" id="editPill3" class="chat-input" value="🛡 資料僅供教學">
             </div>
           </div>
 
@@ -2327,9 +2327,9 @@
         if (data.teacher_name) document.getElementById('editTeacherName').value = data.teacher_name;
         if (data.organizer) document.getElementById('editOrganizer').value = data.organizer;
         if (data.platform_name) document.getElementById('editPlatform').value = data.platform_name;
-        if (data.pill_1) document.getElementById('editPill1').value = data.pill_1;
-        if (data.pill_2) document.getElementById('editPill2').value = data.pill_2;
-        if (data.pill_3) document.getElementById('editPill3').value = data.pill_3;
+        document.getElementById('editPill1').value = data.pill_1 || '⏱ 只需 1 分鐘';
+        document.getElementById('editPill2').value = data.pill_2 || '📋 課綱痛點健檢';
+        document.getElementById('editPill3').value = data.pill_3 || '🛡 資料僅供教學';
         // 載入好禮課程勾選清單 (若有 reward_course_items 優先使用，否則使用 reward_courses 全預設勾選)
         if (data.reward_course_items && Array.isArray(data.reward_course_items)) {
           currentRewardItems = JSON.parse(JSON.stringify(data.reward_course_items));
@@ -2893,7 +2893,9 @@
           reward_course_items: rewards.map(r => ({ name: r, enabled: true })),
           enable_gift: isGiftChecked,
           badge_text: isGiftChecked ? '🎁 結業學習回饋 ✕ 限時專屬好禮' : '📝 結業學習成果回饋',
-          pill_3: isGiftChecked ? '🎁 完填即贈單元課' : '✨ 匿名填答'
+          pill_1: generatedSurveyPreview.pill_1 || '⏱ 只需 1 分鐘',
+          pill_2: generatedSurveyPreview.pill_2 || '📋 課綱痛點健檢',
+          pill_3: generatedSurveyPreview.pill_3 || '🛡 資料僅供教學'
         };
 
         try {
