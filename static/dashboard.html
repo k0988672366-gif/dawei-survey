@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="/static/xlsx.full.min.js"></script>
   <style>
     :root {
       --bg: #f8fafc;
@@ -201,10 +202,10 @@
       color: #ffffff;
     }
     .btn-export-all {
-      background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+      background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
       color: #ffffff;
       border: none;
-      padding: 7px 15px;
+      padding: 7px 16px;
       font-size: 0.84rem;
       font-weight: 700;
       border-radius: 8px;
@@ -212,11 +213,11 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+      box-shadow: 0 2px 6px rgba(22, 163, 74, 0.35);
       transition: all 0.15s ease;
     }
     .btn-export-all:hover {
-      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.45);
+      box-shadow: 0 4px 10px rgba(22, 163, 74, 0.45);
       transform: translateY(-1px);
     }
     .dim-stat-card {
@@ -1190,12 +1191,12 @@
             <p style="font-size: 0.84rem; color: var(--text-muted); margin-top: 5px;">最新回覆排於最上方。可點選下方獨立統計標籤比對各維度數據，或檢視原始回饋卡片與全欄位明細表格。</p>
           </div>
           <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-            <!-- 全部統整匯出按鈕 -->
-            <button class="btn-export-all" onclick="exportComprehensiveReport()" title="匯出包含全維度統計與完整回覆總表之 Excel 檔案">📊 全部統整匯出 (Excel / 統計分析總表)</button>
+            <!-- 全部統整匯出按鈕 (Excel .xlsx 5大分頁總表) -->
+            <button class="btn-export-all" onclick="exportComprehensiveReport()" title="匯出包含 5 大工作表分頁之 Excel (.xlsx) 檔案">📗 全部統整匯出 (Excel / 5大分頁總表)</button>
             <!-- 搜尋框 -->
             <input type="text" id="responseSearchInput" class="chat-input" placeholder="🔍 搜尋學員、留言或痛點..." style="width: 200px; padding: 7px 12px; font-size: 0.84rem;" oninput="filterResponsesTable()">
             <!-- 操作按鈕 -->
-            <button class="btn btn-secondary" onclick="exportResponsesCsv()" title="匯出完整學員回覆為 CSV 檔案" style="padding: 7px 13px; font-size: 0.84rem;">📥 匯出明細 CSV</button>
+            <button class="btn btn-secondary" onclick="exportResponsesCsv()" title="僅匯出原始學員名冊為 CSV 檔案" style="padding: 7px 13px; font-size: 0.84rem;">📄 僅匯出名冊 (CSV)</button>
             <button class="btn btn-secondary" onclick="syncCloudNow()" title="自 Render 雲端主機立即拉取最新學員填答" style="color: #0284c7; border-color: #0284c7; padding: 7px 13px; font-size: 0.84rem;">☁️ 同步雲端</button>
             <button class="btn btn-secondary" onclick="autoSyncAndRefresh()" title="重新載入填答資料" style="padding: 7px 13px; font-size: 0.84rem;">🔄 重新整理</button>
             <!-- 刪除鍵移至重新整理後方 -->
@@ -3496,7 +3497,7 @@
     }
 
     // ============================================
-    // 全部統整匯出 (Excel / 統計分析總表 CSV BOM)
+    // 全部統整匯出 (Excel .xlsx / 5 大工作表分頁總表)
     // ============================================
 
     function exportComprehensiveReport() {
@@ -3507,9 +3508,11 @@
       }
 
       const classInfo = allClassesData[currentClassId] || {};
-      const courseName = classInfo.course_name || '直播課程';
+      const courseName = classInfo.course_name || '日本動畫職人 - 背景美術';
       const teacherName = classInfo.teacher_name || '授課講師';
+      const organizer = classInfo.organizer || '赫綵教育集團 x Date日琪資訊';
       const total = data.length;
+      const todayStr = new Date().toISOString().slice(0, 10);
 
       // 1. 課綱卡關痛點排行
       const struggleCounts = {};
@@ -3566,95 +3569,208 @@
       });
       const sortedScheds = Object.entries(schedCounts).sort((a, b) => b[1] - a[1]);
 
-      // 組合 CSV 內容 (UTF-8 BOM: \uFEFF)
-      let csv = "\uFEFF";
+      // 優先使用 SheetJS 輸出真實多工作表 (.xlsx)
+      if (typeof XLSX !== 'undefined') {
+        const wb = XLSX.utils.book_new();
 
-      // 區塊 1: 班級總體資訊與數據快報
-      csv += "=== 【結業問卷全維度統計分析總表】 ===\n";
+        // ----------------------------------------------------
+        // 【工作表 1】全維度統整統計總表
+        // ----------------------------------------------------
+        const ws1_data = [
+          [`【${courseName}】結業學習成果與全維度統計分析總表`],
+          ["授課講師", teacherName, "主辦機構", organizer, "總填答人數", `${total} 人`, "NPS 淨推薦值", `${npsScore >= 0 ? '+' : ''}${npsScore}`, "講師均分", `${avgInst} ★`, "報告產出", todayStr],
+          [],
+          ["🎯 區塊一：課綱卡關痛點佔比排行 & 精準推課名單 (按嚴重度降序推薦)"],
+          ["排名", "課綱痛點項目名稱", "勾選票數", "佔比 (%)", "遇到此卡關點的學員名單 (姓名 / 手機 / 起點)"]
+        ];
+
+        sortedStruggles.forEach(([s, cnt], idx) => {
+          const pct = ((cnt / total) * 100).toFixed(1) + "%";
+          const students = data.filter(r => (r.struggle_point || '').trim() === s || (!r.struggle_point && s === '無卡關或未填寫'));
+          const rosterStr = students.map(st => `${st.student_name || '匿名'} (${st.phone || '無電話'} / ${st.prior_experience || '未填'})`).join('、');
+          ws1_data.push([`第 ${idx + 1} 名`, s, cnt, pct, rosterStr || '-']);
+        });
+
+        ws1_data.push([]);
+        ws1_data.push(["🌱 區塊二：起點背景分布 & 核心進步收穫統計"]);
+        ws1_data.push(["分析指標群組", "選項分類", "統計人數", "佔比 (%)", "對應學員名冊"]);
+
+        sortedExp.forEach(([e, cnt], idx) => {
+          const pct = ((cnt / total) * 100).toFixed(1) + "%";
+          const students = data.filter(r => (r.prior_experience || '').trim() === e || (!r.prior_experience && e === '未填寫背景'));
+          const rosterStr = students.map(st => `${st.student_name || '匿名'} (${st.phone || '無電話'})`).join('、');
+          ws1_data.push(["學員起點背景", e, cnt, pct, rosterStr || '-']);
+        });
+
+        ws1_data.push([]);
+        ws1_data.push(["🔥 區塊三：綜合指標與 NPS 滿意度評價"]);
+        ws1_data.push(["評估指標", "統計數值 / 人數", "佔比 / 星等", "指標說明"]);
+        ws1_data.push(["淨推薦值 (NPS)", `${npsScore >= 0 ? '+' : ''}${npsScore}`, `推薦率 ${npsTotal > 0 ? ((promoters/npsTotal)*100).toFixed(1) : 0}%`, "淨推薦分數 (-100 ~ +100)"]);
+        ws1_data.push(["推薦者 (Promoters: 9-10分)", `${promoters} 人`, `${npsTotal > 0 ? ((promoters/npsTotal)*100).toFixed(1) : 0}%`, "極度滿意且願意主動推薦之鐵粉學員"]);
+        ws1_data.push(["被動者 (Passives: 7-8分)", `${passives} 人`, `${npsTotal > 0 ? ((passives/npsTotal)*100).toFixed(1) : 0}%`, "滿意但態度中立、需持續經營之學員"]);
+        ws1_data.push(["批評者 (Detractors: 0-6分)", `${detractors} 人`, `${npsTotal > 0 ? ((detractors/npsTotal)*100).toFixed(1) : 0}%`, "需要團隊主動關懷聯繫之學員"]);
+        ws1_data.push(["講師授課滿意度均分", `${avgInst} ★`, "滿分 5.00 星", "學員對講師專業度與教學節奏之評價"]);
+        ws1_data.push(["整體課程內容均分", `${avgCourse} ★`, "滿分 5.00 星", "課綱內容實用性與編排合理度"]);
+        ws1_data.push(["助教支援滿意度均分", `${avgTa} ★`, "滿分 5.00 星", "課堂與課後助教即時解答品質"]);
+
+        ws1_data.push([]);
+        ws1_data.push(["🎁 區塊四：線上單元課好禮兌換需求統計"]);
+        ws1_data.push(["排名", "贈品單元課名稱", "登記人數", "佔比 (%)"]);
+        sortedRewards.forEach(([rew, cnt], idx) => {
+          const pct = ((cnt / total) * 100).toFixed(1) + "%";
+          ws1_data.push([`第 ${idx + 1} 名`, rew, cnt, pct]);
+        });
+
+        ws1_data.push([]);
+        ws1_data.push(["💻 區塊五：即將開課直播梯次時段預約統計"]);
+        ws1_data.push(["排名", "即將開課梯次時段", "預約人數", "佔比 (%)"]);
+        sortedScheds.forEach(([sch, cnt], idx) => {
+          const pct = ((cnt / total) * 100).toFixed(1) + "%";
+          ws1_data.push([`第 ${idx + 1} 名`, sch, cnt, pct]);
+        });
+
+        const ws1 = XLSX.utils.aoa_to_sheet(ws1_data);
+        ws1['!cols'] = [{ wch: 16 }, { wch: 38 }, { wch: 15 }, { wch: 15 }, { wch: 55 }, { wch: 15 }];
+        XLSX.utils.book_append_sheet(wb, ws1, "全維度統整統計總表");
+
+        // ----------------------------------------------------
+        // 【工作表 2】課綱痛點排行與推課表
+        // ----------------------------------------------------
+        const ws2_data = [
+          ["排名", "課綱痛點項目名稱", "勾選票數", "全班佔比 (%)", "受挫學員姓名", "學員聯絡手機", "學員起點背景", "建議後續推廣課程主題"]
+        ];
+        sortedStruggles.forEach(([s, cnt], idx) => {
+          const pct = ((cnt / total) * 100).toFixed(1) + "%";
+          const students = data.filter(r => (r.struggle_point || '').trim() === s || (!r.struggle_point && s === '無卡關或未填寫'));
+          students.forEach(st => {
+            ws2_data.push([
+              `第 ${idx + 1} 名`,
+              s,
+              cnt,
+              pct,
+              st.student_name || '匿名學員',
+              st.phone || '-',
+              st.prior_experience || '未填寫',
+              st.followup_interest_topic || '推薦對應卡關點進階班'
+            ]);
+          });
+        });
+        const ws2 = XLSX.utils.aoa_to_sheet(ws2_data);
+        ws2['!cols'] = [{ wch: 12 }, { wch: 36 }, { wch: 12 }, { wch: 14 }, { wch: 16 }, { wch: 18 }, { wch: 18 }, { wch: 35 }];
+        XLSX.utils.book_append_sheet(wb, ws2, "課綱痛點排行與推課表");
+
+        // ----------------------------------------------------
+        // 【工作表 3】預約時段與贈課跟進名冊
+        // ----------------------------------------------------
+        const ws3_data = [
+          ["序號", "填單時間", "學員姓名", "聯絡手機", "LINE ID", "Email", "欲兌換線上單元課", "預約後續線上直播時段", "延伸進階主題學習意向", "學員起點背景"]
+        ];
+        data.forEach((r, idx) => {
+          ws3_data.push([
+            idx + 1,
+            r.timestamp || '-',
+            r.student_name || '匿名學員',
+            r.phone || '-',
+            r.line_id || '-',
+            r.email || '-',
+            r.selected_reward_course || '無需兌換 (純回饋)',
+            r.followup_schedules_selected || '未勾選時段',
+            r.followup_interest_topic || '未填寫',
+            r.prior_experience || '未填寫'
+          ]);
+        });
+        const ws3 = XLSX.utils.aoa_to_sheet(ws3_data);
+        ws3['!cols'] = [{ wch: 8 }, { wch: 20 }, { wch: 14 }, { wch: 16 }, { wch: 14 }, { wch: 26 }, { wch: 32 }, { wch: 38 }, { wch: 30 }, { wch: 16 }];
+        XLSX.utils.book_append_sheet(wb, ws3, "預約時段與贈課跟進名冊");
+
+        // ----------------------------------------------------
+        // 【工作表 4】原聲留言與心聲清單
+        // ----------------------------------------------------
+        const ws4_data = [
+          ["序號", "填單時間", "學員姓名", "回饋類別", "評分星等", "學員原聲文字評語與建議"]
+        ];
+        let commentIdx = 1;
+        data.forEach(r => {
+          const name = r.student_name || '匿名學員';
+          const time = r.timestamp || '-';
+          if (r.instructor_comment) {
+            ws4_data.push([commentIdx++, time, name, "👨‍🏫 講師授課評語", r.instructor_rating ? `${r.instructor_rating}★` : '-', r.instructor_comment]);
+          }
+          if (r.feedback_text) {
+            ws4_data.push([commentIdx++, time, name, "💬 學員心聲建議", r.nps_score ? `NPS ${r.nps_score}` : '-', r.feedback_text]);
+          }
+          if (r.ta_comment) {
+            ws4_data.push([commentIdx++, time, name, "🤝 助教支援反饋", r.ta_rating ? `${r.ta_rating}★` : '-', r.ta_comment]);
+          }
+        });
+        const ws4 = XLSX.utils.aoa_to_sheet(ws4_data);
+        ws4['!cols'] = [{ wch: 8 }, { wch: 20 }, { wch: 14 }, { wch: 20 }, { wch: 12 }, { wch: 60 }];
+        XLSX.utils.book_append_sheet(wb, ws4, "原聲留言與心聲清單");
+
+        // ----------------------------------------------------
+        // 【工作表 5】原始填答逐筆明細
+        // ----------------------------------------------------
+        const ws5_data = [
+          [
+            "填答時間", "班級代碼", "學員姓名", "手機號碼", "LINE ID", "Email",
+            "起點背景", "核心進步收穫", "主要卡關點", "講師授課評分",
+            "講師原聲評語", "整體課程評分", "助教支援評分", "助教反饋評語",
+            "直播平台體驗", "淨推薦值(NPS)", "勾選兌換之線上單元課", "是否有意願兌換",
+            "延伸進階主題意願", "預約即將開課時段", "學員心聲建議"
+          ]
+        ];
+        data.forEach(r => {
+          ws5_data.push([
+            r.timestamp || '',
+            r.class_id || currentClassId,
+            r.student_name || '匿名學員',
+            r.phone || '',
+            r.line_id || '',
+            r.email || '',
+            r.prior_experience || '',
+            r.key_progress || '',
+            r.struggle_point || '',
+            r.instructor_rating || '',
+            r.instructor_comment || '',
+            r.course_rating || '',
+            r.ta_rating || '',
+            r.ta_comment || '',
+            r.platform_experience || '',
+            r.nps_score || '',
+            r.selected_reward_course || '',
+            r.wants_reward || '',
+            r.followup_interest_topic || '',
+            r.followup_schedules_selected || '',
+            r.feedback_text || ''
+          ]);
+        });
+        const ws5 = XLSX.utils.aoa_to_sheet(ws5_data);
+        ws5['!cols'] = [
+          { wch: 20 }, { wch: 18 }, { wch: 14 }, { wch: 16 }, { wch: 14 }, { wch: 24 },
+          { wch: 16 }, { wch: 28 }, { wch: 28 }, { wch: 12 },
+          { wch: 32 }, { wch: 12 }, { wch: 12 }, { wch: 24 },
+          { wch: 18 }, { wch: 14 }, { wch: 30 }, { wch: 14 },
+          { wch: 28 }, { wch: 32 }, { wch: 32 }
+        ];
+        XLSX.utils.book_append_sheet(wb, ws5, "原始填答逐筆明細");
+
+        // 產生真實 .xlsx 檔案下載
+        const filename = `${courseName}_全維度統整統計分析報表_${currentClassId}.xlsx`;
+        XLSX.writeFile(wb, filename);
+        showToast('🎉 已成功匯出包含 5 大工作表分頁之 Excel (.xlsx) 活頁簿！');
+        return;
+      }
+
+      // 降級備援: CSV 輸出
+      let csv = "\uFEFF=== 【結業問卷全維度統計分析總表】 ===\n";
       csv += `班級代碼,"${currentClassId}",課程名稱,"${courseName.replace(/"/g, '""')}",授課講師,"${teacherName.replace(/"/g, '""')}"\n`;
       csv += `統計時間,"${new Date().toLocaleString()}",有效填答總數,${total} 人,淨推薦值(NPS),${npsScore >= 0 ? '+' : ''}${npsScore},講師均分,${avgInst}★\n\n`;
-
-      // 區塊 2: 【維度一】課綱卡關痛點排行統計
-      csv += "=== 【維度一】課綱卡關痛點排行統計 ===\n";
-      csv += "排名,卡關單元 / 痛點描述,人數,佔比(%)\n";
-      sortedStruggles.forEach(([s, cnt], idx) => {
-        const pct = ((cnt / total) * 100).toFixed(1);
-        csv += `${idx + 1},"${s.replace(/"/g, '""')}",${cnt},${pct}%\n`;
-      });
-      csv += "\n";
-
-      // 區塊 3: 【維度二】學員起點背景分布統計
-      csv += "=== 【維度二】學員起點背景分布統計 ===\n";
-      csv += "背景梯隊,起點背景程度,人數,佔比(%)\n";
-      sortedExp.forEach(([e, cnt], idx) => {
-        const pct = ((cnt / total) * 100).toFixed(1);
-        csv += `梯隊 ${idx + 1},"${e.replace(/"/g, '""')}",${cnt},${pct}%\n`;
-      });
-      csv += "\n";
-
-      // 區塊 4: 【維度三】綜合指標與 NPS 滿意度統計
-      csv += "=== 【維度三】綜合指標與 NPS 滿意度統計 ===\n";
-      csv += "評估指標,統計數值 / 人數,佔比 / 說明\n";
-      csv += `淨推薦值 (NPS),${npsScore >= 0 ? '+' : ''}${npsScore},"淨推薦分數 (-100 ~ +100)"\n`;
-      csv += `推薦者 (Promoters: 9-10分),${promoters} 人,${npsTotal > 0 ? ((promoters/npsTotal)*100).toFixed(1) : 0}%\n`;
-      csv += `被動者 (Passives: 7-8分),${passives} 人,${npsTotal > 0 ? ((passives/npsTotal)*100).toFixed(1) : 0}%\n`;
-      csv += `批評者 (Detractors: 0-6分),${detractors} 人,${npsTotal > 0 ? ((detractors/npsTotal)*100).toFixed(1) : 0}%\n`;
-      csv += `講師授課均分,${avgInst} ★,"滿分 5.00 星"\n`;
-      csv += `課程內容均分,${avgCourse} ★,"滿分 5.00 星"\n`;
-      csv += `助教支援均分,${avgTa} ★,"滿分 5.00 星"\n\n`;
-
-      // 區塊 5: 【維度四】線上單元課贈禮兌換意向統計
-      csv += "=== 【維度四】線上單元課贈禮兌換意向統計 ===\n";
-      csv += "排名,贈品單元課名稱,兌換登記人數,佔比(%)\n";
-      sortedRewards.forEach(([rew, cnt], idx) => {
-        const pct = ((cnt / total) * 100).toFixed(1);
-        csv += `${idx + 1},"${rew.replace(/"/g, '""')}",${cnt},${pct}%\n`;
-      });
-      csv += "\n";
-
-      // 區塊 6: 【維度五】即將開課時段預約統計
-      csv += "=== 【維度五】即將開課時段預約統計 ===\n";
-      csv += "排名,預約開課時段,預約登記人數,佔比(%)\n";
-      sortedScheds.forEach(([sch, cnt], idx) => {
-        const pct = ((cnt / total) * 100).toFixed(1);
-        csv += `${idx + 1},"${sch.replace(/"/g, '""')}",${cnt},${pct}%\n`;
-      });
-      csv += "\n";
-
-      // 區塊 7: 【維度六】學員完整填答總表
-      csv += "=== 【維度六】學員完整填答總表 ===\n";
-      csv += "填答時間,班級代碼,學員姓名,手機號碼,LINE ID,Email,起點背景,核心進步收穫,主要卡關點,講師授課評分,講師原聲評語,整體課程評分,助教支援評分,助教反饋評語,直播平台體驗,淨推薦值(NPS),勾選兌換之線上單元課,是否有意願兌換,延伸進階主題意願,預約即將開課時段,學員心聲建議\n";
-      data.forEach(r => {
-        const time = (r.timestamp || '').replace(/"/g, '""');
-        const cid = (r.class_id || currentClassId).replace(/"/g, '""');
-        const name = (r.student_name || '匿名學員').replace(/"/g, '""');
-        const phone = (r.phone || '').replace(/"/g, '""');
-        const line = (r.line_id || '').replace(/"/g, '""');
-        const email = (r.email || '').replace(/"/g, '""');
-        const exp = (r.prior_experience || '').replace(/"/g, '""');
-        const prog = (r.key_progress || '').replace(/"/g, '""');
-        const strug = (r.struggle_point || '').replace(/"/g, '""');
-        const instR = (r.instructor_rating || '').replace(/"/g, '""');
-        const instC = (r.instructor_comment || '').replace(/"/g, '""');
-        const crsR = (r.course_rating || '').replace(/"/g, '""');
-        const taR = (r.ta_rating || '').replace(/"/g, '""');
-        const taC = (r.ta_comment || '').replace(/"/g, '""');
-        const plat = (r.platform_experience || '').replace(/"/g, '""');
-        const nps = (r.nps_score || '').replace(/"/g, '""');
-        const rew = (r.selected_reward_course || '').replace(/"/g, '""');
-        const wants = (r.wants_reward || '').replace(/"/g, '""');
-        const followTopic = (r.followup_interest_topic || '').replace(/"/g, '""');
-        const followSch = (r.followup_schedules_selected || '').replace(/"/g, '""');
-        const feedback = (r.feedback_text || '').replace(/"/g, '""');
-        csv += `"${time}","${cid}","${name}","${phone}","${line}","${email}","${exp}","${prog}","${strug}","${instR}","${instC}","${crsR}","${taR}","${taC}","${plat}","${nps}","${rew}","${wants}","${followTopic}","${followSch}"\n`;
-      });
-
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = `結業問卷全維度統計與完整回覆總表_${currentClassId}_${new Date().toISOString().slice(0, 10)}.csv`;
+      link.download = `結業問卷全維度統計與完整回覆總表_${currentClassId}_${todayStr}.csv`;
       link.click();
-      showToast('✅ 已成功匯出包含全維度統計與學員總表之 Excel 檔案！');
+      showToast('✅ 已匯出統計分析檔案！');
     }
 
     function updateAllCharts(data) {
