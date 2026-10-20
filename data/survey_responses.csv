@@ -1,7 +1,3 @@
-timestamp,class_id,student_name,phone,line_id,email,prior_experience,key_progress,struggle_point,instructor_rating,instructor_comment,course_rating,ta_rating,ta_comment,platform_experience,nps_score,selected_reward_course,wants_reward,followup_interest_topic,followup_schedules_selected,feedback_text
-2026-09-04 08:52:53,class_1788504131,匿名學員,,,,零基礎小白,核心基礎邏輯更有信心,其他：此表單操作還行,4,這是線上直播結業問卷？,4,4,,經常卡頓影響觀看,5,無需兌換 (純回饋),no,未開啟此項調查,未開啟此項調查,
-2026-10-19 13:22:39,class_1791862849,匿名學員,,,,,['光影概念與層次拆解'],光影分階與明暗對比掌握較生疏,5,測試是否需要留個資按鈕與自動匿名流程,,,,,10,無需兌換 (純回饋),no,進階 A：商業場景氛圍光影 ✕ 概念美術完稿實戰班,未勾選時段,測試是否需要留個資按鈕與自動匿名流程
-2026-10-19 13:23:03,class_1791862849,王小明,0912-345-678,,,,['光影分鏡'],透視構圖,5,文美老師教得超棒！希望能多開光影進階！,,,,,10,單元課 A：【筆刷神技】Procreate 10大必學手勢與效率自訂筆刷,yes,是：想學習日系晨昏光影與建築背景,💻【線上直播班】12/01 起 每週三晚間 19:30 - 21:30,文美老師教得超棒！希望能多開光影進階！
-2026-10-19 13:23:03,class_1791862849,李小華,0988-765-432,hua_art,hua@test.com,,['色彩搭配'],無,5,很喜歡即時示範！,,,,,9,無需兌換 (純回饋),no,目前沒想法，可專員聯繫,🔥 願意接收舊生專屬早鳥優惠與開課通知,很喜歡即時示範！
-2026-10-19 13:23:47,class_1791862849,王小明,0912-345-678,,,,['光影分鏡'],透視構圖,5,文美老師教得超棒！希望能多開光影進階！,,,,,10,單元課 A：【筆刷神技】Procreate 10大必學手勢與效率自訂筆刷,yes,是：想學習日系晨昏光影與建築背景,💻【線上直播班】12/01 起 每週三晚間 19:30 - 21:30,文美老師教得超棒！希望能多開光影進階！
-2026-10-19 13:23:47,class_1791862849,李小華,0988-765-432,hua_art,hua@test.com,,['色彩搭配'],無,5,很喜歡即時示範！,,,,,9,無需兌換 (純回饋),no,目前沒想法，可專員聯繫,🔥 願意接收舊生專屬早鳥優惠與開課通知,很喜歡即時示範！
+﻿timestamp,class_id,student_name,phone,line_id,email,prior_experience,key_progress,struggle_point,instructor_rating,instructor_comment,course_rating,ta_rating,ta_comment,platform_experience,nps_score,selected_reward_course,wants_reward,followup_interest_topic,followup_schedules_selected,feedback_text
+2026-10-20 09:38:53,class_1791862849,匿名學員,,,,偶爾自學新手,建立持續深入學習熱情、核心基礎邏輯更有信心,線稿構圖比例與人體透視容易跑形,5,老師太讚了 ｜ 我想要說：線上課的網站有時候聊天不太同步，不確定是不是用手機的緣故,5,5,感恩的心,偶有小延遲但不影響,10,無需兌換 (純回饋),no,否，目前暫無規劃,未勾選時段,線上課的網站有時候聊天不太同步，不確定是不是用手機的緣故
+2026-10-20 15:11:20,class_1791862849,陳擁珩,0960430600,,cytusL12324541@gmail.com,偶爾自學新手,熟練工具與流程運用、建立持續深入學習熱情,線稿構圖比例與人體透視容易跑形,5,老師辛苦了!! 希望未來有機會再上到課,5,5,感謝助教提供的協助 !!,非常順暢清晰,7,無需兌換 (純回饋),no,是（未填寫具體內容）,未勾選時段,

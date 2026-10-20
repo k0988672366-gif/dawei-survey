@@ -6,7 +6,10 @@ import mimetypes
 import base64
 import urllib.request
 import ssl
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+
+# 台灣時區 (Asia/Taipei UTC+8)
+TAIPEI_TZ = timezone(timedelta(hours=8))
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs, unquote
@@ -490,7 +493,7 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 cfg = config.load_classes_config()
                 data["class_id"] = data.get("class_id") or cfg.get("active_class_id", "class_1791862849")
 
-            data["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            data["timestamp"] = datetime.now(TAIPEI_TZ).strftime("%Y-%m-%d %H:%M:%S")
             is_pure_feedback = (
                 data.get("wants_reward") == "no" or
                 not data.get("selected_reward_course") or
