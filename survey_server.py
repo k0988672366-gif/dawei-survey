@@ -411,6 +411,33 @@ class SurveyHandler(BaseHTTPRequestHandler):
             self.wfile.write(csv_bytes)
             return
 
+        # 8.3 API: 全部統整匯出高階樣式 Excel (.xlsx) (/api/export-comprehensive-xlsx?class_id=...) (需要管理員密碼保護！)
+        if path == "/api/export-comprehensive-xlsx":
+            if not self.check_auth():
+                return
+            cid = query_params.get("class_id", [None])[0]
+            if cid == "":
+                cid = None
+            responses = self.get_all_responses(class_id=cid)
+            class_info = config.get_class_info(cid) if cid else {}
+            course_name = class_info.get("course_name", "結業問卷")
+            
+            from utils.excel_exporter import export_comprehensive_xlsx_bytes
+            xlsx_bytes = export_comprehensive_xlsx_bytes(responses, class_info, cid or "all")
+            
+            clean_name = course_name.replace("/", "_").replace("\\", "_").replace(" ", "_")
+            filename = f"{clean_name}_全維度統整統計分析報表_{cid or 'all'}.xlsx"
+            import urllib.parse
+            encoded_filename = urllib.parse.quote(filename)
+
+            self.send_response(200)
+            self.send_header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            self.send_header("Content-Disposition", f'attachment; filename="{encoded_filename}"; filename*=UTF-8\'\'{encoded_filename}')
+            self.send_header("Content-Length", str(len(xlsx_bytes)))
+            self.end_headers()
+            self.wfile.write(xlsx_bytes)
+            return
+
         self.send_error(404, "Not Found")
 
     def do_HEAD(self):
