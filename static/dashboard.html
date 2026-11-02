@@ -1376,6 +1376,15 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ class_id: classId, enable_gift: newEnable })
         });
+        if (!res.ok) {
+          if (res.status === 401) {
+            alert('🔒 管理員認證已逾期，請重新整理頁面以登入！');
+            updateGiftToggleUI(currentEnable);
+            return;
+          }
+          const text = await res.text();
+          throw new Error(`伺服器回應異常 (HTTP ${res.status})`);
+        }
         const data = await res.json();
         if (res.ok && data.status === 'success') {
           if (allClassesData[classId]) {
@@ -1442,6 +1451,15 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ class_id: classId, enable_contact: newEnable })
         });
+        if (!res.ok) {
+          if (res.status === 401) {
+            alert('🔒 管理員認證已逾期，請重新整理頁面以登入！');
+            updateContactToggleUI(currentEnable);
+            return;
+          }
+          const text = await res.text();
+          throw new Error(`伺服器回應異常 (HTTP ${res.status})`);
+        }
         const data = await res.json();
         if (res.ok && data.status === 'success') {
           if (allClassesData[classId]) {
@@ -3949,6 +3967,14 @@
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(payload)
             });
+            if (!res.ok) {
+              if (res.status === 401) {
+                alert('🔒 管理員認證已逾期，請重新整理頁面登入後再儲存！');
+                return;
+              }
+              const text = await res.text();
+              throw new Error(`伺服器回應異常 (HTTP ${res.status})`);
+            }
             const data = await res.json();
             if (data.status === 'success') {
               alert('🎉 恭喜！問卷文案、線上單元課清單與延伸進階課表已儲存更新！\n學員問卷畫面已即時同步！');

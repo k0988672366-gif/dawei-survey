@@ -96,6 +96,8 @@ class SurveyHandler(BaseHTTPRequestHandler):
 
         # 3. 班級設定 API (/api/class-info?class_id=...) (公開)
         if path == "/api/class-info":
+            if not os.getenv("RENDER"):
+                self.pull_cloud_classes()
             cid = query_params.get("class_id", [None])[0]
             if cid == "":
                 cid = None
@@ -105,6 +107,8 @@ class SurveyHandler(BaseHTTPRequestHandler):
 
         # 3.1 班級清單 API (/api/classes-list)
         if path == "/api/classes-list":
+            if not os.getenv("RENDER"):
+                self.pull_cloud_classes()
             cfg = config.load_classes_config()
             self.send_json(200, {
                 "active_class_id": cfg.get("active_class_id", "dawei_studio_01"),
@@ -608,6 +612,8 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 with open(config.CLASSES_JSON_PATH, "w", encoding="utf-8") as f:
                     json.dump(cfg, f, ensure_ascii=False, indent=2)
 
+                self.sync_class_to_cloud("/api/toggle-gift", payload)
+
                 self.send_json(200, {
                     "status": "success",
                     "class_id": cid,
@@ -644,6 +650,8 @@ class SurveyHandler(BaseHTTPRequestHandler):
 
                 with open(config.CLASSES_JSON_PATH, "w", encoding="utf-8") as f:
                     json.dump(cfg, f, ensure_ascii=False, indent=2)
+
+                self.sync_class_to_cloud("/api/toggle-contact", payload)
 
                 self.send_json(200, {
                     "status": "success",
@@ -699,7 +707,7 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 with open(config.CLASSES_JSON_PATH, "w", encoding="utf-8") as f:
                     json.dump(cfg, f, ensure_ascii=False, indent=2)
 
-                self.send_json(200, {"status": "success", "message": "班級與問卷文案已成功儲存更新！"})
+                self.sync_class_to_cloud("/api/update-class", payload)
             except Exception as e:
                 self.send_json(400, {"status": "error", "message": str(e)})
             return
@@ -738,6 +746,8 @@ class SurveyHandler(BaseHTTPRequestHandler):
 
                 with open(config.CLASSES_JSON_PATH, "w", encoding="utf-8") as f:
                     json.dump(cfg, f, ensure_ascii=False, indent=2)
+
+                self.sync_class_to_cloud("/api/delete-class", payload)
 
                 # 同步清理 responses CSV 中的此班級填答資料 (維持資料乾淨)
                 if config.RESPONSES_CSV_PATH.exists():
@@ -886,6 +896,7 @@ class SurveyHandler(BaseHTTPRequestHandler):
             if not self.check_auth():
                 return
             added = self.pull_cloud_responses(force=True)
+            self.pull_cloud_classes(force=True)
             cid = None
             content_length = int(self.headers.get("Content-Length", 0))
             if content_length > 0:
@@ -1052,6 +1063,8 @@ class SurveyHandler(BaseHTTPRequestHandler):
                 with open(config.CLASSES_JSON_PATH, "w", encoding="utf-8") as f:
                     json.dump(cfg, f, ensure_ascii=False, indent=2)
 
+                self.sync_class_to_cloud("/api/apply-syllabus-survey", payload)
+
                 # 更新全域狀態之課程與機構名稱
                 current_state.course_name = new_class_data.get("course_name", current_state.course_name)
                 current_state.organizer = new_class_data.get("organizer", current_state.organizer)
@@ -1108,6 +1121,47 @@ class SurveyHandler(BaseHTTPRequestHandler):
             if not file_exists or file_path.stat().st_size == 0:
                 writer.writeheader()
             writer.writerow(row_dict)
+
+    _last_cloud_classes_pull = 0
+
+    def pull_cloud_classes(self, force=False) -> bool:
+        """從 Render 雲端自動拉取最新班級與問卷設定 (classes.json) 並合併至本機"""
+        if os.getenv("RENDER") == "true":
+            return False
+        now = datetime.now().timestamp()
+        if not force and (now - SurveyHandler._last_cloud_classes_pull < 5):
+            return False
+        SurveyHandler._last_cloud_classes_pull = now
+        cloud_url = os.getenv("CLOUD_URL", "https://dawei-survey.onrender.com").rstrip("/")
+        try:
+            ctx = ssl._create_unverified_context()
+            req = urllib.request.Request(f"{cloud_url}/api/classes-list")
+            with urllib.request.urlopen(req, context=ctx, timeout=6) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+                if data and "classes" in data and data["classes"]:
+                    with open(config.CLASSES_JSON_PATH, "w", encoding="utf-8") as f:
+                        json.dump(data, f, ensure_ascii=False, indent=2)
+                    return True
+        except Exception as e:
+            print(f"[CloudSync Warning] 同步雲端班級設定失敗: {e}", flush=True)
+        return False
+
+    def sync_class_to_cloud(self, endpoint: str, payload: dict):
+        """若在本機修改班級設定，即時同步至雲端 Render"""
+        if not os.getenv("RENDER"):
+            try:
+                cloud_url = os.getenv("CLOUD_URL", "https://dawei-survey.onrender.com").rstrip("/")
+                ctx = ssl._create_unverified_context()
+                auth = base64.b64encode(f"{config.ADMIN_USERNAME}:{config.ADMIN_PASSWORD}".encode("utf-8")).decode("ascii")
+                cloud_req = urllib.request.Request(
+                    f"{cloud_url}{endpoint}",
+                    data=json.dumps(payload).encode("utf-8"),
+                    headers={"Content-Type": "application/json", "Authorization": f"Basic {auth}"}
+                )
+                with urllib.request.urlopen(cloud_req, context=ctx, timeout=6) as r:
+                    pass
+            except Exception as err:
+                print(f"[CloudSync Warning] 本機設定同步至雲端失敗 ({endpoint}): {err}", flush=True)
 
     _last_cloud_pull = 0
 
